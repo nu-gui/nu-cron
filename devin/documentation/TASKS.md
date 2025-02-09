@@ -1,18 +1,7 @@
-📌 TASKS.md – Task Assignments for Devin AI (Detailed Version)
-
-📌 Purpose:
-The TASKS.md file serves as a structured AI task management guide, outlining:
-	•	Granular breakdown of development tasks.
-	•	AI and human responsibilities for each milestone.
-	•	Acceptance criteria to validate AI-generated work.
-	•	Clear AI execution workflows for Devin AI.
-
-📄 TASKS.md – Finalized Content
-
 # ✅ AI Task Assignments – AI-Driven Software Development Lifecycle (AI-SDLC)
 
 ## 📌 Overview  
-This document provides **structured AI task assignments** for Devin AI, enabling **automated software development execution**.  
+This document provides **structured AI task assignments** for Devin AI, enabling **automated software development execution**.
 
 Each task includes:  
 - **AI Responsibilities** – What Devin AI will automate.  

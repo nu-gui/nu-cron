@@ -1,19 +1,9 @@
-📌 SDLC.md – Software Development Life Cycle (Detailed Version)
-
-📌 Purpose:
-The SDLC.md file outlines the AI-Driven Software Development Lifecycle (AI-SDLC) in structured phases. It provides:
-	•	Granular breakdown of each phase.
-	•	AI-assisted automation points where Devin AI executes tasks.
-	•	Well-defined AI and human intervention responsibilities to ensure smooth project execution.
-
-📄 SDLC.md – Finalized Content
-
 # 🛠️ AI-Driven Software Development Lifecycle (AI-SDLC)
 
 ## 📌 Overview  
-The **AI-Driven Software Development Lifecycle (AI-SDLC)** defines **a structured AI-powered approach** to software engineering.  
+The **AI-Driven Software Development Lifecycle (AI-SDLC)** defines a structured, AI-powered approach to software engineering.
 
-This SDLC framework ensures **automation, efficiency, and AI-enhanced decision-making** at each stage. Devin AI is responsible for task execution while developers provide oversight and refinement.
+This framework ensures **automation, efficiency, and AI-enhanced decision-making** at each stage, with Devin AI responsible for task execution while developers provide oversight and refinement.
 
 ---
 
@@ -146,6 +136,5 @@ This SDLC framework ensures **automation, efficiency, and AI-enhanced decision-m
 
 ## 📩 **Contribution & Feedback**  
 - To propose changes or improvements to this AI-SDLC framework, please open a **GitHub issue or pull request**.  
-- Feedback and collaboration are encouraged to improve AI-driven automation.  
+- Feedback and collaboration are encouraged to improve AI-driven automation.
 
----

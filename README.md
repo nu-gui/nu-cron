@@ -1,14 +1,3 @@
-📌 README.md – Detailed Version
-
-📌 Purpose:
-The README.md file serves as the primary entry point for the project, providing:
-	•	A clear project overview
-	•	Objectives & goals of the AI-driven software development lifecycle
-	•	Technology stack used in the project
-	•	Setup instructions for developers and AI automation
-
-📄 README.md – Finalized Content
-
 # 🚀 AI-Driven Software Development Lifecycle (AI-SDLC)
 
 ## 📌 Overview  
@@ -54,92 +43,102 @@ To get started, **clone the repository** and navigate into the project directory
 ```bash
 git clone https://github.com/your-org/ai-sdlc.git
 cd ai-sdlc
+```
 
-2️⃣ Install Dependencies
-
-Frontend (Next.js)
-
+### **2️⃣ Install Dependencies**  
+#### Frontend (Next.js)  
+```bash
 npm install
+```
 
-Backend API (Hono + FastAPI + Rust Modules)
-
+#### Backend API (Hono + FastAPI + Rust Modules)  
+```bash
 pip install -r requirements.txt
 cargo build
+```
 
-3️⃣ Set Up Environment Variables
-
-Create a .env file in the project root and configure the necessary credentials:
-
+### **3️⃣ Set Up Environment Variables**  
+Create a `.env` file in the project root and configure the necessary credentials:
+```bash
 DATABASE_URL=your_database_url
 AI_API_KEY=your_ai_suite_key
 AUTH_SECRET=your_auth_secret
+```
 
-4️⃣ Start the Development Server
-
-Frontend (Next.js)
-
+### **4️⃣ Start the Development Server**  
+#### Frontend (Next.js)  
+```bash
 npm run dev
+```
 
-Backend API (Hono + FastAPI)
-
+#### Backend API (Hono + FastAPI)  
+```bash
 npm run start-api
+```
 
-AI Engine (Rust)
-
+#### AI Engine (Rust)  
+```bash
 cargo run --release
+```
 
-5️⃣ Running Tests
-
+### **5️⃣ Running Tests**  
 To ensure all components are functioning correctly, run the following tests:
 
-Frontend Tests
-
+#### Frontend Tests  
+```bash
 npm test
+```
 
-Backend API Tests
-
+#### Backend API Tests  
+```bash
 pytest
+```
 
-Rust AI Module Tests
-
+#### Rust AI Module Tests  
+```bash
 cargo test
+```
 
-🏗️ Project Structure
+---
 
-The repository is structured as follows:
+## 🏗️ Project Structure  
 
-🚀 AI-Driven Software Development Lifecycle (AI-SDLC)
-
-📂 Root Project Directory Tree
-
-Below is the finalized project directory tree with explanations of each folder and file.
-
+### Root Project Directory Tree  
+```plaintext
 /project-root                # Root folder for the AI-SDLC project repository
 │
-│── /devin/                  # Devin AI-specific files for workflow and documentation
-│   │── /documentation/      # AI-managed project tracking documents
-│   │   │── AI-SDLC-Completion-Checklist.md    # Tracks completed AI tasks
-│   │   │── AI-SDLC-Roadmap.md                 # Features and future milestones
-│   │   │── AI-SDLC-Performance-Review.md      # Tracks AI performance and efficiency
-│   │   │── TASKS.md                           # AI & Human task tracking
-│   │   │── HUMAN-DEVELOPMENT-GUIDE.md         # Guidelines for human developers
-│   │
-│   │── /workflows/          # Devin AI workflow management documents
-│   │   │── AI-Documentation-Workflow.md       # How Devin updates project docs
-│   │   │── AI-Slack-Integration-Guide.md      # Slack collaboration guide
-│   │   │── AI-GitHub-PR-Management.md         # Workflow for AI-generated PRs
-│   │
-│   │── /playbooks/          # Predefined AI workflows for task execution
-│   │   │── AI-SDLC-Playbook.md                # AI-SDLC process playbook
-│   │   │── AI-Task-Execution-Playbook.md      # AI-guided coding & debugging workflows
-│   │
-│   │── /knowledge/          # Knowledge base for Devin AI’s guidance
-│   │   │── AI-Knowledge-Base.md               # AI’s learned knowledge base
-│   │   │── AI-Best-Practices.md               # Coding and project guidelines for AI
-│   │
-│   │── /logs/               # Logs of AI activity and performance
-│       │── AI-Task-History.md                 # Logs all completed AI tasks
-│       │── AI-Performance-Metrics.md          # Logs AI performance metrics
+devin/
+├── documentation/
+│   ├── AI-SDLC-Completion-Checklist.md
+│   ├── AI-SDLC-Cost-Optimization.md
+│   ├── AI-SDLC-Deployment-Strategy.md
+│   ├── AI-SDLC-Feedback-Iteration.md
+│   ├── AI-SDLC-Performance-Review.md
+│   ├── AI-SDLC-Roadmap.md
+│   ├── HUMAN-DEVELOPMENT-GUIDE.md
+│   ├── SDLC.md
+│   ├── TASKS.md
+├── knowledge/
+│   ├── AI-Best-Practices.md
+│   ├── AI-Documentation-Guidelines.md
+│   ├── AI-Knowledge-Base.md
+├── logs/
+│   └── AI-Task-History.md (if applicable, for execution logging)
+├── playbooks/
+│   ├── AI-SDLC-Playbook.md
+│   ├── AI-Task-Execution-Playbook.md
+├── slack-integration/
+│   ├── AI-Slack-Channel-Setup.md
+│   ├── AI-Slack-Integration-Guide.md
+│   ├── AI-Task-Assignment-Commands.md
+├── workflows/
+│   ├── AI-Documentation-Workflow.md
+│   ├── AI-GitHub-PR-Management.md
+│   ├── AI-Project-Startup-Workflow.md
+│   ├── AI-Slack-Integration-Guide.md
+│   ├── AI-Task-Assignment-Commands.md
+└── README.md
+
 │
 │── /application/            # Main application files
 │   │
@@ -213,55 +212,44 @@ Below is the finalized project directory tree with explanations of each folder a
 │── package.json             # Node.js dependencies  
 │── Dockerfile               # Containerization setup  
 │── .gitignore               # Ignore unnecessary files  
+```
 
-📜 Explanation of Key Sections
-	1.	/devin/
-	•	Purpose: Dedicated folder for Devin AI documentation, workflows, playbooks, and logs.
-	•	Tracks AI and human progress in development tasks.
-	2.	/application/
-	•	Purpose: Main project source code for backend and frontend development.
-	•	Includes AI core modules, services, agents, and frontend UI.
-	3.	/tests/
-	•	Purpose: Automated unit, integration, and E2E testing for AI-generated code.
-	4.	/docs/
-	•	Purpose: Centralized project documentation for API and system architecture.
-	5.	/scripts/
-	•	Purpose: Contains deployment scripts and scheduled jobs for task automation.
-	6.	/observability/
-	•	Purpose: Tools for monitoring and logging application and AI performance.
-	7.	.github/
-	•	Purpose: GitHub Actions workflows for CI/CD automation.
+---
 
-⚙️ Setup Instructions
+## 📩 Contribution Guidelines  
 
-Refer to the setup steps provided earlier in the README.md section.
+We encourage contributions from the community to enhance this AI-driven development ecosystem.  
+Please follow these guidelines when submitting a PR:  
 
-📩 Contribution Guidelines
+1️⃣ Fork the repository and create a feature branch.  
+2️⃣ Write clear, structured commits with meaningful messages.  
+3️⃣ Ensure all AI-generated and human-written code is tested.  
+4️⃣ Submit a PR with a detailed description of the feature/bugfix.  
 
-We encourage contributions from the community to enhance this AI-driven development ecosystem.
-Please follow these guidelines when submitting a PR:
+---
 
-1️⃣ Fork the repository and create a feature branch.
-2️⃣ Write clear, structured commits with meaningful messages.
-3️⃣ Ensure all AI-generated and human-written code is tested.
-4️⃣ Submit a PR with a detailed description of the feature/bugfix.
+## 🛡️ Security Considerations  
 
-🛡️ Security Considerations
+This project follows AI-powered security best practices to prevent vulnerabilities:  
+- **Authentication & Authorization:** All access is secured via OAuth & JWT.  
+- **AI Code Scanning:** Automated AI security audits via Hugging Face Transformers.  
+- **Data Encryption:** All sensitive data is encrypted at rest and in transit.  
 
-This project follows AI-powered security best practices to prevent vulnerabilities.
-	•	Authentication & Authorization: All access is secured via OAuth & JWT.
-	•	AI Code Scanning: Automated AI security audits via Hugging Face Transformers.
-	•	Data Encryption: All sensitive data is encrypted at rest and in transit.
+For security reports, please contact: **security@yourdomain.com**  
 
-For security reports, please contact security@yourdomain.com.
+---
 
-📝 License
+## 📝 License  
+This project is open-source under the **MIT License**. See `LICENSE.md` for details.  
 
-This project is open-source under the MIT License. See LICENSE.md for details.
+---
 
-🤝 Contact & Support
+## 🤝 Contact & Support  
 
-For questions, reach out via:
-📧 Email: support@yourdomain.com
-💬 Slack: Join the AI-SDLC Community
-🐦 Twitter: Follow us
+For questions, reach out via:  
+📧 Email: **support@yourdomain.com**  
+💬 Slack: Join the **AI-SDLC Community**  
+🐦 Twitter: Follow us  
+
+---
+
