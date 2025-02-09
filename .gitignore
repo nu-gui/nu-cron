@@ -1,0 +1,12 @@
+# Ignore unnecessary files
+node_modules/
+dist/
+.env
+__pycache__/
+logs/
+*.log
+*.tmp
+.vscode/
+.idea/
+*.swp
+venv/
