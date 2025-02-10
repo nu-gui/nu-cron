@@ -9,6 +9,8 @@ from .core.ai_assistant import AIAssistant
 from .models.database import init_db, User, Project
 from .services.auth_service import get_current_user
 from .interfaces.rest_api import router as api_router
+from .services.code_generation import code_generation_router
+from .services.requirements import requirements_router
 
 app = FastAPI(
     title="AI-SDLC System",
@@ -27,6 +29,8 @@ app.add_middleware(
 
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
+app.include_router(code_generation_router, prefix="/api/v1/code")
+app.include_router(requirements_router, prefix="/api/v1/requirements")
 
 # Initialize database
 @app.on_event("startup")
@@ -40,37 +44,6 @@ async def startup_event():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
-
-# Requirements analysis endpoints
-@app.post("/api/v1/requirements/analyze")
-async def analyze_requirements(
-    project_data: Dict[str, Any],
-    current_user: User = Depends(get_current_user)
-):
-    """
-    Analyze project requirements using AI and generate structured documentation
-    """
-    try:
-        ai_assistant = AIAssistant()
-        analysis_result = await ai_assistant.analyze_requirements(project_data)
-        return analysis_result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/v1/requirements/risk-assessment")
-async def assess_risks(
-    project_id: int,
-    current_user: User = Depends(get_current_user)
-):
-    """
-    Perform risk assessment and feasibility analysis for a project
-    """
-    try:
-        ai_assistant = AIAssistant()
-        risk_assessment = await ai_assistant.assess_project_risks(project_id)
-        return risk_assessment
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
