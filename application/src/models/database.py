@@ -46,6 +46,19 @@ class VectorStore(Base):
     project_id = Column(Integer, ForeignKey("projects.id"))
     project = relationship("Project")
 
+class Environment(Base):
+    """Environment model for tracking development environments."""
+    __tablename__ = "environments"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, index=True)
+    env_type = Column(String)  # docker or kubernetes
+    status = Column(String)  # active, inactive, failed
+    config = Column(JSON)
+    project_id = Column(Integer, ForeignKey("projects.id"))
+    project = relationship("Project")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 # Database initialization function
 def init_db(database_url: str):
     engine = create_engine(database_url)
