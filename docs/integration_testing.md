@@ -1,6 +1,24 @@
 # **Integration Testing Guide for AI-SDLC**
 
-[Previous sections 1-3 remain the same]
+[Previous sections 1-2 remain the same]
+
+## **3. Integration Testing Framework**
+
+### **3.1 Test Strategy**
+📌 **Types of Integration Testing:**
+1. **Big Bang Integration**: Test all components together.
+2. **Incremental Integration**: Test components in a phased manner (Top-Down, Bottom-Up, or Hybrid).
+3. **Continuous Integration**: Automate integration testing as part of the CI/CD pipeline.
+
+🔹 **Preferred Approach for AI-SDLC:**
+- **Hybrid Incremental Integration** with continuous testing for scalability and reliability.
+
+### **3.2 Test Plan**
+📌 **Steps to Create an Integration Test Plan:**
+1. Define the scope of integration testing.
+2. Identify components to be tested (e.g., AI APIs, database, UI interfaces).
+3. Design test cases and expected outcomes.
+4. Automate test execution using frameworks like Pytest, Postman, or Selenium.
 
 ### **3.3 Containerized Testing Environments**
 📌 **Docker-Based Testing:**
