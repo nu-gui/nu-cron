@@ -11,6 +11,7 @@ from .services.auth_service import get_current_user
 from .interfaces.rest_api import router as api_router
 from .services.code_generation import code_generation_router
 from .services.requirements import requirements_router
+from .services.testing import testing_router
 
 app = FastAPI(
     title="AI-SDLC System",
@@ -31,6 +32,7 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api/v1")
 app.include_router(code_generation_router, prefix="/api/v1/code")
 app.include_router(requirements_router, prefix="/api/v1/requirements")
+app.include_router(testing_router, prefix="/api/v1/testing")
 
 # Initialize database
 @app.on_event("startup")
