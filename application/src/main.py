@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 import json
+import os
 
 from .core.ai_assistant import AIAssistant
 from .models.database import init_db, User, Project
@@ -30,7 +31,10 @@ app.include_router(api_router, prefix="/api/v1")
 # Initialize database
 @app.on_event("startup")
 async def startup_event():
-    init_db()
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise RuntimeError("DATABASE_URL environment variable is not set")
+    init_db(database_url)
 
 # Health check endpoint
 @app.get("/health")
