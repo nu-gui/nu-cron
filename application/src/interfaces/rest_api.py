@@ -80,7 +80,7 @@ async def get_project(
 @router.get("/projects/")
 async def list_projects(
     current_user: User = Depends(get_current_user)
-) -> Dict[str, List[Dict[str, Any]]]:
+) -> ProjectListResponse:
     """
     List all projects for the current user
     """
