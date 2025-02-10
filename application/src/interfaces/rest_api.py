@@ -1,7 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List, Dict, Any
+from typing import List, Dict, Any, TypedDict
 from datetime import datetime
+
+class ProjectResponse(TypedDict):
+    id: int
+    name: str
+    description: str
+    requirements: Dict[str, Any]
+    created_at: str
+
+class ProjectListResponse(TypedDict):
+    status: str
+    projects: List[ProjectResponse]
 
 from ..models.database import User, Project
 from ..services.auth_service import get_current_user
@@ -84,19 +95,19 @@ async def list_projects(
             created_at=datetime.utcnow()
         )
     ]
-    return {
-        "status": "success",
-        "projects": [
-            {
-                "id": project.id,
-                "name": project.name,
-                "description": project.description,
-                "requirements": project.requirements,
-                "created_at": project.created_at.isoformat()
-            }
+    return ProjectListResponse(
+        status="success",
+        projects=[
+            ProjectResponse(
+                id=project.id,
+                name=project.name,
+                description=project.description,
+                requirements=project.requirements,
+                created_at=project.created_at.isoformat()
+            )
             for project in projects
         ]
-    }
+    )
 
 @router.put("/projects/{project_id}")
 async def update_project(
