@@ -1,0 +1,123 @@
+# AI-SDLC Environment Configuration
+
+environments:
+  docker:
+    development:
+      compose_file: "docker/docker-compose.dev.yml"
+      services:
+        - frontend
+        - backend
+        - postgres
+        - redis
+      resources:
+        cpu: "2"
+        memory: "4Gi"
+      monitoring:
+        prometheus: true
+        grafana: true
+    testing:
+      compose_file: "docker/docker-compose.test.yml"
+      services:
+        - test-runner
+        - test-db
+      resources:
+        cpu: "2"
+        memory: "4Gi"
+      monitoring:
+        prometheus: true
+        grafana: true
+
+  kubernetes:
+    staging:
+      namespace: "ai-sdlc-staging"
+      resources:
+        cpu: "4"
+        memory: "8Gi"
+        storage: "100Gi"
+      services:
+        - "k8s/staging/frontend.yaml"
+        - "k8s/staging/backend.yaml"
+        - "k8s/staging/database.yaml"
+      monitoring:
+        prometheus_operator: true
+        grafana: true
+        alert_manager: true
+    production:
+      namespace: "ai-sdlc-prod"
+      resources:
+        cpu: "8"
+        memory: "16Gi"
+        storage: "500Gi"
+      services:
+        - "k8s/prod/frontend.yaml"
+        - "k8s/prod/backend.yaml"
+        - "k8s/prod/database.yaml"
+      monitoring:
+        prometheus_operator: true
+        grafana: true
+        alert_manager: true
+
+monitoring:
+  prometheus:
+    image: "prom/prometheus:v2.45.0"
+    config_template: "monitoring/prometheus/config.yml"
+    retention: "15d"
+    storage: "50Gi"
+    alerts:
+      - "monitoring/prometheus/alert-rules.yml"
+    scrape_interval: "15s"
+
+  grafana:
+    image: "grafana/grafana:10.2.0"
+    config: "monitoring/grafana/config.ini"
+    dashboards:
+      - "monitoring/grafana/dashboards/environment-overview.json"
+      - "monitoring/grafana/dashboards/resource-usage.json"
+      - "monitoring/grafana/dashboards/application-metrics.json"
+    datasources:
+      - "monitoring/grafana/datasources/prometheus.yaml"
+    persistence:
+      size: "10Gi"
+
+  alert_manager:
+    image: "prom/alertmanager:v0.25.0"
+    config: "monitoring/alertmanager/config.yml"
+    storage: "5Gi"
+    retention: "5d"
+
+storage:
+  docker:
+    volumes:
+      data:
+        driver: local
+      cache:
+        driver: local
+      source:
+        driver: local
+  kubernetes:
+    storage_classes:
+      - name: "fast"
+        provisioner: "kubernetes.io/aws-ebs"
+        parameters:
+          type: gp3
+      - name: "standard"
+        provisioner: "kubernetes.io/aws-ebs"
+        parameters:
+          type: gp2
+
+security:
+  network_policies: true
+  pod_security_policies: true
+  rbac:
+    enabled: true
+    roles:
+      - name: "developer"
+        rules:
+          - apiGroups: [""]
+            resources: ["pods", "services"]
+            verbs: ["get", "list", "watch"]
+      - name: "admin"
+        rules:
+          - apiGroups: [""]
+            resources: ["*"]
+            verbs: ["*"]
