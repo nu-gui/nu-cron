@@ -10,7 +10,8 @@ This document provides structured instructions to **kickstart Devin AI’s auton
 ---
 
 ## **🔹 Step 1: Initiate the First Slack Session**  
-1️⃣ A human developer **creates a new Slack session** by inviting Devin AI.
+1️⃣ A human developer **creates a new Slack session** by inviting Devin AI to the designated channel.
+   - Use the following channel for the first session: [Slack Channel](https://nu-gui.slack.com/archives/C08CGSLBP5G).
 2️⃣ **Devin AI responds with an initialization message**, confirming readiness:
    ```bash
    @team AI Development Session Initialized ✅
@@ -68,6 +69,19 @@ This document provides structured instructions to **kickstart Devin AI’s auton
    - ✅ Assign Task → ✅ Execute → ✅ PR Submission → ✅ Review → 🔄 Suggest Next Task
 2️⃣ **All AI decisions and execution logs are stored in** `AI-Task-History.md`.
 3️⃣ **Developers can override AI-suggested tasks** by manually assigning new ones via Slack or GitHub.
+
+---
+
+## **🔹 Key Slack Commands for Initialization**
+
+| **Command**                     | **Purpose**                                           | **Example**                                   |
+|---------------------------------|-------------------------------------------------------|-----------------------------------------------|
+| `@Devin assign task`            | Assign a task for Devin AI to execute.               | `@Devin assign task: "Create CI/CD pipelines."` |
+| `@Devin suggest next task`      | Request a suggestion for the next development task.  | `@Devin suggest next task`                    |
+| `@Devin status update`          | Check the status of the current task.                | `@Devin status update`                        |
+| `@Devin show task history`      | Display the log of completed tasks.                  | `@Devin show task history`                    |
+
+✅ **Why?** → These commands ensure seamless interaction with Devin AI during task execution.
 
 ---
 
