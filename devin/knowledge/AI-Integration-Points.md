@@ -4,7 +4,7 @@
 This document defines the integration points for AI task relationship tracking, feedback collection, and performance monitoring.
 
 ## 🔍 Vector Store Configuration
-### 1. FAISS/Pinecone Setup
+### 1. FAISS/Pinecone Setup (Updated from PR #4)
 ```yaml
 vector_store:
   provider: pinecone  # Alternative: faiss
@@ -18,6 +18,25 @@ vector_store:
       description: Stores task embeddings and relationships
     - name: feedback-embeddings
       description: Stores developer feedback and context
+    - name: requirements
+      description: Stores project requirements and analysis
+    - name: architecture
+      description: Stores system design decisions
+
+  optimization:
+    caching:
+      provider: redis
+      ttl: 3600  # 1 hour
+      max_size: "1GB"
+    
+    batching:
+      max_size: 100
+      timeout: 500ms
+    
+    pruning:
+      strategy: cosine_similarity
+      threshold: 0.85
+      max_vectors: 10000
 ```
 
 ### 2. Task Relationship Tracking
