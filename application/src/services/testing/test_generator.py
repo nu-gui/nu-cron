@@ -101,9 +101,10 @@ class TestGenerator:
         )
 
         if context:
+            context_json = json.dumps(context, indent=2)
             prompt += f"""
 Additional Context:
-{json.dumps(context, indent=2)}
+{context_json}
 """
 
         return prompt
@@ -301,9 +302,10 @@ Please analyze:
         )
 
         if performance_criteria:
+            criteria_json = json.dumps(performance_criteria, indent=2)
             prompt += f"""
 Performance Criteria:
-{json.dumps(performance_criteria, indent=2)}
+{criteria_json}
 """
 
         return prompt
