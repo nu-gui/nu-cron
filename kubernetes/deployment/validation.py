@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import json
+import yaml
 import requests
 from prometheus_api_client import PrometheusConnect
 
