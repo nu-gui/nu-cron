@@ -35,7 +35,9 @@ class TestGenerator:
             return json.loads(cached_result)
 
         try:
-            prompt = self._create_test_generation_prompt(code, language, test_type, context)
+            prompt = self._create_test_generation_prompt(
+                code, language, test_type, context
+            )
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",  # Will be replaced with Mistral 7B
                 messages=[
@@ -191,7 +193,9 @@ Please analyze:
         Generate performance tests for the code
         """
         try:
-            prompt = self._create_performance_test_prompt(code, language, performance_criteria)
+            prompt = self._create_performance_test_prompt(
+                code, language, performance_criteria
+            )
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
