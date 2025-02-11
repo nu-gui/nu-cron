@@ -42,6 +42,7 @@ async def test_generate_tests_success(test_generator):
     assert result["test_type"] == "unit"
     assert result["model_used"] == "gpt-4-turbo-preview"
 
+
 @pytest.mark.asyncio
 async def test_generate_tests_with_cache(test_generator):
     """Test test generation with Redis cache hit."""
@@ -91,6 +92,7 @@ async def test_validate_tests_success(test_generator):
     assert "validation" in result
     assert result["language"] == "python"
     assert result["model_used"] == "gpt-4-turbo-preview"
+
 
 @pytest.mark.asyncio
 async def test_generate_performance_tests_success(test_generator):
