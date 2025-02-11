@@ -9,7 +9,6 @@ from fastapi import HTTPException
 import openai
 
 
-
 class TestGenerator:
     def __init__(self):
         self.openai_client = openai.OpenAI(
@@ -152,7 +151,7 @@ Additional Context:
                 temperature=0.7,
                 max_tokens=2000
             )
-            
+
             validation_result = response.choices[0].message.content
             return {
                 "status": "success",
@@ -161,7 +160,7 @@ Additional Context:
                 "timestamp": datetime.utcnow().isoformat(),
                 "model_used": "gpt-4-turbo-preview"
             }
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -218,7 +217,7 @@ Please analyze:
                 temperature=0.7,
                 max_tokens=2000
             )
-            
+
             performance_tests = response.choices[0].message.content
             return {
                 "status": "success",
@@ -228,7 +227,7 @@ Please analyze:
                 "timestamp": datetime.utcnow().isoformat(),
                 "model_used": "gpt-4-turbo-preview"
             }
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
@@ -238,9 +237,7 @@ Please analyze:
         language: str,
         performance_criteria: Optional[Dict[str, Any]] = None
     ) -> str:
-        """
-        Create a detailed prompt for performance test generation
-        """
+        """Create a detailed prompt for performance test generation."""
         prompt = (
             f"Generate performance tests for the following {language} code:\n\n"
             f"{code}\n\n"
