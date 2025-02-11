@@ -1,0 +1,56 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@example.com  # This should be changed in production
+    privateKeySecretRef:
+      name: letsencrypt-prod-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ai-service-tls
+  namespace: ai-services
+spec:
+  secretName: ai-service-tls
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days
+  subject:
+    organizations:
+      - "AI Services"
+  commonName: ai-service.ai-services.svc.cluster.local
+  dnsNames:
+  - ai-service.ai-services.svc.cluster.local
+  - ai-service.ai-services.svc
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: auth-middleware-tls
+  namespace: ai-services
+spec:
+  secretName: auth-middleware-tls
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days
+  subject:
+    organizations:
+      - "AI Services"
+  commonName: auth-middleware.ai-services.svc.cluster.local
+  dnsNames:
+  - auth-middleware.ai-services.svc.cluster.local
+  - auth-middleware.ai-services.svc
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+    group: cert-manager.io
