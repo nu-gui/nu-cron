@@ -8,6 +8,7 @@ import redis
 from fastapi import HTTPException
 import openai
 
+
 class TestGenerator:
     def __init__(self):
         self.openai_client = openai.OpenAI(
@@ -26,10 +27,13 @@ class TestGenerator:
         test_type: str,
         context: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
+        """Generate tests based on code using Mistral 7B.
+
+        Currently using GPT-4 as placeholder.
         """
-        Generate tests based on code using Mistral 7B (currently using GPT-4 as placeholder)
-        """
-        cache_key = f"test_gen:{hash(code + language + test_type)}"
+        cache_key = (
+            f"test_gen:{hash(code + language + test_type)}"
+        )
         cached_result = self.redis_client.get(cache_key)
         if cached_result:
             return json.loads(cached_result)
