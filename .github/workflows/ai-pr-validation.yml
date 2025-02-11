@@ -51,15 +51,47 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
       - name: Check Code Style
         run: |
           npm run lint
           python -m flake8
+          python -m black --check .
+          python -m isort --check-only .
       
-      - name: Run Tests
+      - name: Run Tests with Coverage
         run: |
-          npm test
-          python -m pytest
+          npm test -- --coverage
+          python -m pytest --cov=. --cov-report=xml
+      
+      - name: Check Test Coverage
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Run Security Scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
       
       - name: Check Documentation
         run: |
@@ -70,6 +102,26 @@ jobs:
           if ! grep -q "Next Suggested Tasks:" devin/logs/AI-Task-History.md; then
             echo "Error: AI Task History missing Next Suggested Tasks"
             exit 1
+          fi
+          if ! grep -q "Changes Made:" devin/logs/AI-Task-History.md; then
+            echo "Error: AI Task History missing Changes Made section"
+            exit 1
+          fi
+          if ! grep -q "Key Achievements:" devin/logs/AI-Task-History.md; then
+            echo "Error: AI Task History missing Key Achievements"
+            exit 1
+          fi
+      
+      - name: Check Kubernetes Resources
+        run: |
+          if [ -d "kubernetes/" ]; then
+            kubectl apply --dry-run=client -f kubernetes/
+          fi
+      
+      - name: Performance Check
+        run: |
+          if [ -f "tests/performance/locustfile.py" ]; then
+            python -m locust --headless -f tests/performance/locustfile.py --run-time 1m
           fi
       
       - name: Post Results
