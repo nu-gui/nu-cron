@@ -1,0 +1,42 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-services
+  namespace: monitoring
+  labels:
+    team: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend-service
+  namespaceSelector:
+    any: true
+  endpoints:
+  - port: metrics
+    interval: 15s
+    path: /metrics
+    scrapeTimeout: 10s
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_node_name]
+      targetLabel: node
+    - sourceLabels: [__meta_kubernetes_namespace]
+      targetLabel: namespace
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      targetLabel: pod
+    - sourceLabels: [__meta_kubernetes_service_name]
+      targetLabel: service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-metrics
+  namespace: monitoring
+  labels:
+    app: backend-service
+spec:
+  ports:
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+  selector:
+    app: prometheus

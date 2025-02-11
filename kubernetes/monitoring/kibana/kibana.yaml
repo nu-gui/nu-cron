@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.12.0
+        resources:
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch:9200"
+        ports:
+        - containerPort: 5601
+          name: http
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/kibana/config
+      volumes:
+      - name: config
+        configMap:
+          name: kibana-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-config
+  namespace: monitoring
+data:
+  kibana.yml: |
+    server.name: kibana
+    server.host: "0.0.0.0"
+    elasticsearch.hosts: ["http://elasticsearch:9200"]
+    monitoring.ui.container.elasticsearch.enabled: true
+    xpack.monitoring.enabled: true
+    xpack.security.enabled: false
+  dashboards.ndjson: |
+    {
+      "version": "8.12.0",
+      "objects": [
+        {
+          "id": "container-logs",
+          "type": "dashboard",
+          "attributes": {
+            "title": "Container Logs Overview",
+            "hits": 0,
+            "description": "Overview of container logs across the cluster",
+            "panelsJSON": "[{\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":15,\"i\":\"1\"},\"version\":\"8.12.0\",\"type\":\"visualization\",\"id\":\"log-volume\"},{\"gridData\":{\"x\":0,\"y\":15,\"w\":24,\"h\":15,\"i\":\"2\"},\"version\":\"8.12.0\",\"type\":\"visualization\",\"id\":\"error-distribution\"}]",
+            "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
+            "version": 1,
+            "timeRestore": false,
+            "kibanaSavedObjectMeta": {
+              "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+            }
+          }
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: monitoring
+spec:
+  ports:
+  - port: 5601
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: kibana
