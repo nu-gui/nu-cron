@@ -45,7 +45,7 @@ class TestGenerator:
                 code, language, test_type, context
             )
             response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",  # Will use Mistral 7B later
+                model="gpt-4-turbo-preview",  # Will use Mistral later
                 messages=[
                     {
                         "role": "system",
@@ -59,7 +59,7 @@ class TestGenerator:
                 temperature=0.7,
                 max_tokens=2000
             )
-            
+
             generated_tests = response.choices[0].message.content
             result = {
                 "status": "success",
@@ -67,19 +67,19 @@ class TestGenerator:
                 "language": language,
                 "test_type": test_type,
                 "timestamp": datetime.utcnow().isoformat(),
-                # Will be replaced with Mistral 7B
+                # Using GPT-4 for now, will switch to Mistral
                 "model_used": "gpt-4-turbo-preview"
             }
-            
+
             # Cache the result
             self.redis_client.setex(
                 cache_key,
                 self.cache_ttl,
                 json.dumps(result)
             )
-            
+
             return result
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
