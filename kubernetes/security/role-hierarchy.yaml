@@ -1,0 +1,96 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ai-developer-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ai-tech-lead-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ["monitoring.coreos.com"]
+  resources: ["servicemonitors", "prometheusrules"]
+  verbs: ["get", "list", "watch", "create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ai-devops-role
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+  # Note: In production, this should be more restricted
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ai-developer-binding
+  namespace: ai-services
+subjects:
+- kind: ServiceAccount
+  name: ai-developer
+  namespace: ai-services
+roleRef:
+  kind: ClusterRole
+  name: ai-developer-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ai-tech-lead-binding
+  namespace: ai-services
+subjects:
+- kind: ServiceAccount
+  name: ai-tech-lead
+  namespace: ai-services
+roleRef:
+  kind: ClusterRole
+  name: ai-tech-lead-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ai-devops-binding
+  namespace: ai-services
+subjects:
+- kind: ServiceAccount
+  name: ai-devops
+  namespace: ai-services
+roleRef:
+  kind: ClusterRole
+  name: ai-devops-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ai-developer
+  namespace: ai-services
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ai-tech-lead
+  namespace: ai-services
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ai-devops
+  namespace: ai-services

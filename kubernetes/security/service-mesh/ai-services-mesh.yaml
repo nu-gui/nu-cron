@@ -1,0 +1,98 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: ai-service.ai-services.svc.cluster.local
+  namespace: ai-services
+spec:
+  routes:
+  - name: ai-service-api
+    condition:
+      method: POST
+      pathRegex: /api/v1/.*
+    responseClasses:
+    - condition:
+        status:
+          min: 500
+          max: 599
+      isFailure: true
+  - name: health-check
+    condition:
+      method: GET
+      pathRegex: /health
+    isRetryable: true
+---
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: auth-middleware.ai-services.svc.cluster.local
+  namespace: ai-services
+spec:
+  routes:
+  - name: auth
+    condition:
+      method: POST
+      pathRegex: /oauth2/.*
+    responseClasses:
+    - condition:
+        status:
+          min: 500
+          max: 599
+      isFailure: true
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-services
+  annotations:
+    linkerd.io/inject: enabled
+  labels:
+    linkerd.io/is-control-plane: "false"
+    linkerd.io/control-plane-ns: linkerd
+---
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: ai-service-server
+  namespace: ai-services
+spec:
+  podSelector:
+    matchLabels:
+      app: ai-service
+  port: 8080
+  proxyProtocol: HTTP/1
+---
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: auth-middleware-server
+  namespace: ai-services
+spec:
+  podSelector:
+    matchLabels:
+      app: auth-middleware
+  port: 4180
+  proxyProtocol: HTTP/1
+---
+apiVersion: policy.linkerd.io/v1alpha1
+kind: AuthorizationPolicy
+metadata:
+  name: ai-service-auth
+  namespace: ai-services
+spec:
+  targetRef:
+    group: policy.linkerd.io
+    kind: Server
+    name: ai-service-server
+  requiredAuthenticationRefs:
+  - group: policy.linkerd.io
+    kind: MeshTLSAuthentication
+    name: service-identity
+---
+apiVersion: policy.linkerd.io/v1alpha1
+kind: MeshTLSAuthentication
+metadata:
+  name: service-identity
+  namespace: ai-services
+spec:
+  identities:
+  - "*"
