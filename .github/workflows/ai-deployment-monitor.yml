@@ -1,0 +1,65 @@
+name: AI Deployment Monitor
+
+on:
+  workflow_run:
+    workflows: ["AI-Managed CI/CD Pipeline"]
+    types:
+      - completed
+
+jobs:
+  monitor-deployment:
+    name: Monitor Deployment Health
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG_PROD }}
+      
+      - name: Monitor deployment health
+        run: |
+          # Monitor for 5 minutes
+          end=$((SECONDS+300))
+          while [ $SECONDS -lt $end ]; do
+            status=$(kubectl get deployment/ai-service -n ai-services -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
+            if [ "$status" != "True" ]; then
+              echo "Deployment unhealthy, initiating rollback"
+              kubectl rollout undo deployment/ai-service -n ai-services
+              exit 1
+            fi
+            sleep 30
+          done
+      
+      - name: Check metrics
+        if: success()
+        run: |
+          # Check error rate
+          error_rate=$(curl -s http://prometheus:9090/api/v1/query?query=rate\(http_requests_total{status=~"5.."}[5m]\))
+          if [ $(echo "$error_rate > 0.1" | bc) -eq 1 ]; then
+            echo "High error rate detected, rolling back"
+            kubectl rollout undo deployment/ai-service -n ai-services
+            exit 1
+          fi
+      
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              title: '🚨 Deployment Rollback Required',
+              body: 'Automatic rollback initiated due to health check failure or high error rate.',
+              labels: ['rollback', 'incident']
+            });
+            
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              issue_number: issue.data.number,
+              assignees: ['devin-ai']
+            });
