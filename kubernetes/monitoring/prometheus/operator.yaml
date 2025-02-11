@@ -25,6 +25,13 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
