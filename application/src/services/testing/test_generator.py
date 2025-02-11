@@ -9,6 +9,7 @@ from fastapi import HTTPException
 import openai
 
 
+
 class TestGenerator:
     def __init__(self):
         self.openai_client = openai.OpenAI(
@@ -29,7 +30,8 @@ class TestGenerator:
     ) -> Dict[str, Any]:
         """Generate tests based on code using Mistral 7B.
 
-        Currently using GPT-4 as placeholder.
+        Currently using GPT-4 as placeholder. Generates unit, integration,
+        and performance tests based on provided code.
         """
         cache_key = (
             f"test_gen:{hash(code + language + test_type)}"
@@ -43,7 +45,7 @@ class TestGenerator:
                 code, language, test_type, context
             )
             response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",  # Will be replaced with Mistral 7B
+                model="gpt-4-turbo-preview",  # Will use Mistral 7B later
                 messages=[
                     {
                         "role": "system",
@@ -65,7 +67,8 @@ class TestGenerator:
                 "language": language,
                 "test_type": test_type,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"  # Will be replaced with Mistral 7B
+                # Will be replaced with Mistral 7B
+                "model_used": "gpt-4-turbo-preview"
             }
             
             # Cache the result
@@ -119,7 +122,7 @@ Additional Context:
             "javascript": "jest",
             "typescript": "jest",
             "java": "junit",
-            "go": "testing"
+            "go": "testing",
         }
         return frameworks.get(language.lower(), "unknown")
 
@@ -238,17 +241,16 @@ Please analyze:
         """
         Create a detailed prompt for performance test generation
         """
-        prompt = f"""Generate performance tests for the following {language} code:
-
-{code}
-
-Focus on:
-1. Response time measurements
-2. Resource utilization tracking
-3. Load testing scenarios
-4. Stress testing conditions
-5. Performance benchmarks
-"""
+        prompt = (
+            f"Generate performance tests for the following {language} code:\n\n"
+            f"{code}\n\n"
+            "Focus on:\n"
+            "1. Response time measurements\n"
+            "2. Resource utilization tracking\n"
+            "3. Load testing scenarios\n"
+            "4. Stress testing conditions\n"
+            "5. Performance benchmarks\n"
+        )
 
         if performance_criteria:
             prompt += f"""
