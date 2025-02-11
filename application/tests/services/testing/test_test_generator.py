@@ -27,14 +27,18 @@ async def test_generate_tests_success(test_generator):
     test_type = "unit"
     mock_response = Mock()
     mock_response.choices = [
-        Mock(message=Mock(content="def test_add(): assert add(1, 2) == 3"))
+        Mock(
+            message=Mock(content="def test_add(): assert add(1, 2) == 3")
+        )
     ]
     test_generator.openai_client.chat.completions.create = Mock(
         return_value=mock_response
     )
 
     # Test
-    result = await test_generator.generate_tests(code, language, test_type)
+    result = await test_generator.generate_tests(
+        code, language, test_type
+    )
 
     # Assertions
     assert result["status"] == "success"
