@@ -89,20 +89,18 @@ class TestGenerator:
         test_type: str,
         context: Optional[Dict[str, Any]] = None
     ) -> str:
-        """
-        Create a detailed prompt for test generation
-        """
-        prompt = f"""Generate {test_type} tests for the following {language} code:
-
-{code}
-
-Test Requirements:
-1. Use appropriate testing framework ({self._get_test_framework(language)})
-2. Include edge cases and error scenarios
-3. Follow testing best practices
-4. Add comprehensive assertions
-5. Include setup and teardown if needed
-"""
+        """Create a detailed prompt for test generation."""
+        framework = self._get_test_framework(language)
+        prompt = (
+            f"Generate {test_type} tests for the following {language} code:\n\n"
+            f"{code}\n\n"
+            "Test Requirements:\n"
+            f"1. Use appropriate testing framework ({framework})\n"
+            "2. Include edge cases and error scenarios\n"
+            "3. Follow testing best practices\n"
+            "4. Add comprehensive assertions\n"
+            "5. Include setup and teardown if needed\n"
+        )
 
         if context:
             prompt += f"""
