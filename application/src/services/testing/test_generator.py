@@ -92,7 +92,7 @@ class TestGenerator:
         """Create a detailed prompt for test generation."""
         framework = self._get_test_framework(language)
         prompt = (
-            f"Generate {test_type} tests for {language} code:\n\n"
+            f"Generate {test_type} tests ({language}):\n\n"
             f"{code}\n\n"
             "Test Requirements:\n"
             f"1. Use appropriate testing framework ({framework})\n"
@@ -238,7 +238,7 @@ Please analyze:
     ) -> str:
         """Create a detailed prompt for performance test generation."""
         prompt = (
-            f"Generate performance tests for {language} code:\n\n"
+            f"Generate performance tests ({language}):\n\n"
             f"{code}\n\n"
             "Focus on:\n"
             "1. Response time measurements\n"
