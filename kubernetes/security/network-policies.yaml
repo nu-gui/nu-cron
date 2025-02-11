@@ -17,9 +17,19 @@ spec:
           name: monitoring
     ports:
     - protocol: TCP
-      port: 8080
+      port: 8080  # API port
     - protocol: TCP
-      port: 9090
+      port: 9090  # Metrics port
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ai-services
+    - podSelector:
+        matchLabels:
+          role: auth-middleware
+    ports:
+    - protocol: TCP
+      port: 8080  # API port
   egress:
   - to:
     - namespaceSelector:
@@ -32,18 +42,29 @@ spec:
       port: 5601  # Kibana
     - protocol: TCP
       port: 9200  # Elasticsearch
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: ai-services
+    - podSelector:
+        matchLabels:
+          app: auth-middleware
+    ports:
+    - protocol: TCP
+      port: 4180  # Auth middleware
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: monitoring-policy
-  namespace: monitoring
+  name: auth-middleware-policy
+  namespace: ai-services
 spec:
   podSelector:
     matchLabels:
-      app: prometheus
+      app: auth-middleware
   policyTypes:
   - Ingress
+  - Egress
   ingress:
   - from:
     - namespaceSelector:
@@ -51,4 +72,43 @@ spec:
           name: ai-services
     ports:
     - protocol: TCP
-      port: 9090
+      port: 4180
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: ai-services
+    ports:
+    - protocol: TCP
+      port: 8080  # AI service API
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: ai-services
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: ai-services
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53  # DNS
+    - protocol: TCP
+      port: 53  # DNS
