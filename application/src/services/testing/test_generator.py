@@ -1,4 +1,6 @@
-from typing import Dict, Any, List, Optional
+"""Test generator module for AI-driven code."""
+
+from typing import Dict, Any, Optional
 import os
 from datetime import datetime
 import json
@@ -8,9 +10,14 @@ import openai
 
 class TestGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.redis_client = redis.Redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379/0"))
-        self.cache_ttl = int(os.getenv("TEST_GENERATION_CACHE_TTL", "3600"))  # 1 hour default
+        self.openai_client = openai.OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY")
+        )
+        self.redis_client = redis.Redis.from_url(
+            os.getenv("REDIS_URL", "redis://redis:6379/0")
+        )
+        # 1 hour default
+        self.cache_ttl = int(os.getenv("TEST_GENERATION_CACHE_TTL", "3600"))
 
     async def generate_tests(
         self,
@@ -32,7 +39,13 @@ class TestGenerator:
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",  # Will be replaced with Mistral 7B
                 messages=[
-                    {"role": "system", "content": "You are an expert test engineer. Generate comprehensive tests based on the provided code."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert test engineer. Generate "
+                            "comprehensive tests based on the provided code."
+                        )
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
@@ -118,7 +131,13 @@ Additional Context:
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an expert test validator. Analyze tests for completeness and coverage."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert test validator. Analyze tests "
+                            "for completeness and coverage."
+                        )
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
@@ -176,7 +195,13 @@ Please analyze:
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an expert in performance testing. Generate comprehensive performance tests."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert in performance testing. "
+                            "Generate comprehensive performance tests."
+                        )
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
