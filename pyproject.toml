@@ -1,0 +1,59 @@
+[tool.poetry]
+name = "nu-cron"
+version = "1.0.0"
+description = "AI-driven SDLC automation and cron job management"
+authors = ["Nu GUI Team"]
+readme = "README.md"
+packages = [{include = "application"}]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+fastapi = "0.95.2"  # Using older version for pydantic v1 compatibility
+uvicorn = "0.27.0"
+python-dotenv = "1.0.0"
+sqlalchemy = "2.0.25"
+alembic = "1.13.1"
+psycopg2-binary = "2.9.9"
+redis = "5.0.1"
+pydantic = "1.10.13"  # Using v1 for langchain compatibility
+pydantic-settings = "0.2.5"  # Using older version for pydantic v1
+PyYAML = "5.4.1"  # Required for pydantic-settings compatibility
+openai = "1.10.0"
+anthropic = "0.8.1"
+langchain = "0.1.1"  # Version compatible with pydantic v1
+pinecone-client = "3.0.2"
+
+# Security packages
+python-jose = {extras = ["cryptography"], version = "3.3.0"}
+passlib = {extras = ["bcrypt"], version = "1.7.4"}
+python-multipart = "0.0.6"
+
+# Monitoring
+prometheus-client = "0.19.0"
+python-json-logger = "2.0.7"
+
+[tool.poetry.group.dev.dependencies]
+black = "23.12.1"
+isort = "5.13.2"
+flake8 = "7.0.0"
+pytest = "7.4.4"
+pytest-asyncio = "0.23.3"
+httpx = "0.26.0"
+pytest-cov = "4.1.0"
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+^/node_modules/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
