@@ -7,8 +7,8 @@ alembic==1.13.1
 psycopg2-binary==2.9.9
 redis==5.0.1
 pydantic==1.10.13
-pydantic-settings==0.2.5
-# PyYAML is installed as a dependency of pydantic-settings
+pydantic-settings==2.1.0  # Updated to support PyYAML 6.x
+PyYAML==6.0.1  # Required for Python 3.12
 
 # AI and ML dependencies
 openai==1.10.0
