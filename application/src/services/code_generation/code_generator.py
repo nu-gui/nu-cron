@@ -6,11 +6,17 @@ import json
 import redis
 from fastapi import HTTPException
 
+
 class CodeGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.redis_client = redis.Redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379/0"))
-        self.cache_ttl = int(os.getenv("CODE_GENERATION_CACHE_TTL", "3600"))  # 1 hour default
+        self.openai_client = openai.OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY")
+        )
+        self.redis_client = redis.Redis.from_url(
+            os.getenv("REDIS_URL", "redis://redis:6379/0")
+        )
+        # 1 hour default
+        self.cache_ttl = int(os.getenv("CODE_GENERATION_CACHE_TTL", "3600"))
 
     async def generate_code(
         self,
@@ -31,7 +37,13 @@ class CodeGenerator:
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an expert software developer. Generate high-quality, secure, and efficient code based on the provided requirements."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert software developer. Generate high-quality, "
+                            "secure, and efficient code based on the provided requirements."
+                        )
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
@@ -109,7 +121,13 @@ Please provide:
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an expert code reviewer. Analyze the code for quality, security, and performance issues."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert code reviewer. Analyze the code for quality, "
+                            "security, and performance issues."
+                        )
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
@@ -171,7 +189,13 @@ Additional Context:
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an expert in code optimization. Improve the code for better performance and efficiency."},
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert in code optimization. Improve the code for "
+                            "better performance and efficiency."
+                        )
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
