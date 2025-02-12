@@ -1,5 +1,6 @@
 """Authentication service for JWT token handling and user validation."""
 
+import logging
 import os
 from datetime import datetime, timedelta
 from typing import Optional
@@ -11,11 +12,18 @@ from sqlalchemy.orm import Session
 
 from application.src.models.database import User
 
+logger = logging.getLogger(__name__)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
-if not SECRET_KEY:
-    raise RuntimeError("JWT_SECRET_KEY environment variable is not set")
+ENV = os.getenv("ENV", "development")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "development_secret_key")
+
+if ENV == "production":
+    if not SECRET_KEY or SECRET_KEY == "development_secret_key":
+        raise RuntimeError("JWT_SECRET_KEY environment variable must be set in production")
+elif not SECRET_KEY:
+    logger.warning("JWT_SECRET_KEY not set. Using development configuration.")
 
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))

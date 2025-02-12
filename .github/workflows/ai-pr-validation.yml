@@ -61,6 +61,7 @@ jobs:
           
       - name: Install dependencies
         env:
+          ENV: "production"
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REDIS_URL: "redis://localhost:6379/0"
