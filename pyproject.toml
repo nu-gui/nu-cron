@@ -7,14 +7,17 @@ readme = "README.md"
 packages = [{include = "application"}]
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
+python = ">=3.11,<3.12"  # Pinned version for compatibility
+fastapi = "0.78.0"  # Version compatible with pydantic v1
 uvicorn = "0.27.0"
 python-dotenv = "1.0.0"  # Using dotenv for environment variables
 sqlalchemy = "2.0.25"
 alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
-PyYAML = "6.0.1"  # Latest version for Python 3.12
+pydantic = "1.10.13"  # Version compatible with langchain
+pydantic-settings = "0.2.5"  # Version compatible with PyYAML
+PyYAML = "5.4.1"  # Version compatible with pydantic-settings
 openai = "0.27.8"  # Version before typing-extensions requirement
 anthropic = "0.2.8"  # Version before typing-extensions requirement
 langchain = "0.0.352"  # Version compatible with pydantic v1
@@ -28,8 +31,6 @@ python-multipart = "0.0.6"
 # Monitoring
 prometheus-client = "0.19.0"
 python-json-logger = "2.0.7"
-pydantic = "1.10.13"
-fastapi = "0.78.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "23.12.1"
@@ -39,7 +40,6 @@ pytest = "7.4.4"
 pytest-asyncio = "0.23.3"
 httpx = "0.26.0"
 pytest-cov = "4.1.0"
-
 [tool.black]
 line-length = 79
 include = '\.pyi?$'
