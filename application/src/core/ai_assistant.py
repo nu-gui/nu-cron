@@ -122,7 +122,7 @@ class AIAssistant:
                 "metadata": metadata
             }
             self.index.upsert(vectors=[vector])
-            
+
             # Parse analysis result
             parsed_analysis = (
                 json.loads(analysis)
