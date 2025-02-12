@@ -42,7 +42,9 @@ async def validate_tests(
     Validate generated tests for completeness and coverage
     """
     try:
-        result = await test_generator.validate_tests(tests, code, language)
+        result = await test_generator.validate_tests(
+            tests, code, language
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
