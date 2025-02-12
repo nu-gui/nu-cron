@@ -33,7 +33,9 @@ class CodeGenerator:
             return json.loads(cached_result)
 
         try:
-            prompt = self._create_code_generation_prompt(requirements, language, context)
+            prompt = self._create_code_generation_prompt(
+                requirements, language, context
+            )
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
@@ -49,7 +51,7 @@ class CodeGenerator:
                 temperature=0.7,
                 max_tokens=2000
             )
-            
+
             generated_code = response.choices[0].message.content
             result = {
                 "status": "success",
@@ -58,16 +60,16 @@ class CodeGenerator:
                 "timestamp": datetime.utcnow().isoformat(),
                 "model_used": "gpt-4-turbo-preview"
             }
-            
+
             # Cache the result
             self.redis_client.setex(
                 cache_key,
                 self.cache_ttl,
                 json.dumps(result)
             )
-            
+
             return result
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
