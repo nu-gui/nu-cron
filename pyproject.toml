@@ -15,12 +15,12 @@ sqlalchemy = "2.0.25"
 alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
-pydantic = "1.10.13"
-pydantic-settings = "2.0.3"  # Using newer version with typing-extensions compatibility
-PyYAML = "5.4.1"
+pydantic = "2.5.3"  # Latest version
+pydantic-settings = "2.1.0"  # Latest version compatible with pydantic v2
+PyYAML = "6.0.1"  # Latest version for Python 3.12
 openai = "1.10.0"  # Latest version
 anthropic = "0.8.1"  # Latest version
-langchain = "0.1.1"
+langchain = "0.0.352"  # Version compatible with pydantic v2
 pinecone-client = "3.0.2"
 
 [tool.poetry.group.dev.dependencies]
