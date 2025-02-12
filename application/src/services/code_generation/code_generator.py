@@ -8,7 +8,7 @@ from fastapi import HTTPException
 
 class CodeGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.redis_client = redis.Redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379/0"))
         self.cache_ttl = int(os.getenv("CODE_GENERATION_CACHE_TTL", "3600"))  # 1 hour default
 
@@ -28,17 +28,14 @@ class CodeGenerator:
 
         try:
             prompt = self._create_code_generation_prompt(requirements, language, context)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert software developer. Generate high-quality, secure, and efficient code based on the provided requirements."},
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert software developer. Generate high-quality, secure, and efficient code based on the provided requirements.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            generated_code = response.choices[0].message.content
+            generated_code = response.choices[0].text.strip()
             result = {
                 "status": "success",
                 "code": generated_code,
@@ -57,7 +54,9 @@ class CodeGenerator:
             return result
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_code_generation_prompt(
         self,
@@ -106,17 +105,14 @@ Please provide:
             prompt = self._create_code_review_prompt(code, language, context)
             # Note: Claude integration will be added here
             # For now, using GPT-4 as a placeholder
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert code reviewer. Analyze the code for quality, security, and performance issues."},
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert code reviewer. Analyze the code for quality, security, and performance issues.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            review_result = response.choices[0].message.content
+            review_result = response.choices[0].text.strip()
             return {
                 "status": "success",
                 "review": review_result,
@@ -126,7 +122,9 @@ Please provide:
             }
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_code_review_prompt(
         self,
@@ -168,17 +166,14 @@ Additional Context:
         """
         try:
             prompt = self._create_optimization_prompt(code, language, optimization_goals)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert in code optimization. Improve the code for better performance and efficiency."},
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert in code optimization. Improve the code for better performance and efficiency.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            optimized_code = response.choices[0].message.content
+            optimized_code = response.choices[0].text.strip()
             return {
                 "status": "success",
                 "optimized_code": optimized_code,
@@ -189,7 +184,9 @@ Additional Context:
             }
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_optimization_prompt(
         self,

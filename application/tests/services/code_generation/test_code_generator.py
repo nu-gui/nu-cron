@@ -1,4 +1,5 @@
 import pytest
+import asyncio
 from unittest.mock import Mock, patch
 from datetime import datetime
 import json
@@ -8,19 +9,22 @@ from application.src.services.code_generation.code_generator import CodeGenerato
 @pytest.fixture
 def code_generator():
     with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.OpenAI') as mock_openai:
+         patch('openai.Completion.create') as mock_openai_create:
         mock_redis.return_value = Mock()
-        mock_openai.return_value = Mock()
-        yield CodeGenerator()
+        mock_redis.return_value.get.return_value = None  # Default to cache miss
+        yield CodeGenerator(), mock_openai_create
 
 @pytest.mark.asyncio
 async def test_generate_code_success(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="def authenticate_user(): pass"))]
-    code_generator.openai_client.chat.completions.create = Mock(return_value=mock_response)
+    mock_response.choices = [Mock(text="def authenticate_user(): pass")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await code_generator.generate_code(requirements, language)
@@ -33,6 +37,7 @@ async def test_generate_code_success(code_generator):
 
 @pytest.mark.asyncio
 async def test_generate_code_with_cache(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
@@ -50,16 +55,19 @@ async def test_generate_code_with_cache(code_generator):
     
     # Assertions
     assert result == cached_result
-    code_generator.openai_client.chat.completions.create.assert_not_called()
+    mock_openai_create.assert_not_called()
 
 @pytest.mark.asyncio
 async def test_review_code_success(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     code = "def authenticate_user(): pass"
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Code review: Looks good"))]
-    code_generator.openai_client.chat.completions.create = Mock(return_value=mock_response)
+    mock_response.choices = [Mock(text="Code review: Looks good")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await code_generator.review_code(code, language)
@@ -72,13 +80,16 @@ async def test_review_code_success(code_generator):
 
 @pytest.mark.asyncio
 async def test_optimize_code_success(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     code = "def slow_function(): pass"
     language = "python"
     optimization_goals = ["performance", "memory"]
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Optimized code: def fast_function(): pass"))]
-    code_generator.openai_client.chat.completions.create = Mock(return_value=mock_response)
+    mock_response.choices = [Mock(text="Optimized code: def fast_function(): pass")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await code_generator.optimize_code(code, language, optimization_goals)
@@ -92,10 +103,11 @@ async def test_optimize_code_success(code_generator):
 
 @pytest.mark.asyncio
 async def test_generate_code_error_handling(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     requirements = {"feature": "invalid"}
     language = "unknown"
-    code_generator.openai_client.chat.completions.create = Mock(side_effect=Exception("API Error"))
+    mock_openai_create.side_effect = Exception("API Error")
     
     # Test
     with pytest.raises(Exception) as exc_info:

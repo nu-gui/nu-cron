@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 import os
 
-from .core.config import Settings
-from .models.database import init_db
-from .services.auth_service import get_current_user
-from .services.code_generation import code_generation_router
-from .services.requirements import requirements_router
-from .services.testing import testing_router
-from .services.environment.routes import router as environment_router
+from application.src.core.config import Settings
+from application.src.models.database import init_db
+from application.src.services.auth_service import get_current_user
+from application.src.services.code_generation import code_generation_router
+from application.src.services.requirements import requirements_router
+from application.src.services.testing import testing_router
+from application.src.services.environment.routes import router as environment_router
 
 settings = Settings()
 app = FastAPI(

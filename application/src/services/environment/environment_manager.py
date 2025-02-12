@@ -1,22 +1,32 @@
 #!/usr/bin/env python3
+"""Environment management service for AI infrastructure."""
 
 import argparse
-import os
-import yaml
-import subprocess
-from typing import Dict, Any, Optional
 import logging
+import os
+import subprocess
+import yaml
+from typing import Any, Dict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class EnvironmentManager:
+    """Manages creation and configuration of development environments."""
+
     def __init__(self, config_path: str):
+        """Initialize environment manager with config path."""
         self.config_path = config_path
         self.config = self._load_config()
 
+
     def _load_config(self) -> Dict[str, Any]:
-        """Load configuration from YAML file"""
+        """Load configuration from YAML file.
+        
+        Returns:
+            Dict containing environment configuration
+        """
         try:
             with open(self.config_path, 'r') as f:
                 return yaml.safe_load(f)
@@ -25,7 +35,15 @@ class EnvironmentManager:
             return {}
 
     def create_environment(self, env_name: str, env_type: str) -> bool:
-        """Create a new development environment"""
+        """Create a new development environment.
+
+        Args:
+            env_name: Name of the environment to create
+            env_type: Type of environment (docker or kubernetes)
+
+        Returns:
+            bool: True if environment was created successfully
+        """
         try:
             if env_type == "docker":
                 return self._create_docker_environment(env_name)
@@ -61,20 +79,29 @@ class EnvironmentManager:
             return False
 
     def _create_kubernetes_environment(self, env_name: str) -> bool:
-        """Create Kubernetes-based environment"""
+        """Create Kubernetes-based environment.
+
+        Args:
+            env_name: Name of the environment to create
+
+        Returns:
+            bool: True if environment was created successfully
+        """
         try:
             env_config = self.config['environments']['kubernetes'][env_name]
             namespace = env_config['namespace']
-            
+
             # Create namespace
             cmd = f"kubectl create namespace {namespace}"
             subprocess.run(cmd, shell=True, check=True)
-            
+
             # Apply resource quotas
             quota_spec = {
                 "apiVersion": "v1",
                 "kind": "ResourceQuota",
-                "metadata": {"name": f"{namespace}-quota"},
+                "metadata": {
+                    "name": f"{namespace}-quota"
+                },
                 "spec": {
                     "hard": {
                         "cpu": env_config['resources']['cpu'],
@@ -104,16 +131,17 @@ class EnvironmentManager:
             return False
 
     def _setup_monitoring(self, env_name: str, env_type: str) -> None:
-        """Configure monitoring for the environment"""
+        """Configure monitoring for the environment.
+
+        Args:
+            env_name: Name of the environment to configure
+            env_type: Type of environment (docker or kubernetes)
+        """
         try:
-            monitoring_config = self.config['monitoring']
-            
             if env_type == "docker":
                 # Configure Prometheus for Docker environment
                 prometheus_config = {
-                    "global": {
-                        "scrape_interval": "15s"
-                    },
+                    "global": {"scrape_interval": "15s"},
                     "scrape_configs": [
                         {
                             "job_name": f"{env_name}-monitoring",
@@ -154,15 +182,29 @@ class EnvironmentManager:
             return False
 
     def scale_environment(self, env_name: str, service: str, replicas: int) -> bool:
-        """Scale services in an environment"""
+        """Scale services in an environment.
+
+        Args:
+            env_name: Name of the environment to scale
+            service: Name of the service to scale
+            replicas: Number of replicas to scale to
+
+        Returns:
+            bool: True if scaling was successful
+        """
         try:
             env_config = self.config['environments']['kubernetes'][env_name]
             namespace = env_config['namespace']
-            
-            cmd = f"kubectl scale deployment {service} --replicas={replicas} -n {namespace}"
+
+            cmd = (
+                f"kubectl scale deployment {service} "
+                f"--replicas={replicas} -n {namespace}"
+            )
             subprocess.run(cmd, shell=True, check=True)
-            
-            logger.info(f"Scaled service '{service}' to {replicas} replicas")
+
+            logger.info(
+                f"Scaled service '{service}' to {replicas} replicas"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to scale environment: {e}")
