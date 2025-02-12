@@ -44,7 +44,7 @@ jobs:
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
           python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
+          DISABLE_CYTHON=1 pip install -r requirements.txt
       
       - name: Run linting
         run: |
@@ -89,7 +89,7 @@ jobs:
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
           python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
+          DISABLE_CYTHON=1 pip install -r requirements.txt
       
       - name: Run tests
         env:
