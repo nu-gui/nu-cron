@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import Dict, Any, List, Optional
-from datetime import datetime
+"""Routes for test generation and validation using AI models."""
 
-from ...models.database import User
-from ...services.auth_service import get_current_user
+from typing import Any, Dict, Optional
+
+from fastapi import APIRouter, Depends, HTTPException
+
+from application.src.models.database import User
+from application.src.services.auth_service import get_current_user
 from .test_generator import TestGenerator
 
 router = APIRouter()

@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import Dict, Any, List, Optional
-from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from ...models.database import User
-from ...services.auth_service import get_current_user
+from fastapi import APIRouter, Depends, HTTPException
+
+from application.src.models.database import User
+from application.src.services.auth_service import get_current_user
 from .code_generator import CodeGenerator
 
 router = APIRouter()

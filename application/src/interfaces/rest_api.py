@@ -1,7 +1,12 @@
+from datetime import datetime
+from typing import Any, Dict, List, TypedDict
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List, Dict, Any, TypedDict
-from datetime import datetime
+
+from application.src.models.database import Project, User
+from application.src.services.auth_service import get_current_user
+
 
 class ProjectResponse(TypedDict):
     id: int
@@ -10,12 +15,10 @@ class ProjectResponse(TypedDict):
     requirements: Dict[str, Any]
     created_at: str
 
+
 class ProjectListResponse(TypedDict):
     status: str
     projects: List[ProjectResponse]
-
-from ..models.database import User, Project
-from ..services.auth_service import get_current_user
 
 router = APIRouter()
 
