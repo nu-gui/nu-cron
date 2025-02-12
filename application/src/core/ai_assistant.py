@@ -70,12 +70,17 @@ class AIAssistant:
         model, client = await self.select_model("requirement_analysis")
 
         # Create prompt for requirement analysis
+        # Format requirements analysis prompt
+        name = project_data.get('name')
+        desc = project_data.get('description')
+        reqs = json.dumps(project_data.get('requirements', []))
+
         prompt = (
-            "Analyze the following project requirements and generate structured "
-            "documentation:\n"
-            f"Project Name: {project_data.get('name')}\n"
-            f"Description: {project_data.get('description')}\n"
-            f"Requirements: {json.dumps(project_data.get('requirements', []))}\n\n"
+            "Analyze the following project requirements and generate "
+            "structured documentation:\n"
+            f"Project Name: {name}\n"
+            f"Description: {desc}\n"
+            f"Requirements: {reqs}\n\n"
             "Please provide:\n"
             "1. Functional requirements breakdown\n"
             "2. Technical specifications\n"
@@ -87,18 +92,20 @@ class AIAssistant:
         try:
             # Generate analysis using selected model
             if isinstance(client, openai.OpenAI):
+                messages = [{"role": "user", "content": prompt}]
                 completion = await client.chat.completions.create(
                     model=model,
-                    messages=[{"role": "user", "content": prompt}],
+                    messages=messages,
                     temperature=0.7,
                     max_tokens=2000
                 )
                 analysis = completion.choices[0].message.content
             elif isinstance(client, anthropic.Anthropic):
+                messages = [{"role": "user", "content": prompt}]
                 msg = await client.messages.create(
                     model=model,
                     max_tokens=2000,
-                    messages=[{"role": "user", "content": prompt}]
+                    messages=messages
                 )
                 analysis = msg.content[0].text
             
