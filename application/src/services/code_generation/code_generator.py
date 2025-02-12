@@ -126,18 +126,8 @@ class CodeGenerator:
                     {
                         "role": "system",
                         "content": (
-<<<<<<< Updated upstream
                             "Expert code reviewer: analyze code for "
-                            "quality and performance."
-||||||| constructed merge base
-                            "You are an expert code reviewer. Analyze the code "
-                            "for code quality and "
-                            "security review."
-=======
-                            "You are an expert code reviewer. "
-                            "Analyze the code quality and "
-                            "security issues."
->>>>>>> Stashed changes
+                            "quality, security, and performance."
                         )
                     },
                     {"role": "user", "content": prompt}
