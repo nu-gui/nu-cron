@@ -57,7 +57,8 @@ class AIAssistant:
         return model_mapping.get(task_type, default)
 
     async def analyze_requirements(
-        self, project_data: Dict[str, Any]
+        self,
+        project_data: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Analyze project requirements and generate structured documentation.
 
