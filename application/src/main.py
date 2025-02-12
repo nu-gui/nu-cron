@@ -1,15 +1,16 @@
 """FastAPI application entry point."""
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
 
 from .core.config import Settings
 from .models.database import init_db
 from .services.code_generation import code_generation_router
+from .services.environment.routes import router as environment_router
 from .services.requirements import requirements_router
 from .services.testing import testing_router
-from .services.environment.routes import router as environment_router
 
 settings = Settings()
 

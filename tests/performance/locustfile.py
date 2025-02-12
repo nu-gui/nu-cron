@@ -1,6 +1,6 @@
 """Performance test suite for AI service endpoints."""
 
-from locust import HttpUser, task, between
+from locust import HttpUser, between, task
 
 
 class AIServiceUser(HttpUser):

@@ -1,11 +1,11 @@
 """REST API interface for project management."""
 
 from datetime import datetime
-from typing import List, Dict, Any, TypedDict
+from typing import Any, Dict, List, TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..models.database import User, Project
+from ..models.database import Project, User
 from ..services.auth_service import get_current_user
 
 

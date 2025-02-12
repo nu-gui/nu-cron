@@ -5,8 +5,9 @@ import argparse
 import logging
 import os
 import subprocess
-import yaml
 from typing import Any, Dict
+
+import yaml
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

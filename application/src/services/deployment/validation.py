@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Validates deployment health and performance metrics."""
 
+import json
 import sys
 import time
-import json
-import yaml
+
 import requests
+import yaml
 from prometheus_api_client import PrometheusConnect
 
 

@@ -1,5 +1,6 @@
+from typing import Any, Dict, List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException
-from typing import Dict, Any, List, Optional
 
 from ...models.database import User
 from ...services.auth_service import get_current_user

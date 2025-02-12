@@ -1,13 +1,12 @@
 """Routes for AI-driven requirements analysis and risk assessment."""
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, HTTPException
 
 from ...core.ai_assistant import AIAssistant
 from ...models.database import User
 from ...services.auth_service import get_current_user
-
 
 router = APIRouter()
 

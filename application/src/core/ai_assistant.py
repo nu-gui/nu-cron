@@ -1,12 +1,12 @@
 """AI assistant for managing project analysis and code generation."""
 
-from datetime import datetime
-from typing import Dict, Any
-
 import json
 import os
-import openai
+from datetime import datetime
+from typing import Any, Dict
+
 import anthropic
+import openai
 import pinecone
 from langchain.embeddings import OpenAIEmbeddings
 

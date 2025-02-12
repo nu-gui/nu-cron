@@ -1,8 +1,9 @@
-from typing import Dict, Any, List, Optional
-import openai
+import json
 import os
 from datetime import datetime
-import json
+from typing import Any, Dict, List, Optional
+
+import openai
 import redis
 from fastapi import HTTPException
 

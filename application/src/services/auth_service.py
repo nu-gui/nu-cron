@@ -1,15 +1,14 @@
 """Authentication service for JWT token handling and user validation."""
 
+import os
 from datetime import datetime, timedelta
 from typing import Optional
-import os
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from ..models.database import User
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

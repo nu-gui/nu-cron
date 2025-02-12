@@ -1,12 +1,13 @@
 """Test generator module for AI-driven code."""
 
-from typing import Dict, Any, Optional
+import json
 import os
 from datetime import datetime
-import json
+from typing import Any, Dict, Optional
+
+import openai
 import redis
 from fastapi import HTTPException
-import openai
 
 
 class TestGenerator:
