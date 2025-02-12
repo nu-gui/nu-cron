@@ -6,7 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from application.src.services.code_generation.code_generator import CodeGenerator
+from application.src.services.code_generation.code_generator import (
+    CodeGenerator
+)
 
 
 @pytest.fixture
