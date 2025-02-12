@@ -181,7 +181,7 @@ class AIAssistant:
             "4. Cost estimation\n"
             "5. Critical success factors"
         )
-        
+
         try:
             # Generate assessment using selected model
             messages = [{"role": "user", "content": prompt}]
