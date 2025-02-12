@@ -19,7 +19,7 @@ pydantic = "1.10.13"
 pydantic-settings = "0.1.2b0"  # Beta version compatible with pydantic v1
 PyYAML = "5.4.1"
 openai = "0.28.1"  # Last version before major API changes
-anthropic = "0.8.1"
+anthropic = "0.3.11"  # Version with relaxed typing-extensions requirements
 langchain = "0.1.1"
 pinecone-client = "3.0.2"
 
