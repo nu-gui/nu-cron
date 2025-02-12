@@ -1,7 +1,6 @@
 """Routes for test generation and validation using AI models."""
 
-from typing import Any, Dict, Optional
-
+from typing import Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from application.src.models.database import User
@@ -10,6 +9,7 @@ from .test_generator import TestGenerator
 
 router = APIRouter()
 test_generator = TestGenerator()
+
 
 @router.post("/generate")
 async def generate_tests(
@@ -23,10 +23,13 @@ async def generate_tests(
     Generate tests based on code using Mistral 7B
     """
     try:
-        result = await test_generator.generate_tests(code, language, test_type, context)
+        result = await test_generator.generate_tests(
+            code, language, test_type, context
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/validate")
 async def validate_tests(
@@ -44,6 +47,7 @@ async def validate_tests(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/performance")
 async def generate_performance_tests(
     code: str,
@@ -55,7 +59,9 @@ async def generate_performance_tests(
     Generate performance tests for the code
     """
     try:
-        result = await test_generator.generate_performance_tests(code, language, performance_criteria)
+        result = await test_generator.generate_performance_tests(
+            code, language, performance_criteria
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
