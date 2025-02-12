@@ -1,4 +1,5 @@
 import pytest
+import asyncio
 from unittest.mock import Mock, patch
 from datetime import datetime
 import json
@@ -21,7 +22,9 @@ async def test_generate_code_success(code_generator):
     language = "python"
     mock_response = Mock()
     mock_response.choices = [Mock(text="def authenticate_user(): pass")]
-    mock_openai_create.return_value = mock_response
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await code_generator.generate_code(requirements, language)
@@ -61,8 +64,10 @@ async def test_review_code_success(code_generator):
     code = "def authenticate_user(): pass"
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Code review: Looks good"))]
-    mock_openai_create.return_value = mock_response
+    mock_response.choices = [Mock(text="Code review: Looks good")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await code_generator.review_code(code, language)
@@ -81,8 +86,10 @@ async def test_optimize_code_success(code_generator):
     language = "python"
     optimization_goals = ["performance", "memory"]
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Optimized code: def fast_function(): pass"))]
-    mock_openai_create.return_value = mock_response
+    mock_response.choices = [Mock(text="Optimized code: def fast_function(): pass")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await code_generator.optimize_code(code, language, optimization_goals)

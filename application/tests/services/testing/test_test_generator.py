@@ -1,4 +1,5 @@
 import pytest
+import asyncio
 from unittest.mock import Mock, patch
 from datetime import datetime
 import json
@@ -22,7 +23,9 @@ async def test_generate_tests_success(test_generator):
     test_type = "unit"
     mock_response = Mock()
     mock_response.choices = [Mock(text="def test_add(): assert add(1, 2) == 3")]
-    mock_openai_create.return_value = mock_response
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await test_generator.generate_tests(code, language, test_type)
@@ -66,8 +69,10 @@ async def test_validate_tests_success(test_generator):
     code = "def add(a, b): return a + b"
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Test validation: Good coverage"))]
-    mock_openai_create.return_value = mock_response
+    mock_response.choices = [Mock(text="Test validation: Good coverage")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await test_generator.validate_tests(tests, code, language)
@@ -86,8 +91,10 @@ async def test_generate_performance_tests_success(test_generator):
     language = "python"
     performance_criteria = {"response_time": "100ms", "throughput": "1000rps"}
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Performance test: measure response time"))]
-    mock_openai_create.return_value = mock_response
+    mock_response.choices = [Mock(text="Performance test: measure response time")]
+    future = asyncio.Future()
+    future.set_result(mock_response)
+    mock_openai_create.return_value = future
     
     # Test
     result = await test_generator.generate_performance_tests(code, language, performance_criteria)
