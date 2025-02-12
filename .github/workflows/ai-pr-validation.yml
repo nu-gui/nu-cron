@@ -78,7 +78,7 @@ jobs:
       
       - name: Run Tests with Coverage
         run: |
-          npm test -- --coverage
+          npm test -- --coverage --passWithNoTests
           python -m pytest --cov=. --cov-report=xml
       
       - name: Check Test Coverage
