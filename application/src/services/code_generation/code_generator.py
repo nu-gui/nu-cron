@@ -8,7 +8,7 @@ from fastapi import HTTPException
 
 class CodeGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.redis_client = redis.Redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379/0"))
         self.cache_ttl = int(os.getenv("CODE_GENERATION_CACHE_TTL", "3600"))  # 1 hour default
 
