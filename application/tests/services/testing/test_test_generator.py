@@ -11,8 +11,9 @@ from application.src.services.testing.test_generator import TestGenerator
 @pytest.fixture
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
-    with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.OpenAI') as mock_openai:
+    with patch("redis.Redis.from_url") as mock_redis, patch(
+        "openai.OpenAI"
+    ) as mock_openai:
         mock_redis.return_value = Mock()
         mock_openai.return_value = Mock()
         yield TestGenerator()
@@ -27,18 +28,14 @@ async def test_generate_tests_success(test_generator):
     test_type = "unit"
     mock_response = Mock()
     mock_response.choices = [
-        Mock(
-            message=Mock(content="def test_add(): assert add(1, 2) == 3")
-        )
+        Mock(message=Mock(content="def test_add(): assert add(1, 2) == 3"))
     ]
     test_generator.openai_client.chat.completions.create = Mock(
         return_value=mock_response
     )
 
     # Test
-    result = await test_generator.generate_tests(
-        code, language, test_type
-    )
+    result = await test_generator.generate_tests(code, language, test_type)
 
     # Assertions
     assert result["status"] == "success"
@@ -61,11 +58,9 @@ async def test_generate_tests_with_cache(test_generator):
         "language": "python",
         "test_type": "unit",
         "timestamp": datetime.utcnow().isoformat(),
-        "model_used": "gpt-4-turbo-preview"
+        "model_used": "gpt-4-turbo-preview",
     }
-    test_generator.redis_client.get.return_value = json.dumps(
-        cached_result
-    ).encode()
+    test_generator.redis_client.get.return_value = json.dumps(cached_result).encode()
 
     # Test
     result = await test_generator.generate_tests(code, language, test_type)
@@ -106,10 +101,7 @@ async def test_generate_performance_tests_success(test_generator):
     # Mock data
     code = "def process_data(): pass"
     language = "python"
-    performance_criteria = {
-        "response_time": "100ms",
-        "throughput": "1000rps"
-    }
+    performance_criteria = {"response_time": "100ms", "throughput": "1000rps"}
     mock_response = Mock()
     mock_response.choices = [
         Mock(message=Mock(content="Performance test: measure response time"))

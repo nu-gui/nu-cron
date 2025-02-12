@@ -21,12 +21,10 @@ class AIServiceUser(HttpUser):
     @task(1)
     def api_check(self):
         """Test analyze API endpoint."""
-        self.client.post("/api/v1/analyze", json={
-            "task": "test_task",
-            "parameters": {
-                "test": "value"
-            }
-        })
+        self.client.post(
+            "/api/v1/analyze",
+            json={"task": "test_task", "parameters": {"test": "value"}},
+        )
 
     def on_start(self):
         """Setup authentication if needed."""

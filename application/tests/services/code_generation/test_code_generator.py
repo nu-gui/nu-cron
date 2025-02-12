@@ -6,16 +6,15 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from application.src.services.code_generation.code_generator import (
-    CodeGenerator
-)
+from application.src.services.code_generation.code_generator import CodeGenerator
 
 
 @pytest.fixture
 def code_generator():
     """Create a CodeGenerator instance with mocked dependencies."""
-    with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.OpenAI') as mock_openai:
+    with patch("redis.Redis.from_url") as mock_redis, patch(
+        "openai.OpenAI"
+    ) as mock_openai:
         mock_redis.return_value = Mock()
         mock_openai.return_value = Mock()
         yield CodeGenerator()
@@ -25,10 +24,7 @@ def code_generator():
 async def test_generate_code_success(code_generator):
     """Test successful code generation with OpenAI."""
     # Mock data
-    requirements = {
-        "feature": "user authentication",
-        "language": "python"
-    }
+    requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
     mock_response = Mock()
     mock_response.choices = [
@@ -52,21 +48,16 @@ async def test_generate_code_success(code_generator):
 async def test_generate_code_with_cache(code_generator):
     """Test code generation with Redis cache hit."""
     # Mock data
-    requirements = {
-        "feature": "user authentication",
-        "language": "python"
-    }
+    requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
     cached_result = {
         "status": "success",
         "code": "def authenticate_user(): pass",
         "language": "python",
         "timestamp": datetime.utcnow().isoformat(),
-        "model_used": "gpt-4-turbo-preview"
+        "model_used": "gpt-4-turbo-preview",
     }
-    code_generator.redis_client.get.return_value = json.dumps(
-        cached_result
-    ).encode()
+    code_generator.redis_client.get.return_value = json.dumps(cached_result).encode()
 
     # Test
     result = await code_generator.generate_code(requirements, language)
@@ -83,9 +74,7 @@ async def test_review_code_success(code_generator):
     code = "def authenticate_user(): pass"
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [
-        Mock(message=Mock(content="Code review: Looks good"))
-    ]
+    mock_response.choices = [Mock(message=Mock(content="Code review: Looks good"))]
     code_generator.openai_client.chat.completions.create = Mock(
         return_value=mock_response
     )
@@ -109,20 +98,14 @@ async def test_optimize_code_success(code_generator):
     optimization_goals = ["performance", "memory"]
     mock_response = Mock()
     mock_response.choices = [
-        Mock(
-            message=Mock(
-                content="Optimized code: def fast_function(): pass"
-            )
-        )
+        Mock(message=Mock(content="Optimized code: def fast_function(): pass"))
     ]
     code_generator.openai_client.chat.completions.create = Mock(
         return_value=mock_response
     )
 
     # Test
-    result = await code_generator.optimize_code(
-        code, language, optimization_goals
-    )
+    result = await code_generator.optimize_code(code, language, optimization_goals)
 
     # Assertions
     assert result["status"] == "success"

@@ -11,9 +11,7 @@ import openai
 
 class TestGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY")
-        )
+        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
@@ -25,16 +23,14 @@ class TestGenerator:
         code: str,
         language: str,
         test_type: str,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Generate tests based on code using Mistral 7B.
 
         Currently using GPT-4 as placeholder. Generates unit, integration,
         and performance tests based on provided code.
         """
-        cache_key = (
-            f"test_gen:{hash(code + language + test_type)}"
-        )
+        cache_key = f"test_gen:{hash(code + language + test_type)}"
         cached_result = self.redis_client.get(cache_key)
         if cached_result:
             return json.loads(cached_result)
@@ -51,12 +47,12 @@ class TestGenerator:
                         "content": (
                             "You are an expert test engineer. Generate "
                             "comprehensive tests based on the provided code."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
 
             generated_tests = response.choices[0].message.content
@@ -67,15 +63,11 @@ class TestGenerator:
                 "test_type": test_type,
                 "timestamp": datetime.utcnow().isoformat(),
                 # Using GPT-4 for now, will switch to Mistral
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
 
             # Cache the result
-            self.redis_client.setex(
-                cache_key,
-                self.cache_ttl,
-                json.dumps(result)
-            )
+            self.redis_client.setex(cache_key, self.cache_ttl, json.dumps(result))
 
             return result
 
@@ -87,7 +79,7 @@ class TestGenerator:
         code: str,
         language: str,
         test_type: str,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> str:
         """Create a detailed prompt for test generation."""
         framework = self._get_test_framework(language)
@@ -125,10 +117,7 @@ Additional Context:
         return frameworks.get(language.lower(), "unknown")
 
     async def validate_tests(
-        self,
-        tests: str,
-        code: str,
-        language: str
+        self, tests: str, code: str, language: str
     ) -> Dict[str, Any]:
         """
         Validate generated tests for completeness and coverage
@@ -143,12 +132,12 @@ Additional Context:
                         "content": (
                             "You are an expert test validator. Analyze tests "
                             "for completeness and coverage."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
 
             validation_result = response.choices[0].message.content
@@ -157,17 +146,14 @@ Additional Context:
                 "validation": validation_result,
                 "language": language,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     def _create_test_validation_prompt(
-        self,
-        tests: str,
-        code: str,
-        language: str
+        self, tests: str, code: str, language: str
     ) -> str:
         """
         Create a detailed prompt for test validation
@@ -192,7 +178,7 @@ Please analyze:
         self,
         code: str,
         language: str,
-        performance_criteria: Optional[Dict[str, Any]] = None
+        performance_criteria: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Generate performance tests for the code
@@ -209,12 +195,12 @@ Please analyze:
                         "content": (
                             "You are an expert in performance testing. "
                             "Generate comprehensive performance tests."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
 
             performance_tests = response.choices[0].message.content
@@ -224,7 +210,7 @@ Please analyze:
                 "language": language,
                 "criteria": performance_criteria,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
 
         except Exception as e:
@@ -234,7 +220,7 @@ Please analyze:
         self,
         code: str,
         language: str,
-        performance_criteria: Optional[Dict[str, Any]] = None
+        performance_criteria: Optional[Dict[str, Any]] = None,
     ) -> str:
         """Create a detailed prompt for performance test generation."""
         prompt = (

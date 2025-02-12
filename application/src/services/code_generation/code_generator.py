@@ -9,9 +9,7 @@ from fastapi import HTTPException
 
 class CodeGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY")
-        )
+        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
@@ -22,7 +20,7 @@ class CodeGenerator:
         self,
         requirements: Dict[str, Any],
         language: str,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Generate code based on requirements using GPT-4 Turbo
@@ -44,12 +42,12 @@ class CodeGenerator:
                         "content": (
                             "You are an expert software developer. Generate "
                             "high-quality, secure, and efficient code."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
 
             generated_code = response.choices[0].message.content
@@ -58,15 +56,11 @@ class CodeGenerator:
                 "code": generated_code,
                 "language": language,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
 
             # Cache the result
-            self.redis_client.setex(
-                cache_key,
-                self.cache_ttl,
-                json.dumps(result)
-            )
+            self.redis_client.setex(cache_key, self.cache_ttl, json.dumps(result))
 
             return result
 
@@ -77,7 +71,7 @@ class CodeGenerator:
         self,
         requirements: Dict[str, Any],
         language: str,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> str:
         """
         Create a detailed prompt for code generation
@@ -89,10 +83,7 @@ class CodeGenerator:
         )
 
         if context:
-            prompt += (
-                "\nAdditional Context:\n"
-                f"{json.dumps(context, indent=2)}\n"
-            )
+            prompt += "\nAdditional Context:\n" f"{json.dumps(context, indent=2)}\n"
 
         prompt += (
             "\nPlease provide:\n"
@@ -106,18 +97,13 @@ class CodeGenerator:
         return prompt
 
     async def review_code(
-        self,
-        code: str,
-        language: str,
-        context: Optional[Dict[str, Any]] = None
+        self, code: str, language: str, context: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Review code using Claude 3 for better analysis
         """
         try:
-            prompt = self._create_code_review_prompt(
-                code, language, context
-            )
+            prompt = self._create_code_review_prompt(code, language, context)
             # Note: Claude integration will be added here
             # For now, using GPT-4 as a placeholder
             response = await self.openai_client.chat.completions.create(
@@ -128,12 +114,12 @@ class CodeGenerator:
                         "content": (
                             "Expert code reviewer: analyze code for "
                             "quality, security, and performance."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
 
             review_result = response.choices[0].message.content
@@ -142,17 +128,14 @@ class CodeGenerator:
                 "review": review_result,
                 "language": language,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     def _create_code_review_prompt(
-        self,
-        code: str,
-        language: str,
-        context: Optional[Dict[str, Any]] = None
+        self, code: str, language: str, context: Optional[Dict[str, Any]] = None
     ) -> str:
         """
         Create a detailed prompt for code review
@@ -178,10 +161,7 @@ Additional Context:
         return prompt
 
     async def optimize_code(
-        self,
-        code: str,
-        language: str,
-        optimization_goals: Optional[List[str]] = None
+        self, code: str, language: str, optimization_goals: Optional[List[str]] = None
     ) -> Dict[str, Any]:
         """
         Optimize code for performance and efficiency
@@ -198,12 +178,12 @@ Additional Context:
                         "content": (
                             "Expert optimizer: improve code for "
                             "better performance and efficiency."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
 
             optimized_code = response.choices[0].message.content
@@ -213,17 +193,14 @@ Additional Context:
                 "language": language,
                 "timestamp": datetime.utcnow().isoformat(),
                 "model_used": "gpt-4-turbo-preview",
-                "optimization_goals": optimization_goals
+                "optimization_goals": optimization_goals,
             }
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
     def _create_optimization_prompt(
-        self,
-        code: str,
-        language: str,
-        optimization_goals: Optional[List[str]] = None
+        self, code: str, language: str, optimization_goals: Optional[List[str]] = None
     ) -> str:
         """
         Create a detailed prompt for code optimization

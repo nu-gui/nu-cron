@@ -20,7 +20,7 @@ class EnvironmentManager:
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from YAML file"""
         try:
-            with open(self.config_path, 'r') as f:
+            with open(self.config_path, "r") as f:
                 return yaml.safe_load(f)
         except Exception as e:
             logger.error(f"Failed to load config: {e}")
@@ -50,8 +50,8 @@ class EnvironmentManager:
             bool: True if environment was created successfully, False otherwise
         """
         try:
-            env_config = self.config['environments']['docker'][env_name]
-            compose_file = env_config['compose_file']
+            env_config = self.config["environments"]["docker"][env_name]
+            compose_file = env_config["compose_file"]
 
             # Create environment directory
             os.makedirs(f"environments/{env_name}", exist_ok=True)
@@ -63,14 +63,10 @@ class EnvironmentManager:
             # Configure monitoring
             self._setup_monitoring(env_name, "docker")
 
-            logger.info(
-                f"Docker environment '{env_name}' created successfully"
-            )
+            logger.info(f"Docker environment '{env_name}' created successfully")
             return True
         except Exception as e:
-            logger.error(
-                f"Failed to create Docker environment: {e}"
-            )
+            logger.error(f"Failed to create Docker environment: {e}")
             return False
 
     def _create_kubernetes_environment(self, env_name: str) -> bool:
@@ -83,8 +79,8 @@ class EnvironmentManager:
             bool: True if environment was created successfully, False otherwise
         """
         try:
-            env_config = self.config['environments']['kubernetes'][env_name]
-            namespace = env_config['namespace']
+            env_config = self.config["environments"]["kubernetes"][env_name]
+            namespace = env_config["namespace"]
 
             # Create namespace
             cmd = f"kubectl create namespace {namespace}"
@@ -97,36 +93,31 @@ class EnvironmentManager:
                 "metadata": {"name": f"{namespace}-quota"},
                 "spec": {
                     "hard": {
-                        "cpu": env_config['resources']['cpu'],
-                        "memory": env_config['resources']['memory']
+                        "cpu": env_config["resources"]["cpu"],
+                        "memory": env_config["resources"]["memory"],
                     }
-                }
+                },
             }
 
             quota_path = f"environments/{namespace}-quota.yaml"
-            with open(quota_path, 'w') as f:
+            with open(quota_path, "w") as f:
                 yaml.dump(quota_spec, f)
 
             cmd = f"kubectl apply -f {quota_path} -n {namespace}"
             subprocess.run(cmd, shell=True, check=True)
 
             # Deploy services
-            for service in env_config['services']:
+            for service in env_config["services"]:
                 cmd = f"kubectl apply -f {service} -n {namespace}"
                 subprocess.run(cmd, shell=True, check=True)
 
             # Configure monitoring
             self._setup_monitoring(env_name, "kubernetes")
 
-            logger.info(
-                f"Kubernetes environment '{env_name}' "
-                "created successfully"
-            )
+            logger.info(f"Kubernetes environment '{env_name}' " "created successfully")
             return True
         except Exception as e:
-            logger.error(
-                f"Failed to create Kubernetes environment: {e}"
-            )
+            logger.error(f"Failed to create Kubernetes environment: {e}")
             return False
 
     def _setup_monitoring(self, env_name: str, env_type: str) -> None:
@@ -141,16 +132,16 @@ class EnvironmentManager:
                 # Configure Prometheus for Docker environment
                 prometheus_config = {
                     "global": {"scrape_interval": "15s"},
-                    "scrape_configs": [{
-                        "job_name": f"{env_name}-monitoring",
-                        "static_configs": [
-                            {"targets": [f"{env_name}:9090"]}
-                        ]
-                    }]
+                    "scrape_configs": [
+                        {
+                            "job_name": f"{env_name}-monitoring",
+                            "static_configs": [{"targets": [f"{env_name}:9090"]}],
+                        }
+                    ],
                 }
 
                 config_path = f"environments/{env_name}/prometheus.yml"
-                with open(config_path, 'w') as f:
+                with open(config_path, "w") as f:
                     yaml.dump(prometheus_config, f)
 
             elif env_type == "kubernetes":
@@ -182,28 +173,18 @@ class EnvironmentManager:
                 cmd = f"docker-compose -p {env_name} down -v"
                 subprocess.run(cmd, shell=True, check=True)
             elif env_type == "kubernetes":
-                env_config = self.config['environments']['kubernetes']
-                namespace = env_config[env_name]['namespace']
+                env_config = self.config["environments"]["kubernetes"]
+                namespace = env_config[env_name]["namespace"]
                 cmd = f"kubectl delete namespace {namespace}"
                 subprocess.run(cmd, shell=True, check=True)
 
-            logger.info(
-                f"Environment '{env_name}' "
-                "destroyed successfully"
-            )
+            logger.info(f"Environment '{env_name}' " "destroyed successfully")
             return True
         except Exception as e:
-            logger.error(
-                f"Failed to destroy environment: {e}"
-            )
+            logger.error(f"Failed to destroy environment: {e}")
             return False
 
-    def scale_environment(
-        self,
-        env_name: str,
-        service: str,
-        replicas: int
-    ) -> bool:
+    def scale_environment(self, env_name: str, service: str, replicas: int) -> bool:
         """Scale services in an environment.
 
         Args:
@@ -216,8 +197,8 @@ class EnvironmentManager:
                 False otherwise
         """
         try:
-            env_config = self.config['environments']['kubernetes'][env_name]
-            namespace = env_config['namespace']
+            env_config = self.config["environments"]["kubernetes"][env_name]
+            namespace = env_config["namespace"]
 
             cmd = (
                 f"kubectl scale deployment {service} "
@@ -225,46 +206,22 @@ class EnvironmentManager:
             )
             subprocess.run(cmd, shell=True, check=True)
 
-            logger.info(
-                f"Scaled service '{service}' "
-                f"to {replicas} replicas"
-            )
+            logger.info(f"Scaled service '{service}' " f"to {replicas} replicas")
             return True
         except Exception as e:
-            logger.error(
-                f"Failed to scale environment: {e}"
-            )
+            logger.error(f"Failed to scale environment: {e}")
             return False
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Manage development environments"
-    )
+    parser = argparse.ArgumentParser(description="Manage development environments")
     parser.add_argument("action", choices=["create", "destroy", "scale"])
+    parser.add_argument("--env-name", required=True, help="Environment name")
+    parser.add_argument("--env-type", choices=["docker", "kubernetes"], required=True)
+    parser.add_argument("--service", help="Service name for scaling")
+    parser.add_argument("--replicas", type=int, help="Number of replicas for scaling")
     parser.add_argument(
-        "--env-name",
-        required=True,
-        help="Environment name"
-    )
-    parser.add_argument(
-        "--env-type",
-        choices=["docker", "kubernetes"],
-        required=True
-    )
-    parser.add_argument(
-        "--service",
-        help="Service name for scaling"
-    )
-    parser.add_argument(
-        "--replicas",
-        type=int,
-        help="Number of replicas for scaling"
-    )
-    parser.add_argument(
-        "--config",
-        default="devin/settings/ai_config.yaml",
-        help="Path to config file"
+        "--config", default="devin/settings/ai_config.yaml", help="Path to config file"
     )
 
     args = parser.parse_args()
@@ -279,11 +236,7 @@ def main():
         if not args.service or not args.replicas:
             logger.error("Service and replicas required for scaling")
             return
-        success = manager.scale_environment(
-            args.env_name,
-            args.service,
-            args.replicas
-        )
+        success = manager.scale_environment(args.env_name, args.service, args.replicas)
     if not success:
         logger.error("Operation failed")
 

@@ -14,8 +14,7 @@ router = APIRouter()
 
 @router.post("/analyze")
 async def analyze_requirements(
-    project_data: Dict[str, Any],
-    current_user: User = Depends(get_current_user)
+    project_data: Dict[str, Any], current_user: User = Depends(get_current_user)
 ) -> Dict[str, Any]:
     """Analyze project requirements using AI.
 
@@ -36,8 +35,7 @@ async def analyze_requirements(
 
 @router.post("/risk-assessment")
 async def assess_risks(
-    project_id: int,
-    current_user: User = Depends(get_current_user)
+    project_id: int, current_user: User = Depends(get_current_user)
 ) -> Dict[str, Any]:
     """Perform risk assessment and feasibility analysis.
 

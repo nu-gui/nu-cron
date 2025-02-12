@@ -2,8 +2,14 @@
 
 from datetime import datetime
 from sqlalchemy import (
-    Boolean, Column, DateTime, ForeignKey, Integer,
-    JSON, String, create_engine
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    create_engine,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -33,9 +39,7 @@ class Project(Base):
     description = Column(String)
     requirements = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     created_by_id = Column(Integer, ForeignKey("users.id"))
     created_by = relationship("User")
 
@@ -79,9 +83,7 @@ class Environment(Base):
     project_id = Column(Integer, ForeignKey("projects.id"))
     project = relationship("Project")
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 def init_db(database_url: str):
