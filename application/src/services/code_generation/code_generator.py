@@ -28,17 +28,14 @@ class CodeGenerator:
 
         try:
             prompt = self._create_code_generation_prompt(requirements, language, context)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert software developer. Generate high-quality, secure, and efficient code based on the provided requirements."},
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert software developer. Generate high-quality, secure, and efficient code based on the provided requirements.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            generated_code = response.choices[0].message.content
+            generated_code = response.choices[0].text.strip()
             result = {
                 "status": "success",
                 "code": generated_code,

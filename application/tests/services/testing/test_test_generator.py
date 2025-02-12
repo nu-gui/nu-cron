@@ -8,7 +8,7 @@ from application.src.services.testing.test_generator import TestGenerator
 @pytest.fixture
 def test_generator():
     with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.chat.completions.create') as mock_openai_create:
+         patch('openai.Completion.create') as mock_openai_create:
         mock_redis.return_value = Mock()
         mock_openai_create.return_value = Mock()
         yield TestGenerator()
