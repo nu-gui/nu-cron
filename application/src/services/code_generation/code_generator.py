@@ -42,8 +42,8 @@ class CodeGenerator:
                     {
                         "role": "system",
                         "content": (
-                            "You are an expert software developer. Generate high-quality, "
-                            "secure, and efficient code based on the provided requirements."
+                            "You are an expert software developer. Generate "
+                            "high-quality, secure, and efficient code."
                         )
                     },
                     {"role": "user", "content": prompt}
@@ -128,8 +128,8 @@ Please provide:
                     {
                         "role": "system",
                         "content": (
-                            "You are an expert code reviewer. Analyze the code for quality, "
-                            "security, and performance issues."
+                            "You are an expert code reviewer. Analyze code for "
+                            "quality, security, and performance."
                         )
                     },
                     {"role": "user", "content": prompt}
@@ -198,7 +198,7 @@ Additional Context:
                     {
                         "role": "system",
                         "content": (
-                            "You are an expert in code optimization. Improve the code for "
+                            "You are an expert in optimization. Improve code for "
                             "better performance and efficiency."
                         )
                     },
