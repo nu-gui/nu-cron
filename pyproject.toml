@@ -1,3 +1,37 @@
+[tool.poetry]
+name = "nu-cron"
+version = "1.0.0"
+description = "AI-driven SDLC automation and cron job management"
+authors = ["Nu GUI Team"]
+readme = "README.md"
+packages = [{include = "application"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "0.95.2"
+uvicorn = "0.27.0"
+python-dotenv = "1.0.0"
+sqlalchemy = "2.0.25"
+alembic = "1.13.1"
+psycopg2-binary = "2.9.9"
+redis = "5.0.1"
+pydantic = "1.10.13"
+pydantic-settings = "0.2.5"
+PyYAML = "5.4.1"
+openai = "1.10.0"
+anthropic = "0.8.1"
+langchain = "0.1.1"
+pinecone-client = "3.0.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "23.12.1"
+isort = "5.13.2"
+flake8 = "7.0.0"
+pytest = "7.4.4"
+pytest-asyncio = "0.23.3"
+httpx = "0.26.0"
+pytest-cov = "4.1.0"
+
 [tool.black]
 line-length = 79
 include = '\.pyi?$'
@@ -10,3 +44,7 @@ extend-exclude = '''
 [tool.isort]
 profile = "black"
 line_length = 79
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
