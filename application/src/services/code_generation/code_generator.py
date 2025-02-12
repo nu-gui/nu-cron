@@ -126,8 +126,8 @@ class CodeGenerator:
                     {
                         "role": "system",
                         "content": (
-                            "You are an expert code reviewer. Analyze code for "
-                            "quality, security, and performance."
+                            "Expert code reviewer: analyze code for "
+                            "quality and performance."
                         )
                     },
                     {"role": "user", "content": prompt}
@@ -196,7 +196,7 @@ Additional Context:
                     {
                         "role": "system",
                         "content": (
-                            "You are an expert in optimization. Improve code for "
+                            "Expert optimizer: improve code for "
                             "better performance and efficiency."
                         )
                     },
