@@ -53,7 +53,9 @@ jobs:
       - name: Run linting
         run: |
           npm run lint
-          python -m flake8
+          poetry run flake8
+          poetry run black --check .
+          poetry run isort --check-only .
       
       - name: Run security scan
         uses: snyk/actions/node@master
