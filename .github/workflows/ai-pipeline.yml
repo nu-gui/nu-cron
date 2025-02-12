@@ -35,7 +35,6 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          
       - name: Install dependencies
         env:
           ENV: "production"
@@ -88,7 +87,6 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          
       - name: Install dependencies
         env:
           ENV: "production"
