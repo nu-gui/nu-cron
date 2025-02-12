@@ -43,8 +43,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
+          python -m pip cache purge
           python -m pip install --upgrade pip wheel setuptools
           pip install -r requirements.txt
+          
+      - name: Verify dependency versions
+        run: |
+          pip freeze | grep pydantic-settings
       
       - name: Run linting
         run: |
@@ -88,8 +93,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
+          python -m pip cache purge
           python -m pip install --upgrade pip wheel setuptools
           pip install -r requirements.txt
+          
+      - name: Verify dependency versions
+        run: |
+          pip freeze | grep pydantic-settings
       
       - name: Run tests
         env:
