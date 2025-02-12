@@ -97,7 +97,7 @@ jobs:
           TEST_GENERATION_CACHE_TTL: "3600"
         run: |
           npm test -- --coverage --passWithNoTests
-          python -m pytest --cov=. --cov-report=xml
+          poetry run pytest --cov=. --cov-report=xml
       
       - name: Check Test Coverage
         uses: coverallsapp/github-action@v2

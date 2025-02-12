@@ -110,7 +110,7 @@ jobs:
           TEST_GENERATION_CACHE_TTL: "3600"
         run: |
           npm test -- --passWithNoTests
-          python -m pytest
+          poetry run pytest
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
