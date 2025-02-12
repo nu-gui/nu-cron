@@ -2,9 +2,10 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from .code_generator import CodeGenerator
 from application.src.models.database import User
 from application.src.services.auth_service import get_current_user
+
+from .code_generator import CodeGenerator
 
 router = APIRouter()
 code_generator = CodeGenerator()
