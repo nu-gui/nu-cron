@@ -1,8 +1,10 @@
+"""Application configuration and environment settings."""
+
 from pydantic_settings import BaseSettings
-from typing import Dict, Any
+
 
 class Settings(BaseSettings):
-    """Application settings."""
+    """Application settings and environment configuration."""
     PROJECT_NAME: str = "AI-SDLC"
     API_V1_STR: str = "/api/v1"
     
