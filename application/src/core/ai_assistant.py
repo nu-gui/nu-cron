@@ -39,16 +39,22 @@ class AIAssistant:
         self.index = pinecone.Index(self.index_name)
 
     async def select_model(self, task_type: str) -> tuple:
+        """Select the most appropriate AI model based on task type.
+
+        Args:
+            task_type: Type of task to select model for
+
+        Returns:
+            tuple: (model_name, client) pair for the selected model
         """
-        Select the most appropriate AI model based on task type
-        """
+        default = ("gpt-4-turbo-preview", self.openai_client)
         model_mapping = {
-            "requirement_analysis": ("gpt-4-turbo-preview", self.openai_client),
-            "code_generation": ("gpt-4-turbo-preview", self.openai_client),
+            "requirement_analysis": default,
+            "code_generation": default,
             "code_review": ("claude-3-opus", self.claude_client),
-            "testing": ("mistral-7b", None),  # Placeholder for Mistral integration
+            "testing": ("mistral-7b", None),  # For Mistral integration
         }
-        return model_mapping.get(task_type, ("gpt-4-turbo-preview", self.openai_client))
+        return model_mapping.get(task_type, default)
 
     async def analyze_requirements(
         self, project_data: Dict[str, Any]
@@ -79,13 +85,11 @@ class AIAssistant:
         )
         
         try:
+            # Generate analysis using selected model
             if isinstance(client, openai.OpenAI):
                 completion = await client.chat.completions.create(
                     model=model,
-                    messages=[{
-                        "role": "user",
-                        "content": prompt
-                    }],
+                    messages=[{"role": "user", "content": prompt}],
                     temperature=0.7,
                     max_tokens=2000
                 )
@@ -94,10 +98,7 @@ class AIAssistant:
                 msg = await client.messages.create(
                     model=model,
                     max_tokens=2000,
-                    messages=[{
-                        "role": "user",
-                        "content": prompt
-                    }]
+                    messages=[{"role": "user", "content": prompt}]
                 )
                 analysis = msg.content[0].text
             
