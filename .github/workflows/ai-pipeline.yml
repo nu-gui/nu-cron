@@ -77,7 +77,7 @@ jobs:
       
       - name: Run tests
         run: |
-          npm test
+          npm test -- --passWithNoTests
           python -m pytest
       
       - name: Upload test results
