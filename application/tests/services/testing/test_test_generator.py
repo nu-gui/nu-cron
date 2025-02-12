@@ -8,9 +8,9 @@ from application.src.services.testing.test_generator import TestGenerator
 @pytest.fixture
 def test_generator():
     with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.OpenAI') as mock_openai:
+         patch('openai.chat.completions.create') as mock_openai_create:
         mock_redis.return_value = Mock()
-        mock_openai.return_value = Mock()
+        mock_openai_create.return_value = Mock()
         yield TestGenerator()
 
 @pytest.mark.asyncio
@@ -21,7 +21,7 @@ async def test_generate_tests_success(test_generator):
     test_type = "unit"
     mock_response = Mock()
     mock_response.choices = [Mock(message=Mock(content="def test_add(): assert add(1, 2) == 3"))]
-    test_generator.openai_client.chat.completions.create = Mock(return_value=mock_response)
+    mock_openai_create.return_value = mock_response
     
     # Test
     result = await test_generator.generate_tests(code, language, test_type)
@@ -64,7 +64,7 @@ async def test_validate_tests_success(test_generator):
     language = "python"
     mock_response = Mock()
     mock_response.choices = [Mock(message=Mock(content="Test validation: Good coverage"))]
-    test_generator.openai_client.chat.completions.create = Mock(return_value=mock_response)
+    mock_openai_create.return_value = mock_response
     
     # Test
     result = await test_generator.validate_tests(tests, code, language)
@@ -83,7 +83,7 @@ async def test_generate_performance_tests_success(test_generator):
     performance_criteria = {"response_time": "100ms", "throughput": "1000rps"}
     mock_response = Mock()
     mock_response.choices = [Mock(message=Mock(content="Performance test: measure response time"))]
-    test_generator.openai_client.chat.completions.create = Mock(return_value=mock_response)
+    mock_openai_create.return_value = mock_response
     
     # Test
     result = await test_generator.generate_performance_tests(code, language, performance_criteria)
@@ -101,7 +101,7 @@ async def test_generate_tests_error_handling(test_generator):
     code = "invalid code"
     language = "unknown"
     test_type = "invalid"
-    test_generator.openai_client.chat.completions.create = Mock(side_effect=Exception("API Error"))
+    mock_openai_create.side_effect = Exception("API Error")
     
     # Test
     with pytest.raises(Exception) as exc_info:
