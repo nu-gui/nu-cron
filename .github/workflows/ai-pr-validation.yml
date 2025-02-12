@@ -63,6 +63,10 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
       
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
       - name: Install dependencies
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
@@ -74,8 +78,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
+          poetry install
+          poetry run pip check
       
       - name: Check Code Style
         run: |
