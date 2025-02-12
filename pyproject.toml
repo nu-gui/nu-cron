@@ -16,10 +16,10 @@ alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
 pydantic = "1.10.13"  # Using v1 for langchain compatibility
-pydantic-settings = "0.2.5"  # Using older version for pydantic v1
-PyYAML = "5.4.1"  # Required for pydantic-settings compatibility
+pydantic-settings = "2.0.3"  # Version compatible with newer typing-extensions
+PyYAML = "6.0.1"  # Latest version for Python 3.12
 openai = "0.28.1"  # Last version before typing-extensions conflict
-anthropic = "0.3.11"  # Version before typing-extensions >=4.5 requirement
+anthropic = "0.8.1"  # Latest version
 langchain = "0.0.352"  # Version compatible with pydantic v1
 pinecone-client = "2.2.4"  # Older version for compatibility
 
