@@ -79,6 +79,10 @@ jobs:
       - name: Run Tests with Coverage
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_URL: "redis://localhost:6379/0"
+          CODE_GENERATION_CACHE_TTL: "3600"
+          TEST_GENERATION_CACHE_TTL: "3600"
         run: |
           npm test -- --coverage --passWithNoTests
           python -m pytest --cov=. --cov-report=xml
