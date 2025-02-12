@@ -48,7 +48,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          DISABLE_CYTHON=1 poetry install
+          poetry config installer.max-workers 1
+          PIP_ONLY_BINARY=:all: DISABLE_CYTHON=1 poetry install
           poetry run pip check
       
       - name: Run linting
@@ -100,7 +101,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          DISABLE_CYTHON=1 poetry install
+          poetry config installer.max-workers 1
+          PIP_ONLY_BINARY=:all: DISABLE_CYTHON=1 poetry install
           poetry run pip check
       
       - name: Run tests
