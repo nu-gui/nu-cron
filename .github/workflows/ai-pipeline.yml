@@ -33,11 +33,17 @@ jobs:
           cache: 'pip'
       
       - name: Install dependencies
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_URL: "redis://localhost:6379/0"
+          CODE_GENERATION_CACHE_TTL: "3600"
+          TEST_GENERATION_CACHE_TTL: "3600"
         run: |
           sudo apt-get update
-          sudo apt-get install -y libyaml-dev
+          sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip wheel setuptools
           pip install -r requirements.txt
       
       - name: Run linting
@@ -72,11 +78,17 @@ jobs:
           cache: 'pip'
       
       - name: Install dependencies
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_URL: "redis://localhost:6379/0"
+          CODE_GENERATION_CACHE_TTL: "3600"
+          TEST_GENERATION_CACHE_TTL: "3600"
         run: |
           sudo apt-get update
-          sudo apt-get install -y libyaml-dev
+          sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip wheel setuptools
           pip install -r requirements.txt
       
       - name: Run tests
