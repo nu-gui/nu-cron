@@ -6,11 +6,14 @@ import json
 from application.src.services.code_generation.code_generator import CodeGenerator
 
 @pytest.fixture
-def code_generator():
-    with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.Completion.create') as mock_openai_create:
+def mock_openai_create():
+    with patch('openai.Completion.create') as mock:
+        yield mock
+
+@pytest.fixture
+def code_generator(mock_openai_create):
+    with patch('redis.Redis.from_url') as mock_redis:
         mock_redis.return_value = Mock()
-        mock_openai_create.return_value = Mock()
         yield CodeGenerator()
 
 @pytest.mark.asyncio
@@ -19,7 +22,7 @@ async def test_generate_code_success(code_generator):
     requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="def authenticate_user(): pass"))]
+    mock_response.choices = [Mock(text="def authenticate_user(): pass")]
     mock_openai_create.return_value = mock_response
     
     # Test
@@ -50,7 +53,7 @@ async def test_generate_code_with_cache(code_generator):
     
     # Assertions
     assert result == cached_result
-    code_generator.openai_client.chat.completions.create.assert_not_called()
+    mock_openai_create.assert_not_called()
 
 @pytest.mark.asyncio
 async def test_review_code_success(code_generator):

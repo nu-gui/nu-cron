@@ -6,11 +6,14 @@ import json
 from application.src.services.testing.test_generator import TestGenerator
 
 @pytest.fixture
-def test_generator():
-    with patch('redis.Redis.from_url') as mock_redis, \
-         patch('openai.Completion.create') as mock_openai_create:
+def mock_openai_create():
+    with patch('openai.Completion.create') as mock:
+        yield mock
+
+@pytest.fixture
+def test_generator(mock_openai_create):
+    with patch('redis.Redis.from_url') as mock_redis:
         mock_redis.return_value = Mock()
-        mock_openai_create.return_value = Mock()
         yield TestGenerator()
 
 @pytest.mark.asyncio
@@ -20,7 +23,7 @@ async def test_generate_tests_success(test_generator):
     language = "python"
     test_type = "unit"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="def test_add(): assert add(1, 2) == 3"))]
+    mock_response.choices = [Mock(text="def test_add(): assert add(1, 2) == 3")]
     mock_openai_create.return_value = mock_response
     
     # Test
@@ -54,7 +57,7 @@ async def test_generate_tests_with_cache(test_generator):
     
     # Assertions
     assert result == cached_result
-    test_generator.openai_client.chat.completions.create.assert_not_called()
+    mock_openai_create.assert_not_called()
 
 @pytest.mark.asyncio
 async def test_validate_tests_success(test_generator):
