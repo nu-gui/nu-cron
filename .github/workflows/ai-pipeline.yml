@@ -76,6 +76,8 @@ jobs:
           pip install -r requirements.txt
       
       - name: Run tests
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           npm test -- --passWithNoTests
           python -m pytest
