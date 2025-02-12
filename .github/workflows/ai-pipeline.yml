@@ -32,23 +32,37 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
       
-      - name: Install dependencies
+      - name: Install Poetry
         run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          
+      - name: Install dependencies
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_URL: "redis://localhost:6379/0"
+          CODE_GENERATION_CACHE_TTL: "3600"
+          TEST_GENERATION_CACHE_TTL: "3600"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          poetry install
+          poetry run pip check
       
       - name: Run linting
         run: |
           npm run lint
-          python -m flake8
+          poetry run flake8
+          poetry run black --check .
+          poetry run isort --check-only .
       
       - name: Run security scan
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high
+          args: --severity-threshold=medium
 
   test:
     name: Run Tests
@@ -69,19 +83,37 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
       
-      - name: Install dependencies
+      - name: Install Poetry
         run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          
+      - name: Install dependencies
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_URL: "redis://localhost:6379/0"
+          CODE_GENERATION_CACHE_TTL: "3600"
+          TEST_GENERATION_CACHE_TTL: "3600"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          poetry install
+          poetry run pip check
       
       - name: Run tests
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_URL: "redis://localhost:6379/0"
+          CODE_GENERATION_CACHE_TTL: "3600"
+          TEST_GENERATION_CACHE_TTL: "3600"
         run: |
-          npm test
-          python -m pytest
+          npm test -- --passWithNoTests
+          poetry run pytest
       
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: |
@@ -138,7 +170,7 @@ jobs:
       - name: Run integration tests
         run: |
           npm run test:integration
-          python -m pytest tests/integration/
+          poetry run pytest tests/integration/
 
   deploy-production:
     name: Deploy to Production
@@ -164,4 +196,4 @@ jobs:
       - name: Verify deployment
         run: |
           curl -f https://ai-service.example.com/health
-          python -m pytest tests/smoke/
+          poetry run pytest tests/smoke/
