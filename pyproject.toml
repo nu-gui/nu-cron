@@ -10,16 +10,15 @@ packages = [{include = "application"}]
 python = ">=3.12,<3.13"
 fastapi = "0.95.2"  # Using older version for pydantic v1 compatibility
 uvicorn = "0.27.0"
-python-dotenv = "1.0.0"
+python-dotenv = "1.0.0"  # Using dotenv for environment variables
 sqlalchemy = "2.0.25"
 alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
 pydantic = "1.10.13"  # Using v1 for langchain compatibility
-python-dotenv = "1.0.0"  # Using dotenv instead of pydantic-settings
 PyYAML = "6.0.1"  # Latest version for Python 3.12
-openai = "0.28.1"  # Last version before typing-extensions conflict
-anthropic = "0.8.1"  # Latest version
+openai = "0.27.8"  # Version before typing-extensions requirement
+anthropic = "0.2.8"  # Version before typing-extensions requirement
 langchain = "0.0.352"  # Version compatible with pydantic v1
 pinecone-client = "2.2.4"  # Older version for compatibility
 
