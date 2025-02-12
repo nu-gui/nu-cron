@@ -2,8 +2,8 @@ from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ...models.database import User
-from ...services.auth_service import get_current_user
+from application.src.models.database import User
+from application.src.services.auth_service import get_current_user
 from .test_generator import TestGenerator
 
 router = APIRouter()
