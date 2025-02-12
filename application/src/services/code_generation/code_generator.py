@@ -82,28 +82,26 @@ class CodeGenerator:
         """
         Create a detailed prompt for code generation
         """
-        prompt = f"""Generate {language} code based on the following requirements:
-        
-Requirements:
-{json.dumps(requirements, indent=2)}
-
-Language: {language}
-"""
+        prompt = (
+            f"Generate {language} code based on requirements:\n\n"
+            f"Requirements:\n{json.dumps(requirements, indent=2)}\n\n"
+            f"Language: {language}\n"
+        )
 
         if context:
-            prompt += f"""
-Additional Context:
-{json.dumps(context, indent=2)}
-"""
+            prompt += (
+                "\nAdditional Context:\n"
+                f"{json.dumps(context, indent=2)}\n"
+            )
 
-        prompt += """
-Please provide:
-1. Implementation following best practices and design patterns
-2. Error handling and input validation
-3. Comments explaining complex logic
-4. Type hints (if applicable)
-5. Security considerations
-"""
+        prompt += (
+            "\nPlease provide:\n"
+            "1. Implementation following best practices\n"
+            "2. Error handling and input validation\n"
+            "3. Comments explaining complex logic\n"
+            "4. Type hints (if applicable)\n"
+            "5. Security considerations\n"
+        )
 
         return prompt
 
@@ -137,7 +135,7 @@ Please provide:
                 temperature=0.7,
                 max_tokens=2000
             )
-            
+
             review_result = response.choices[0].message.content
             return {
                 "status": "success",
@@ -146,7 +144,7 @@ Please provide:
                 "timestamp": datetime.utcnow().isoformat(),
                 "model_used": "gpt-4-turbo-preview"
             }
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
