@@ -181,25 +181,22 @@ class AIAssistant:
         )
         
         try:
+            # Generate assessment using selected model
             if isinstance(client, openai.OpenAI):
+                messages = [{"role": "user", "content": prompt}]
                 completion = await client.chat.completions.create(
                     model=model,
-                    messages=[{
-                        "role": "user",
-                        "content": prompt
-                    }],
+                    messages=messages,
                     temperature=0.7,
                     max_tokens=2000
                 )
                 assessment = completion.choices[0].message.content
             elif isinstance(client, anthropic.Anthropic):
+                messages = [{"role": "user", "content": prompt}]
                 msg = await client.messages.create(
                     model=model,
                     max_tokens=2000,
-                    messages=[{
-                        "role": "user",
-                        "content": prompt
-                    }]
+                    messages=messages
                 )
                 assessment = msg.content[0].text
 
