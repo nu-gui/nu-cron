@@ -6,7 +6,7 @@ import logging
 import os
 import subprocess
 import yaml
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,10 +63,14 @@ class EnvironmentManager:
             # Configure monitoring
             self._setup_monitoring(env_name, "docker")
 
-            logger.info(f"Docker environment '{env_name}' created successfully")
+            logger.info(
+                f"Docker environment '{env_name}' created successfully"
+            )
             return True
         except Exception as e:
-            logger.error(f"Failed to create Docker environment: {e}")
+            logger.error(
+                f"Failed to create Docker environment: {e}"
+            )
             return False
 
     def _create_kubernetes_environment(self, env_name: str) -> bool:
@@ -114,10 +118,15 @@ class EnvironmentManager:
             # Configure monitoring
             self._setup_monitoring(env_name, "kubernetes")
 
-            logger.info(f"Kubernetes environment '{env_name}' created successfully")
+            logger.info(
+                f"Kubernetes environment '{env_name}' "
+                "created successfully"
+            )
             return True
         except Exception as e:
-            logger.error(f"Failed to create Kubernetes environment: {e}")
+            logger.error(
+                f"Failed to create Kubernetes environment: {e}"
+            )
             return False
 
     def _setup_monitoring(self, env_name: str, env_type: str) -> None:
@@ -165,26 +174,36 @@ class EnvironmentManager:
             env_type: Type of environment (docker or kubernetes)
 
         Returns:
-            bool: True if environment was destroyed successfully, False otherwise
+            bool: True if environment was destroyed successfully,
+                False otherwise
         """
         try:
             if env_type == "docker":
                 cmd = f"docker-compose -p {env_name} down -v"
                 subprocess.run(cmd, shell=True, check=True)
             elif env_type == "kubernetes":
-                namespace = (
-                    self.config['environments']['kubernetes'][env_name]['namespace']
-                )
+                env_config = self.config['environments']['kubernetes']
+                namespace = env_config[env_name]['namespace']
                 cmd = f"kubectl delete namespace {namespace}"
                 subprocess.run(cmd, shell=True, check=True)
 
-            logger.info(f"Environment '{env_name}' destroyed successfully")
+            logger.info(
+                f"Environment '{env_name}' "
+                "destroyed successfully"
+            )
             return True
         except Exception as e:
-            logger.error(f"Failed to destroy environment: {e}")
+            logger.error(
+                f"Failed to destroy environment: {e}"
+            )
             return False
 
-    def scale_environment(self, env_name: str, service: str, replicas: int) -> bool:
+    def scale_environment(
+        self,
+        env_name: str,
+        service: str,
+        replicas: int
+    ) -> bool:
         """Scale services in an environment.
 
         Args:
@@ -193,7 +212,8 @@ class EnvironmentManager:
             replicas: Number of replicas to scale to
 
         Returns:
-            bool: True if service was scaled successfully, False otherwise
+            bool: True if service was scaled successfully,
+                False otherwise
         """
         try:
             env_config = self.config['environments']['kubernetes'][env_name]
@@ -205,25 +225,52 @@ class EnvironmentManager:
             )
             subprocess.run(cmd, shell=True, check=True)
 
-            logger.info(f"Scaled service '{service}' to {replicas} replicas")
+            logger.info(
+                f"Scaled service '{service}' "
+                f"to {replicas} replicas"
+            )
             return True
         except Exception as e:
-            logger.error(f"Failed to scale environment: {e}")
+            logger.error(
+                f"Failed to scale environment: {e}"
+            )
             return False
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Manage development environments")
+    parser = argparse.ArgumentParser(
+        description="Manage development environments"
+    )
     parser.add_argument("action", choices=["create", "destroy", "scale"])
-    parser.add_argument("--env-name", required=True, help="Environment name")
-    parser.add_argument("--env-type", choices=["docker", "kubernetes"], required=True)
-    parser.add_argument("--service", help="Service name for scaling")
-    parser.add_argument("--replicas", type=int, help="Number of replicas for scaling")
-    parser.add_argument("--config", default="devin/settings/ai_config.yaml", help="Path to config file")
-    
+    parser.add_argument(
+        "--env-name",
+        required=True,
+        help="Environment name"
+    )
+    parser.add_argument(
+        "--env-type",
+        choices=["docker", "kubernetes"],
+        required=True
+    )
+    parser.add_argument(
+        "--service",
+        help="Service name for scaling"
+    )
+    parser.add_argument(
+        "--replicas",
+        type=int,
+        help="Number of replicas for scaling"
+    )
+    parser.add_argument(
+        "--config",
+        default="devin/settings/ai_config.yaml",
+        help="Path to config file"
+    )
+
     args = parser.parse_args()
-    
+
     manager = EnvironmentManager(args.config)
-    
+
     if args.action == "create":
         success = manager.create_environment(args.env_name, args.env_type)
     elif args.action == "destroy":
@@ -232,10 +279,14 @@ def main():
         if not args.service or not args.replicas:
             logger.error("Service and replicas required for scaling")
             return
-        success = manager.scale_environment(args.env_name, args.service, args.replicas)
-    
+        success = manager.scale_environment(
+            args.env_name,
+            args.service,
+            args.replicas
+        )
     if not success:
         logger.error("Operation failed")
+
 
 if __name__ == "__main__":
     main()
