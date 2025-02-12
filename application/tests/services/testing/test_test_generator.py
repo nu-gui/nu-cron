@@ -6,18 +6,16 @@ import json
 from application.src.services.testing.test_generator import TestGenerator
 
 @pytest.fixture
-def mock_openai_create():
-    with patch('openai.Completion.create') as mock:
-        yield mock
-
-@pytest.fixture
-def test_generator(mock_openai_create):
-    with patch('redis.Redis.from_url') as mock_redis:
+def test_generator():
+    with patch('redis.Redis.from_url') as mock_redis, \
+         patch('openai.Completion.create') as mock_openai_create:
         mock_redis.return_value = Mock()
-        yield TestGenerator()
+        mock_redis.return_value.get.return_value = None  # Default to cache miss
+        yield TestGenerator(), mock_openai_create
 
 @pytest.mark.asyncio
 async def test_generate_tests_success(test_generator):
+    test_generator, mock_openai_create = test_generator
     # Mock data
     code = "def add(a, b): return a + b"
     language = "python"
@@ -38,6 +36,7 @@ async def test_generate_tests_success(test_generator):
 
 @pytest.mark.asyncio
 async def test_generate_tests_with_cache(test_generator):
+    test_generator, mock_openai_create = test_generator
     # Mock data
     code = "def add(a, b): return a + b"
     language = "python"
@@ -61,6 +60,7 @@ async def test_generate_tests_with_cache(test_generator):
 
 @pytest.mark.asyncio
 async def test_validate_tests_success(test_generator):
+    test_generator, mock_openai_create = test_generator
     # Mock data
     tests = "def test_add(): assert add(1, 2) == 3"
     code = "def add(a, b): return a + b"
@@ -80,6 +80,7 @@ async def test_validate_tests_success(test_generator):
 
 @pytest.mark.asyncio
 async def test_generate_performance_tests_success(test_generator):
+    test_generator, mock_openai_create = test_generator
     # Mock data
     code = "def process_data(): pass"
     language = "python"
@@ -100,6 +101,7 @@ async def test_generate_performance_tests_success(test_generator):
 
 @pytest.mark.asyncio
 async def test_generate_tests_error_handling(test_generator):
+    test_generator, mock_openai_create = test_generator
     # Mock data
     code = "invalid code"
     language = "unknown"

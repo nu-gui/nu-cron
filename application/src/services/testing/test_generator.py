@@ -147,23 +147,14 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert test validator. Analyze tests for "
-                            "completeness and coverage."
-                        )
-                    },
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert test validator. Analyze tests for completeness and coverage.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            validation_result = response.choices[0].message.content
+            validation_result = response.choices[0].text.strip()
             return {
                 "status": "success",
                 "validation": validation_result,
@@ -220,23 +211,14 @@ Please analyze:
             prompt = self._create_performance_test_prompt(
                 code, language, performance_criteria
             )
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert in performance testing. Generate "
-                            "comprehensive performance tests."
-                        )
-                    },
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert in performance testing. Generate comprehensive performance tests.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            performance_tests = response.choices[0].message.content
+            performance_tests = response.choices[0].text.strip()
             return {
                 "status": "success",
                 "performance_tests": performance_tests,
