@@ -23,7 +23,10 @@ def code_generator():
 async def test_generate_code_success(code_generator):
     """Test successful code generation with OpenAI."""
     # Mock data
-    requirements = {"feature": "user authentication", "language": "python"}
+    requirements = {
+        "feature": "user authentication",
+        "language": "python"
+    }
     language = "python"
     mock_response = Mock()
     mock_response.choices = [
@@ -42,11 +45,15 @@ async def test_generate_code_success(code_generator):
     assert result["language"] == "python"
     assert result["model_used"] == "gpt-4-turbo-preview"
 
+
 @pytest.mark.asyncio
 async def test_generate_code_with_cache(code_generator):
     """Test code generation with Redis cache hit."""
     # Mock data
-    requirements = {"feature": "user authentication", "language": "python"}
+    requirements = {
+        "feature": "user authentication",
+        "language": "python"
+    }
     language = "python"
     cached_result = {
         "status": "success",
@@ -90,6 +97,7 @@ async def test_review_code_success(code_generator):
     assert result["language"] == "python"
     assert result["model_used"] == "gpt-4-turbo-preview"
 
+
 @pytest.mark.asyncio
 async def test_optimize_code_success(code_generator):
     """Test successful code optimization with OpenAI."""
@@ -99,14 +107,20 @@ async def test_optimize_code_success(code_generator):
     optimization_goals = ["performance", "memory"]
     mock_response = Mock()
     mock_response.choices = [
-        Mock(message=Mock(content="Optimized code: def fast_function(): pass"))
+        Mock(
+            message=Mock(
+                content="Optimized code: def fast_function(): pass"
+            )
+        )
     ]
     code_generator.openai_client.chat.completions.create = Mock(
         return_value=mock_response
     )
 
     # Test
-    result = await code_generator.optimize_code(code, language, optimization_goals)
+    result = await code_generator.optimize_code(
+        code, language, optimization_goals
+    )
 
     # Assertions
     assert result["status"] == "success"
