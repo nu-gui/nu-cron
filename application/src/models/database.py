@@ -41,7 +41,7 @@ class VectorStore(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String)
     embedding = Column(JSON)  # Store vector embeddings
-    metadata = Column(JSON)
+    vector_metadata = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
     project_id = Column(Integer, ForeignKey("projects.id"))
     project = relationship("Project")
