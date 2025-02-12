@@ -10,12 +10,20 @@ import openai
 import pinecone
 from langchain.embeddings import OpenAIEmbeddings
 
+
 class AIAssistant:
+    """Manages AI-powered code generation and analysis tasks."""
+
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.claude_client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        """Initialize AI assistant with required API clients."""
+        self.openai_client = openai.OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY")
+        )
+        self.claude_client = anthropic.Anthropic(
+            api_key=os.getenv("ANTHROPIC_API_KEY")
+        )
         self.embeddings = OpenAIEmbeddings()
-        
+
         # Initialize Pinecone
         pinecone.init(
             api_key=os.getenv("PINECONE_API_KEY"),
@@ -108,9 +116,15 @@ class AIAssistant:
                 "metadata": metadata
             }])
             
+            # Parse analysis result
+            parsed_analysis = (
+                json.loads(analysis)
+                if isinstance(analysis, str)
+                else analysis
+            )
             return {
                 "status": "success",
-                "analysis": json.loads(analysis) if isinstance(analysis, str) else analysis,
+                "analysis": parsed_analysis,
                 "model_used": model
             }
             
@@ -174,10 +188,17 @@ class AIAssistant:
                     }]
                 )
                 assessment = msg.content[0].text
+
+            # Parse assessment result
+            parsed_assessment = (
+                json.loads(assessment)
+                if isinstance(assessment, str)
+                else assessment
+            )
             
             return {
                 "status": "success",
-                "assessment": json.loads(assessment) if isinstance(assessment, str) else assessment,
+                "assessment": parsed_assessment,
                 "model_used": model
             }
             
