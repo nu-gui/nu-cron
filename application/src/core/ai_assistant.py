@@ -103,19 +103,25 @@ class AIAssistant:
                 analysis = msg.content[0].text
             
             # Store analysis in vector store
-            embedding = await self.embeddings.aembed_query(analysis)
+            query_text = analysis[:1000]  # Limit text length
+            embedding = await self.embeddings.aembed_query(query_text)
             timestamp = datetime.utcnow()
             vector_id = f"req-{timestamp.timestamp()}"
+            
+            # Create vector metadata
             metadata = {
                 "project_id": project_data.get("id"),
                 "type": "requirement_analysis",
                 "timestamp": timestamp.isoformat()
             }
-            self.index.upsert(vectors=[{
+            
+            # Store in Pinecone
+            vector = {
                 "id": vector_id,
                 "values": embedding,
                 "metadata": metadata
-            }])
+            }
+            self.index.upsert(vectors=[vector])
             
             # Parse analysis result
             parsed_analysis = (
