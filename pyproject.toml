@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "application"}]
 
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+python = ">=3.11,<3.12"
 uvicorn = "0.27.0"
 python-dotenv = "1.0.0"  # Using dotenv for environment variables
 sqlalchemy = "2.0.25"
