@@ -13,7 +13,7 @@ PyYAML==6.0.1  # Required for Python 3.12
 # AI and ML dependencies
 openai==1.10.0
 anthropic==0.8.1
-langchain==0.0.352
+langchain==0.1.1  # Updated to support pydantic v2
 pinecone-client==3.0.2
 
 # Code Quality and Development
