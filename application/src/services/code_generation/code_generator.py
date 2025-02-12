@@ -115,7 +115,9 @@ Please provide:
         Review code using Claude 3 for better analysis
         """
         try:
-            prompt = self._create_code_review_prompt(code, language, context)
+            prompt = self._create_code_review_prompt(
+                code, language, context
+            )
             # Note: Claude integration will be added here
             # For now, using GPT-4 as a placeholder
             response = await self.openai_client.chat.completions.create(
@@ -185,7 +187,9 @@ Additional Context:
         Optimize code for performance and efficiency
         """
         try:
-            prompt = self._create_optimization_prompt(code, language, optimization_goals)
+            prompt = self._create_optimization_prompt(
+                code, language, optimization_goals
+            )
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
@@ -201,7 +205,7 @@ Additional Context:
                 temperature=0.7,
                 max_tokens=2000
             )
-            
+
             optimized_code = response.choices[0].message.content
             return {
                 "status": "success",
@@ -211,7 +215,7 @@ Additional Context:
                 "model_used": "gpt-4-turbo-preview",
                 "optimization_goals": optimization_goals
             }
-            
+
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
