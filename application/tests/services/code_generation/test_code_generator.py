@@ -6,18 +6,16 @@ import json
 from application.src.services.code_generation.code_generator import CodeGenerator
 
 @pytest.fixture
-def mock_openai_create():
-    with patch('openai.Completion.create') as mock:
-        yield mock
-
-@pytest.fixture
-def code_generator(mock_openai_create):
-    with patch('redis.Redis.from_url') as mock_redis:
+def code_generator():
+    with patch('redis.Redis.from_url') as mock_redis, \
+         patch('openai.Completion.create') as mock_openai_create:
         mock_redis.return_value = Mock()
-        yield CodeGenerator()
+        mock_redis.return_value.get.return_value = None  # Default to cache miss
+        yield CodeGenerator(), mock_openai_create
 
 @pytest.mark.asyncio
 async def test_generate_code_success(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
@@ -36,6 +34,7 @@ async def test_generate_code_success(code_generator):
 
 @pytest.mark.asyncio
 async def test_generate_code_with_cache(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
@@ -57,6 +56,7 @@ async def test_generate_code_with_cache(code_generator):
 
 @pytest.mark.asyncio
 async def test_review_code_success(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     code = "def authenticate_user(): pass"
     language = "python"
@@ -75,6 +75,7 @@ async def test_review_code_success(code_generator):
 
 @pytest.mark.asyncio
 async def test_optimize_code_success(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     code = "def slow_function(): pass"
     language = "python"
@@ -95,6 +96,7 @@ async def test_optimize_code_success(code_generator):
 
 @pytest.mark.asyncio
 async def test_generate_code_error_handling(code_generator):
+    code_generator, mock_openai_create = code_generator
     # Mock data
     requirements = {"feature": "invalid"}
     language = "unknown"
