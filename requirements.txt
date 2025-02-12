@@ -7,7 +7,7 @@ alembic==1.13.1
 psycopg2-binary==2.9.9
 redis==5.0.1
 pydantic==1.10.13  # Using v1 for langchain compatibility
-pydantic-settings==0.2.5  # Using older version for pydantic v1
+pydantic-settings==1.2.0  # Using version compatible with PyYAML 6.0.1
 PyYAML==6.0.1  # Required for Python 3.12
 
 # AI and ML dependencies
