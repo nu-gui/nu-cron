@@ -1,13 +1,13 @@
 # Core dependencies
-fastapi==0.109.0
+fastapi==0.95.2  # Using older version for pydantic v1 compatibility
 uvicorn==0.27.0
 python-dotenv==1.0.0
 sqlalchemy==2.0.25
 alembic==1.13.1
 psycopg2-binary==2.9.9
 redis==5.0.1
-pydantic==2.5.3
-pydantic-settings==2.1.0
+pydantic==1.10.13  # Using v1 for langchain compatibility
+pydantic-settings==0.2.5  # Using older version for pydantic v1
 PyYAML==6.0.1  # Required for Python 3.12
 
 # AI and ML dependencies
