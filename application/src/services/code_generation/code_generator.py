@@ -54,7 +54,9 @@ class CodeGenerator:
             return result
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_code_generation_prompt(
         self,
@@ -120,7 +122,9 @@ Please provide:
             }
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_code_review_prompt(
         self,
@@ -180,7 +184,9 @@ Additional Context:
             }
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_optimization_prompt(
         self,

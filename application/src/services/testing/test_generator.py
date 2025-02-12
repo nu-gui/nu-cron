@@ -48,23 +48,14 @@ class TestGenerator:
             prompt = self._create_test_generation_prompt(
                 code, language, test_type, context
             )
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",  # Will be replaced with Mistral 7B
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert test engineer. Generate "
-                            "comprehensive tests based on the provided code."
-                        )
-                    },
-                    {"role": "user", "content": prompt}
-                ],
+            response = await openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"You are an expert test engineer. Generate comprehensive tests based on the provided code.\n\n{prompt}",
                 temperature=0.7,
                 max_tokens=2000
             )
             
-            generated_tests = response.choices[0].message.content
+            generated_tests = response.choices[0].text.strip()
             result = {
                 "status": "success",
                 "tests": generated_tests,
@@ -84,7 +75,9 @@ class TestGenerator:
             return result
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_test_generation_prompt(
         self,
@@ -164,7 +157,9 @@ Additional Context:
             }
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_test_validation_prompt(
         self,
@@ -229,7 +224,9 @@ Please analyze:
             }
             
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_performance_test_prompt(
         self,
