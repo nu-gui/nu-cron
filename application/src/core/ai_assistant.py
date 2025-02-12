@@ -109,7 +109,7 @@ class AIAssistant:
                     messages=messages
                 )
                 analysis = msg.content[0].text
-            
+
             # Store analysis in vector store
             query_text = analysis[:1000]  # Limit text length
             embedding = await self.embeddings.aembed_query(query_text)
@@ -142,7 +142,6 @@ class AIAssistant:
                 "analysis": parsed_analysis,
                 "model_used": model
             }
-            
         except Exception as e:
             return {
                 "status": "error",
