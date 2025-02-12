@@ -5,6 +5,7 @@ from typing import Any, Dict
 from fastapi import APIRouter, Depends, HTTPException
 
 from application.src.core.ai_assistant import AIAssistant
+
 from ...models.database import User
 from ...services.auth_service import get_current_user
 
