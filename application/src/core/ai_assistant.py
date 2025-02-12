@@ -63,7 +63,8 @@ class AIAssistant:
         """Analyze project requirements and generate structured documentation.
 
         Args:
-            project_data: Dictionary containing project details and requirements
+            project_data: Dict containing project details and
+                requirements
 
         Returns:
             Dict containing analysis results and metadata
@@ -92,8 +93,8 @@ class AIAssistant:
         
         try:
             # Generate analysis using selected model
+            messages = [{"role": "user", "content": prompt}]
             if isinstance(client, openai.OpenAI):
-                messages = [{"role": "user", "content": prompt}]
                 completion = await client.chat.completions.create(
                     model=model,
                     messages=messages,
@@ -102,7 +103,6 @@ class AIAssistant:
                 )
                 analysis = completion.choices[0].message.content
             elif isinstance(client, anthropic.Anthropic):
-                messages = [{"role": "user", "content": prompt}]
                 msg = await client.messages.create(
                     model=model,
                     max_tokens=2000,
@@ -115,14 +115,14 @@ class AIAssistant:
             embedding = await self.embeddings.aembed_query(query_text)
             timestamp = datetime.utcnow()
             vector_id = f"req-{timestamp.timestamp()}"
-            
+
             # Create vector metadata
             metadata = {
                 "project_id": project_data.get("id"),
                 "type": "requirement_analysis",
                 "timestamp": timestamp.isoformat()
             }
-            
+
             # Store in Pinecone
             vector = {
                 "id": vector_id,
@@ -168,11 +168,13 @@ class AIAssistant:
 
         model, client = await self.select_model("requirement_analysis")
 
+        # Format risk assessment prompt
+        similar = json.dumps(similar_projects)
         prompt = (
-            "Based on the project context and similar projects, perform a risk "
-            "assessment and feasibility analysis.\n"
+            "Based on the project context and similar projects, perform a "
+            "risk assessment and feasibility analysis.\n"
             f"Project ID: {project_id}\n"
-            f"Similar Projects: {json.dumps(similar_projects)}\n\n"
+            f"Similar Projects: {similar}\n\n"
             "Please provide:\n"
             "1. Technical risks and mitigation strategies\n"
             "2. Resource requirements and constraints\n"
@@ -183,8 +185,8 @@ class AIAssistant:
         
         try:
             # Generate assessment using selected model
+            messages = [{"role": "user", "content": prompt}]
             if isinstance(client, openai.OpenAI):
-                messages = [{"role": "user", "content": prompt}]
                 completion = await client.chat.completions.create(
                     model=model,
                     messages=messages,
@@ -193,7 +195,6 @@ class AIAssistant:
                 )
                 assessment = completion.choices[0].message.content
             elif isinstance(client, anthropic.Anthropic):
-                messages = [{"role": "user", "content": prompt}]
                 msg = await client.messages.create(
                     model=model,
                     max_tokens=2000,
