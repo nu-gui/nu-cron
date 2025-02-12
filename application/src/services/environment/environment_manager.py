@@ -63,7 +63,9 @@ class EnvironmentManager:
             # Configure monitoring
             self._setup_monitoring(env_name, "docker")
 
-            logger.info(f"Docker environment '{env_name}' created successfully")
+            logger.info(
+                f"Docker environment '{env_name}' created successfully"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to create Docker environment: {e}")
@@ -114,7 +116,9 @@ class EnvironmentManager:
             # Configure monitoring
             self._setup_monitoring(env_name, "kubernetes")
 
-            logger.info(f"Kubernetes environment '{env_name}' " "created successfully")
+            logger.info(
+                f"Kubernetes environment '{env_name}' " "created successfully"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to create Kubernetes environment: {e}")
@@ -135,7 +139,9 @@ class EnvironmentManager:
                     "scrape_configs": [
                         {
                             "job_name": f"{env_name}-monitoring",
-                            "static_configs": [{"targets": [f"{env_name}:9090"]}],
+                            "static_configs": [
+                                {"targets": [f"{env_name}:9090"]}
+                            ],
                         }
                     ],
                 }
@@ -184,7 +190,9 @@ class EnvironmentManager:
             logger.error(f"Failed to destroy environment: {e}")
             return False
 
-    def scale_environment(self, env_name: str, service: str, replicas: int) -> bool:
+    def scale_environment(
+        self, env_name: str, service: str, replicas: int
+    ) -> bool:
         """Scale services in an environment.
 
         Args:
@@ -206,7 +214,9 @@ class EnvironmentManager:
             )
             subprocess.run(cmd, shell=True, check=True)
 
-            logger.info(f"Scaled service '{service}' " f"to {replicas} replicas")
+            logger.info(
+                f"Scaled service '{service}' " f"to {replicas} replicas"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to scale environment: {e}")
@@ -214,14 +224,22 @@ class EnvironmentManager:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Manage development environments")
+    parser = argparse.ArgumentParser(
+        description="Manage development environments"
+    )
     parser.add_argument("action", choices=["create", "destroy", "scale"])
     parser.add_argument("--env-name", required=True, help="Environment name")
-    parser.add_argument("--env-type", choices=["docker", "kubernetes"], required=True)
-    parser.add_argument("--service", help="Service name for scaling")
-    parser.add_argument("--replicas", type=int, help="Number of replicas for scaling")
     parser.add_argument(
-        "--config", default="devin/settings/ai_config.yaml", help="Path to config file"
+        "--env-type", choices=["docker", "kubernetes"], required=True
+    )
+    parser.add_argument("--service", help="Service name for scaling")
+    parser.add_argument(
+        "--replicas", type=int, help="Number of replicas for scaling"
+    )
+    parser.add_argument(
+        "--config",
+        default="devin/settings/ai_config.yaml",
+        help="Path to config file",
     )
 
     args = parser.parse_args()
@@ -236,7 +254,9 @@ def main():
         if not args.service or not args.replicas:
             logger.error("Service and replicas required for scaling")
             return
-        success = manager.scale_environment(args.env_name, args.service, args.replicas)
+        success = manager.scale_environment(
+            args.env_name, args.service, args.replicas
+        )
     if not success:
         logger.error("Operation failed")
 

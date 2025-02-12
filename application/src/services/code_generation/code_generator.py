@@ -60,7 +60,9 @@ class CodeGenerator:
             }
 
             # Cache the result
-            self.redis_client.setex(cache_key, self.cache_ttl, json.dumps(result))
+            self.redis_client.setex(
+                cache_key, self.cache_ttl, json.dumps(result)
+            )
 
             return result
 
@@ -83,7 +85,9 @@ class CodeGenerator:
         )
 
         if context:
-            prompt += "\nAdditional Context:\n" f"{json.dumps(context, indent=2)}\n"
+            prompt += (
+                "\nAdditional Context:\n" f"{json.dumps(context, indent=2)}\n"
+            )
 
         prompt += (
             "\nPlease provide:\n"
@@ -97,7 +101,10 @@ class CodeGenerator:
         return prompt
 
     async def review_code(
-        self, code: str, language: str, context: Optional[Dict[str, Any]] = None
+        self,
+        code: str,
+        language: str,
+        context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Review code using Claude 3 for better analysis
@@ -135,7 +142,10 @@ class CodeGenerator:
             raise HTTPException(status_code=500, detail=str(e))
 
     def _create_code_review_prompt(
-        self, code: str, language: str, context: Optional[Dict[str, Any]] = None
+        self,
+        code: str,
+        language: str,
+        context: Optional[Dict[str, Any]] = None,
     ) -> str:
         """
         Create a detailed prompt for code review
@@ -161,7 +171,10 @@ Additional Context:
         return prompt
 
     async def optimize_code(
-        self, code: str, language: str, optimization_goals: Optional[List[str]] = None
+        self,
+        code: str,
+        language: str,
+        optimization_goals: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Optimize code for performance and efficiency
@@ -200,7 +213,10 @@ Additional Context:
             raise HTTPException(status_code=500, detail=str(e))
 
     def _create_optimization_prompt(
-        self, code: str, language: str, optimization_goals: Optional[List[str]] = None
+        self,
+        code: str,
+        language: str,
+        optimization_goals: Optional[List[str]] = None,
     ) -> str:
         """
         Create a detailed prompt for code optimization

@@ -67,7 +67,9 @@ class TestGenerator:
             }
 
             # Cache the result
-            self.redis_client.setex(cache_key, self.cache_ttl, json.dumps(result))
+            self.redis_client.setex(
+                cache_key, self.cache_ttl, json.dumps(result)
+            )
 
             return result
 

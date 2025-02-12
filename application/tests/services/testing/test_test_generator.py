@@ -60,7 +60,9 @@ async def test_generate_tests_with_cache(test_generator):
         "timestamp": datetime.utcnow().isoformat(),
         "model_used": "gpt-4-turbo-preview",
     }
-    test_generator.redis_client.get.return_value = json.dumps(cached_result).encode()
+    test_generator.redis_client.get.return_value = json.dumps(
+        cached_result
+    ).encode()
 
     # Test
     result = await test_generator.generate_tests(code, language, test_type)

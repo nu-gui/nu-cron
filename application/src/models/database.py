@@ -39,7 +39,9 @@ class Project(Base):
     description = Column(String)
     requirements = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
     created_by_id = Column(Integer, ForeignKey("users.id"))
     created_by = relationship("User")
 
@@ -83,7 +85,9 @@ class Environment(Base):
     project_id = Column(Integer, ForeignKey("projects.id"))
     project = relationship("Project")
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
 
 def init_db(database_url: str):

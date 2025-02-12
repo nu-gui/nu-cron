@@ -92,7 +92,8 @@ class DeploymentValidator:
                     # Build query parts
                     metric_rate = f"rate({metric}[5m])"
                     latency_query = (
-                        "histogram_quantile(0.95, " f"sum({metric_rate}) by (le))"
+                        "histogram_quantile(0.95, "
+                        f"sum({metric_rate}) by (le))"
                     )
                     latency = self.prom.custom_query(latency_query)
                     # Convert ms to seconds for threshold

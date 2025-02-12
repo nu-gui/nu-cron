@@ -21,7 +21,9 @@ async def generate_tests(
     Generate tests based on code using Mistral 7B
     """
     try:
-        result = await test_generator.generate_tests(code, language, test_type, context)
+        result = await test_generator.generate_tests(
+            code, language, test_type, context
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -29,7 +31,10 @@ async def generate_tests(
 
 @router.post("/validate")
 async def validate_tests(
-    tests: str, code: str, language: str, current_user: User = Depends(get_current_user)
+    tests: str,
+    code: str,
+    language: str,
+    current_user: User = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """
     Validate generated tests for completeness and coverage

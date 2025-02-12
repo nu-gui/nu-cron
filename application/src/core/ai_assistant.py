@@ -36,7 +36,9 @@ class AIAssistant:
         # Set up index
         self.index_name = "ai-sdlc-tasks"
         if self.index_name not in pinecone.list_indexes():
-            pinecone.create_index(name=self.index_name, dimension=1536, metric="cosine")
+            pinecone.create_index(
+                name=self.index_name, dimension=1536, metric="cosine"
+            )
         self.index = pinecone.Index(self.index_name)
 
     async def select_model(self, task_type: str) -> tuple[str, Any]:
@@ -134,7 +136,9 @@ class AIAssistant:
             self.index.upsert(vectors=[vector])
 
             # Parse analysis if needed
-            parsed = json.loads(analysis) if isinstance(analysis, str) else analysis
+            parsed = (
+                json.loads(analysis) if isinstance(analysis, str) else analysis
+            )
 
             # Return formatted response
             return {
@@ -199,7 +203,9 @@ class AIAssistant:
 
             # Parse assessment if needed
             assessment_data = (
-                json.loads(assessment) if isinstance(assessment, str) else assessment
+                json.loads(assessment)
+                if isinstance(assessment, str)
+                else assessment
             )
 
             # Return formatted response

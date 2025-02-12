@@ -6,7 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from application.src.services.code_generation.code_generator import CodeGenerator
+from application.src.services.code_generation.code_generator import (
+    CodeGenerator,
+)
 
 
 @pytest.fixture
@@ -57,7 +59,9 @@ async def test_generate_code_with_cache(code_generator):
         "timestamp": datetime.utcnow().isoformat(),
         "model_used": "gpt-4-turbo-preview",
     }
-    code_generator.redis_client.get.return_value = json.dumps(cached_result).encode()
+    code_generator.redis_client.get.return_value = json.dumps(
+        cached_result
+    ).encode()
 
     # Test
     result = await code_generator.generate_code(requirements, language)
@@ -74,7 +78,9 @@ async def test_review_code_success(code_generator):
     code = "def authenticate_user(): pass"
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [Mock(message=Mock(content="Code review: Looks good"))]
+    mock_response.choices = [
+        Mock(message=Mock(content="Code review: Looks good"))
+    ]
     code_generator.openai_client.chat.completions.create = Mock(
         return_value=mock_response
     )
@@ -105,7 +111,9 @@ async def test_optimize_code_success(code_generator):
     )
 
     # Test
-    result = await code_generator.optimize_code(code, language, optimization_goals)
+    result = await code_generator.optimize_code(
+        code, language, optimization_goals
+    )
 
     # Assertions
     assert result["status"] == "success"

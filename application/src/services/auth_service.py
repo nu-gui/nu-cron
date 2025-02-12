@@ -20,10 +20,14 @@ if not SECRET_KEY:
 
 
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(
+    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
+)
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(
+    data: dict, expires_delta: Optional[timedelta] = None
+) -> str:
     """Create JWT access token with expiration."""
     to_encode = data.copy()
     if expires_delta:
@@ -31,7 +35,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, bytes(SECRET_KEY, "utf-8"), algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, bytes(SECRET_KEY, "utf-8"), algorithm=ALGORITHM
+    )
     return encoded_jwt
 
 
@@ -44,7 +50,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     )
 
     try:
-        payload = jwt.decode(token, bytes(SECRET_KEY, "utf-8"), algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token, bytes(SECRET_KEY, "utf-8"), algorithms=[ALGORITHM]
+        )
         user_id: str = str(payload.get("sub"))
         if user_id is None:
             raise credentials_exception
@@ -52,7 +60,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         raise credentials_exception
 
     # Mock user for testing
-    user = User(id=1, email="test@example.com", role="developer", is_active=True)
+    user = User(
+        id=1, email="test@example.com", role="developer", is_active=True
+    )
 
     if user is None:
         raise credentials_exception

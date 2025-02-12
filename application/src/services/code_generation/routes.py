@@ -20,7 +20,9 @@ async def generate_code(
     Generate code based on requirements using GPT-4 Turbo
     """
     try:
-        result = await code_generator.generate_code(requirements, language, context)
+        result = await code_generator.generate_code(
+            requirements, language, context
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -54,7 +56,9 @@ async def optimize_code(
     Optimize code for performance and efficiency
     """
     try:
-        result = await code_generator.optimize_code(code, language, optimization_goals)
+        result = await code_generator.optimize_code(
+            code, language, optimization_goals
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
