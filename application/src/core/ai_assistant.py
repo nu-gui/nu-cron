@@ -90,7 +90,7 @@ class AIAssistant:
             "4. Risk assessment\n"
             "5. Implementation timeline"
         )
-        
+
         try:
             # Generate analysis using selected model
             messages = [{"role": "user", "content": prompt}]
@@ -207,13 +207,11 @@ class AIAssistant:
                 if isinstance(assessment, str)
                 else assessment
             )
-            
             return {
                 "status": "success",
                 "assessment": parsed_assessment,
                 "model_used": model
             }
-            
         except Exception as e:
             return {
                 "status": "error",
