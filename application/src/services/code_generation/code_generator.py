@@ -10,7 +10,7 @@ from fastapi import HTTPException
 
 class CodeGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
@@ -35,7 +35,7 @@ class CodeGenerator:
             prompt = self._create_code_generation_prompt(
                 requirements, language, context
             )
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -51,7 +51,7 @@ class CodeGenerator:
                 max_tokens=2000,
             )
 
-            generated_code = response.choices[0].message.content
+            generated_code = response.choices[0].message['content']
             result = {
                 "status": "success",
                 "code": generated_code,
@@ -114,7 +114,7 @@ class CodeGenerator:
             prompt = self._create_code_review_prompt(code, language, context)
             # Note: Claude integration will be added here
             # For now, using GPT-4 as a placeholder
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -130,7 +130,7 @@ class CodeGenerator:
                 max_tokens=2000,
             )
 
-            review_result = response.choices[0].message.content
+            review_result = response.choices[0].message['content']
             return {
                 "status": "success",
                 "review": review_result,
@@ -184,7 +184,7 @@ Additional Context:
             prompt = self._create_optimization_prompt(
                 code, language, optimization_goals
             )
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -200,7 +200,7 @@ Additional Context:
                 max_tokens=2000,
             )
 
-            optimized_code = response.choices[0].message.content
+            optimized_code = response.choices[0].message['content']
             return {
                 "status": "success",
                 "optimized_code": optimized_code,
