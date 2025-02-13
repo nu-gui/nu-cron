@@ -15,6 +15,10 @@ This document outlines the cost optimization strategies and efficiency metrics f
 
 ## **2. AI Cost Optimization Strategies**
 
+### **2.0 AISuite Model Selection Overview**
+AISuite is our intelligent model routing system that directs tasks to AI models such as OpenAI GPT-4 Turbo, Claude 3, Mistral 7B, and Devin AI's internal models for specific operations like coding, debugging, and testing. This system optimizes both performance and cost by selecting the most appropriate model for each task type.
+
+
 ### **2.1 Token Usage Tracking & Optimization**
 📌 **How It Works:**
 1. Monitor **token usage per AI request**.

@@ -42,6 +42,10 @@ The AI-SDLC is a cloud-based, AI-powered development tool that integrates seamle
 | **Tech Lead** | Reviews AI-generated code and automates PR approvals |
 | **Project Manager** | Uses AI insights for planning and progress tracking |
 
+### **2.3.1 AISuite Integration**
+AISuite is the core AI Model Selection system that routes tasks to AI models such as OpenAI GPT-4 Turbo, Claude 3, Mistral 7B, and Devin AI's internal models for specific operations like coding, debugging, and testing. This intelligent routing ensures optimal model selection based on task complexity and requirements.
+
+
 ### **2.4 Operating Environment**
 - **Backend**: Python (FastAPI/Flask), Node.js (for integrations)
 - **Frontend**: VS Code Extension, Web Dashboard (Next.js)

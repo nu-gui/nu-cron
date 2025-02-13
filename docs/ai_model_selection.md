@@ -14,6 +14,10 @@ This document outlines the AI model selection strategy for the AI-Driven Softwar
 
 ## **2. AI Model Selection Criteria**
 
+### **2.0 AISuite Overview**
+AISuite is our intelligent model routing system that directs tasks to AI models such as OpenAI GPT-4 Turbo, Claude 3, Mistral 7B, and Devin AI's internal models for specific operations like coding, debugging, and testing. This system optimizes both performance and cost by selecting the most appropriate model for each task type.
+
+
 ### **2.1 AISuite Model Selection & Routing**
 | **Criteria** | **Description** |
 |------------|----------------|
@@ -36,6 +40,14 @@ This document outlines the AI model selection strategy for the AI-Driven Softwar
 ---
 
 ## **3. AI Model Cost & Performance Trade-Offs**
+
+### **3.0 ACU-Optimized Model Selection**
+📌 **Session Planning:**
+- Keep all sessions under 10 ACU limit
+- Use GPT-4o-mini for simple tasks and documentation
+- Reserve GPT-4o for complex code generation and analysis
+- Implement intelligent caching to minimize token usage
+
 
 ### **3.1 AISuite Model Efficiency & Cost Benchmarking**
 📌 **Comparison of Models by Cost vs. Performance:**
