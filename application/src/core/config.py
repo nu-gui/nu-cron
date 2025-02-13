@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     OPENAI_MAX_RETRIES: int = 3
     OPENAI_TIMEOUT: float = 30.0
     OPENAI_DEFAULT_HEADERS: dict = {"X-Custom-Header": "nu-cron"}
-    
+
     # Model configuration
     OPENAI_MODELS = {
         "gpt-4-turbo": {

@@ -60,11 +60,12 @@ class ModelSelector:
 
         # If no models meet token requirements, use the model with highest max_tokens
         if not available_models:
-            logger.warning("No models meet token requirements, using fallback model")
-            return max(
-                self.models.items(),
-                key=lambda x: x[1]["max_tokens"]
-            )[1]
+            logger.warning(
+                "No models meet token requirements, using fallback model"
+            )
+            return max(self.models.items(), key=lambda x: x[1]["max_tokens"])[
+                1
+            ]
 
         # Return the highest priority model that meets requirements
         return available_models[0][1]
@@ -91,7 +92,8 @@ class ModelSelector:
 
         # Find next model with higher priority number
         fallback_models = [
-            config for config in self.models.values()
+            config
+            for config in self.models.values()
             if config["priority"] > current_priority
         ]
 

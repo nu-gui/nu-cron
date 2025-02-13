@@ -23,9 +23,7 @@ class TestGenerator:
             raise ValueError("OPENAI_API_KEY environment variable is required")
 
         self.openai_client = openai.OpenAI(
-            api_key=openai_key,
-            max_retries=3,
-            timeout=30.0
+            api_key=openai_key, max_retries=3, timeout=30.0
         )
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
@@ -65,7 +63,7 @@ class TestGenerator:
             model_config = self.model_selector.select_model(
                 task_type="test_generation",
                 token_estimate=len(prompt) * 2,  # Rough estimate
-                context={"test_type": test_type}
+                context={"test_type": test_type},
             )
 
             try:
@@ -195,8 +193,9 @@ Additional Context:
             prompt = self._create_test_validation_prompt(tests, code, language)
             model_config = self.model_selector.select_model(
                 task_type="test_validation",
-                token_estimate=len(prompt) * 1.5,  # Validation typically needs less tokens
-                context={"language": language}
+                token_estimate=len(prompt)
+                * 1.5,  # Validation typically needs less tokens
+                context={"language": language},
             )
 
             try:
@@ -303,8 +302,12 @@ Please analyze:
             )
             model_config = self.model_selector.select_model(
                 task_type="performance_test_generation",
-                token_estimate=len(prompt) * 2,  # Performance tests can be complex
-                context={"language": language, "criteria": performance_criteria}
+                token_estimate=len(prompt)
+                * 2,  # Performance tests can be complex
+                context={
+                    "language": language,
+                    "criteria": performance_criteria,
+                },
             )
 
             try:

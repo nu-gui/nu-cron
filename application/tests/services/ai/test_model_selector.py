@@ -1,6 +1,7 @@
 """Test suite for the ModelSelector class."""
 
 import pytest
+
 from application.src.core.config import Settings
 from application.src.services.ai.model_selector import ModelSelector
 
@@ -27,18 +28,17 @@ def test_select_model_default(model_selector):
 
 def test_select_model_with_token_estimate(model_selector):
     """Test model selection with token requirements."""
-    model = model_selector.select_model(
-        "test_generation", token_estimate=5000
-    )
-    assert model["name"] == "gpt-4"  # Should select model with highest max_tokens
+    model = model_selector.select_model("test_generation", token_estimate=5000)
+    assert (
+        model["name"] == "gpt-4"
+    )  # Should select model with highest max_tokens
     assert model["max_tokens"] == 8192
 
 
 def test_select_model_with_context(model_selector):
     """Test model selection with context."""
     model = model_selector.select_model(
-        "test_generation",
-        context={"test_type": "unit"}
+        "test_generation", context={"test_type": "unit"}
     )
     assert model["name"] == "gpt-4-turbo-preview"
     assert model["priority"] == 1
