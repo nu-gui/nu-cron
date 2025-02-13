@@ -60,11 +60,12 @@ class TestGenerator:
                 code, language, test_type, context
             )
             # Select appropriate model based on task requirements
-            token_est = int(len(prompt) * 2)  # Rough estimate
+            # Estimate tokens needed
+            token_est = int(len(prompt) * 2)
             model_config = self.model_selector.select_model(
-                task_type="test_generation",
+                "test_generation",
                 token_estimate=token_est,
-                context={"test_type": test_type},
+                context={"type": test_type},
             )
 
             try:
@@ -194,9 +195,9 @@ Additional Context:
             prompt = self._create_test_validation_prompt(tests, code, language)
             token_est = int(len(prompt) * 1.5)  # Less tokens
             model_config = self.model_selector.select_model(
-                task_type="test_validation",
+                "test_validation",
                 token_estimate=token_est,
-                context={"language": language}
+                context={"lang": language}
             )
 
             try:
@@ -299,12 +300,9 @@ Please analyze:
                 code, language, performance_criteria
             )
             model_config = self.model_selector.select_model(
-                task_type="performance_test_generation",
-                token_estimate=int(len(prompt) * 2),  # Complex tests
-                context={
-                    "language": language,
-                    "criteria": performance_criteria,
-                },
+                "performance_test",
+                token_estimate=int(len(prompt) * 2),
+                context={"lang": language}
             )
 
             try:

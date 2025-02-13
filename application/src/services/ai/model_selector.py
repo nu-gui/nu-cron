@@ -22,12 +22,12 @@ class ModelSelector:
         if not self.models:
             raise ValueError("No models configured")
         for model_id, config in self.models.items():
-            required_fields = ["name", "max_tokens", "temperature", "priority"]
-            missing = [f for f in required_fields if f not in config]
+            fields = ["name", "max_tokens", "temperature", "priority"]
+            missing = [f for f in fields if f not in config]
             if missing:
-                fields = ", ".join(missing)
+                msg = ", ".join(missing)
                 raise ValueError(
-                    f"Model {model_id} missing required fields: {fields}"
+                    f"Model {model_id} missing fields: {msg}"
                 )
 
     def select_model(
@@ -52,14 +52,12 @@ class ModelSelector:
             key=lambda x: x[1]["priority"]
         )
 
-        # Select model based on token requirements
+        # Filter models by token limit
         if token_estimate:
-            filtered = [
-                (mid, cfg)
-                for mid, cfg in available_models
-                if cfg["max_tokens"] >= token_estimate
+            available_models = [
+                m for m in available_models
+                if m[1]["max_tokens"] >= token_estimate
             ]
-            available_models = filtered
 
         # Use model with highest max_tokens if no models meet requirements
         if not available_models:
