@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from application.src.models.database import User
 from application.src.services.auth_service import get_current_user
+
 from .code_generator import CodeGenerator
 
 router = APIRouter()
