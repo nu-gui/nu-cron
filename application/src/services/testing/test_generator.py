@@ -202,16 +202,16 @@ Additional Context:
             try:
                 response = await self.openai_client.chat.completions.create(
                     model=model_config["name"],
-                    messages=[{
-                        "role": "system",
-                        "content": (
-                            "You are an expert test validator. "
-                            "Analyze tests for completeness."
-                        ),
-                    }, {
-                        "role": "user",
-                        "content": prompt
-                    }],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are a test validator."
+                        },
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
                 )
@@ -316,12 +316,12 @@ Please analyze:
                     messages=[
                         {
                             "role": "system",
-                            "content": (
-                                "You are an expert in performance testing. "
-                                "Generate comprehensive performance tests."
-                            ),
+                            "content": "Generate performance tests."
                         },
-                        {"role": "user", "content": prompt},
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
                     ],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
@@ -338,12 +338,12 @@ Please analyze:
                     messages=[
                         {
                             "role": "system",
-                            "content": (
-                                "You are an expert in performance testing. "
-                                "Generate comprehensive performance tests."
-                            ),
+                            "content": "Generate performance tests."
                         },
-                        {"role": "user", "content": prompt},
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
                     ],
                     temperature=fallback_config["temperature"],
                     max_tokens=fallback_config["max_tokens"],
