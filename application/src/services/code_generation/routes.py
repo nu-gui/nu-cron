@@ -10,7 +10,13 @@ from application.src.services.auth_service import get_current_user
 from .code_generator import CodeGenerator
 
 router = APIRouter()
-code_generator = CodeGenerator()
+code_generator = None  # Initialize lazily
+
+def get_code_generator():
+    global code_generator
+    if code_generator is None:
+        code_generator = CodeGenerator()
+    return code_generator
 
 
 @router.post("/generate")
@@ -24,7 +30,7 @@ async def generate_code(
     Generate code based on requirements using GPT-4 Turbo
     """
     try:
-        result = await code_generator.generate_code(
+        result = await get_code_generator().generate_code(
             requirements, language, context
         )
         return result
@@ -43,7 +49,7 @@ async def review_code(
     Review code using Claude 3 for better analysis
     """
     try:
-        result = await code_generator.review_code(code, language, context)
+        result = await get_code_generator().review_code(code, language, context)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -60,7 +66,7 @@ async def optimize_code(
     Optimize code for performance and efficiency
     """
     try:
-        result = await code_generator.optimize_code(
+        result = await get_code_generator().optimize_code(
             code, language, optimization_goals
         )
         return result

@@ -7,16 +7,16 @@ readme = "README.md"
 packages = [{include = "application"}]
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"  # Pinned version for compatibility
-fastapi = "0.78.0"  # Version compatible with pydantic v1
+python = ">=3.11,<3.13"  # Updated version range for compatibility
+fastapi = "0.109.2"  # Updated for Python 3.12 compatibility
 uvicorn = "0.27.0"
 python-dotenv = "1.0.0"  # Using dotenv for environment variables
 sqlalchemy = "2.0.25"
 alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
-pydantic = "1.10.13"  # Version compatible with langchain
-typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic v1
+pydantic = "2.6.1"  # Updated for FastAPI compatibility
+typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic
 PyYAML = "6.0.1"  # Version with PEP 517 support
 openai = "^1.0.0"  # Using latest version for new client style
 anthropic = "0.2.8"  # Version before typing-extensions requirement
