@@ -15,7 +15,7 @@ class TestGenerator:
 
     def __init__(self):
         """Initialize test generator with OpenAI client and Redis cache."""
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
