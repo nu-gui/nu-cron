@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from application.src.core.ai_assistant import AIAssistant
 
-from ...models.database import User
-from ...services.auth_service import get_current_user
+from application.src.models.database import User
+from application.src.services.auth_service import get_current_user
 
 router = APIRouter()
 
