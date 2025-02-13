@@ -20,13 +20,22 @@ class AIAssistant:
         Sets up OpenAI, Anthropic, and Pinecone clients using env vars
         for authentication and configuration.
         """
-        # Initialize API clients
+        # Initialize API clients with configuration
         openai_key = os.getenv("OPENAI_API_KEY")
+        if not openai_key:
+            raise ValueError("OPENAI_API_KEY environment variable is required")
         anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+        if not anthropic_key:
+            raise ValueError("ANTHROPIC_API_KEY environment variable is required")
 
-        self.openai_client = openai.OpenAI(api_key=openai_key)
+        self.openai_client = openai.OpenAI(
+            api_key=openai_key,
+            max_retries=3,
+            timeout=30.0,
+            default_headers={"X-Custom-Header": "nu-cron"}
+        )
         self.claude_client = anthropic.Anthropic(api_key=anthropic_key)
-        self.embeddings = OpenAIEmbeddings()
+        self.embeddings = OpenAIEmbeddings(openai_api_key=openai_key)
 
         # Initialize Pinecone vector store
         pinecone_key = os.getenv("PINECONE_API_KEY")

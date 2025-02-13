@@ -1,8 +1,10 @@
 """Test suite for the CodeGenerator class."""
 
+import os
 import json
 from datetime import datetime
-from unittest.mock import Mock, patch
+import asyncio
+from unittest.mock import Mock, patch, AsyncMock
 
 import pytest
 
@@ -14,8 +16,19 @@ from application.src.services.code_generation.code_generator import (
 @pytest.fixture
 def code_generator():
     """Create a CodeGenerator instance with mocked dependencies."""
-    with patch("redis.Redis.from_url") as mock_redis, patch("openai.api_key"):
-        mock_redis.return_value = Mock()
+    with patch("redis.Redis.from_url") as mock_redis, \
+         patch("openai.OpenAI") as mock_openai, \
+         patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        mock_redis_client = Mock()
+        mock_redis_client.get.return_value = None
+        mock_redis.return_value = mock_redis_client
+        mock_openai.return_value = Mock()
+        
+        # Set up async response mock
+        mock_response = Mock()
+        mock_response.choices = [Mock()]
+        mock_response.choices[0].message = {"content": "Generated code content"}
+        mock_openai.return_value.chat.completions.create = AsyncMock(return_value=mock_response)
         yield CodeGenerator()
 
 
@@ -26,10 +39,9 @@ async def test_generate_code_success(code_generator):
     requirements = {"feature": "user authentication", "language": "python"}
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [
-        Mock(message=Mock(content="def authenticate_user(): pass"))
-    ]
-    code_generator.openai_client.chat.completions.create = Mock(
+    mock_response.choices = [Mock()]
+    mock_response.choices[0].message = {"content": "def authenticate_user(): pass"}
+    code_generator.openai_client.chat.completions.create = AsyncMock(
         return_value=mock_response
     )
 
@@ -75,10 +87,9 @@ async def test_review_code_success(code_generator):
     code = "def authenticate_user(): pass"
     language = "python"
     mock_response = Mock()
-    mock_response.choices = [
-        Mock(message=Mock(content="Code review: Looks good"))
-    ]
-    code_generator.openai_client.chat.completions.create = Mock(
+    mock_response.choices = [Mock()]
+    mock_response.choices[0].message = {"content": "Code review: Looks good"}
+    code_generator.openai_client.chat.completions.create = AsyncMock(
         return_value=mock_response
     )
 
@@ -100,10 +111,9 @@ async def test_optimize_code_success(code_generator):
     language = "python"
     optimization_goals = ["performance", "memory"]
     mock_response = Mock()
-    mock_response.choices = [
-        Mock(message=Mock(content="Optimized code: def fast_function(): pass"))
-    ]
-    code_generator.openai_client.chat.completions.create = Mock(
+    mock_response.choices = [Mock()]
+    mock_response.choices[0].message = {"content": "Optimized code: def fast_function(): pass"}
+    code_generator.openai_client.chat.completions.create = AsyncMock(
         return_value=mock_response
     )
 
@@ -126,7 +136,7 @@ async def test_generate_code_error_handling(code_generator):
     # Mock data
     requirements = {"feature": "invalid"}
     language = "unknown"
-    code_generator.openai_client.chat.completions.create = Mock(
+    code_generator.openai_client.chat.completions.create = AsyncMock(
         side_effect=Exception("API Error")
     )
 
@@ -134,4 +144,4 @@ async def test_generate_code_error_handling(code_generator):
     with pytest.raises(Exception) as exc_info:
         await code_generator.generate_code(requirements, language)
 
-    assert str(exc_info.value) == "API Error"
+    assert str(exc_info.value) == "500: API Error"

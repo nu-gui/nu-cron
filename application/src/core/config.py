@@ -7,6 +7,11 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "AI-SDLC"
     API_V1_STR: str = "/api/v1"
 
+    # OpenAI configuration
+    OPENAI_MAX_RETRIES: int = 3
+    OPENAI_TIMEOUT: float = 30.0
+    OPENAI_DEFAULT_HEADERS: dict = {"X-Custom-Header": "nu-cron"}
+
     # Environment configuration
     DOCKER_COMPOSE_PATH: str = "docker-compose.yml"
     KUBERNETES_CONFIG_PATH: str = "~/.kube/config"

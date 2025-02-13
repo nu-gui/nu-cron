@@ -10,7 +10,13 @@ from application.src.services.auth_service import get_current_user
 from .test_generator import TestGenerator
 
 router = APIRouter()
-test_generator = TestGenerator()  # Initialize with OpenAI API key from env
+test_generator = None  # Initialize lazily
+
+def get_test_generator():
+    global test_generator
+    if test_generator is None:
+        test_generator = TestGenerator()
+    return test_generator
 
 
 @router.post("/generate")
@@ -25,7 +31,7 @@ async def generate_tests(
     Generate tests based on code using Mistral 7B
     """
     try:
-        result = await test_generator.generate_tests(
+        result = await get_test_generator().generate_tests(
             code, language, test_type, context
         )
         return result
@@ -44,7 +50,7 @@ async def validate_tests(
     Validate generated tests for completeness and coverage
     """
     try:
-        result = await test_generator.validate_tests(tests, code, language)
+        result = await get_test_generator().validate_tests(tests, code, language)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -61,7 +67,7 @@ async def generate_performance_tests(
     Generate performance tests for the code
     """
     try:
-        result = await test_generator.generate_performance_tests(
+        result = await get_test_generator().generate_performance_tests(
             code, language, performance_criteria
         )
         return result
