@@ -2,7 +2,8 @@
 
 import json
 from datetime import datetime
-from unittest.mock import Mock, patch
+import asyncio
+from unittest.mock import Mock, patch, AsyncMock
 
 import pytest
 
@@ -12,8 +13,15 @@ from application.src.services.testing.test_generator import TestGenerator
 @pytest.fixture
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
-    with patch("redis.Redis.from_url") as mock_redis, patch("openai.api_key"):
+    with patch("redis.Redis.from_url") as mock_redis, \
+         patch("openai.OpenAI") as mock_openai:
         mock_redis.return_value = Mock()
+        mock_openai.return_value = Mock()
+        
+        # Set up async response mock
+        future = asyncio.Future()
+        future.set_result(Mock())
+        mock_openai.return_value.chat.completions.create = AsyncMock(return_value=future.result())
         yield TestGenerator()
 
 

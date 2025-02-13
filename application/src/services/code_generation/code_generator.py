@@ -10,7 +10,15 @@ from fastapi import HTTPException
 
 class CodeGenerator:
     def __init__(self):
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if not openai_key:
+            raise ValueError("OPENAI_API_KEY environment variable is required")
+
+        self.openai_client = openai.OpenAI(
+            api_key=openai_key,
+            max_retries=3,
+            timeout=30.0
+        )
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
