@@ -61,11 +61,9 @@ class ModelSelector:
             ]
             available_models = filtered
 
-        # If no models meet token requirements, use the model with highest max_tokens
+        # Use model with highest max_tokens if no models meet requirements
         if not available_models:
-            logger.warning(
-                "No models meet requirements"
-            )
+            logger.warning("No models meet requirements")
             models = self.models.items()
             return max(
                 models,
