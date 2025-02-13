@@ -60,9 +60,10 @@ class TestGenerator:
                 code, language, test_type, context
             )
             # Select appropriate model based on task requirements
+            token_est = int(len(prompt) * 2)  # Rough estimate
             model_config = self.model_selector.select_model(
                 task_type="test_generation",
-                token_estimate=len(prompt) * 2,  # Rough estimate
+                token_estimate=token_est,
                 context={"test_type": test_type},
             )
 
