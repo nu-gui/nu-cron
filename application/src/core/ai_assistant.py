@@ -1,12 +1,12 @@
 """AI assistant for managing project analysis and code generation."""
 
-from datetime import datetime
-from typing import Dict, Any
-
 import json
 import os
-import openai
+from datetime import datetime
+from typing import Any, Dict
+
 import anthropic
+import openai
 import pinecone
 from langchain.embeddings import OpenAIEmbeddings
 
@@ -37,9 +37,7 @@ class AIAssistant:
         self.index_name = "ai-sdlc-tasks"
         if self.index_name not in pinecone.list_indexes():
             pinecone.create_index(
-                name=self.index_name,
-                dimension=1536,
-                metric="cosine"
+                name=self.index_name, dimension=1536, metric="cosine"
             )
         self.index = pinecone.Index(self.index_name)
 
@@ -118,9 +116,7 @@ class AIAssistant:
 
             # Store analysis in vector store
             query_text = analysis[:1000]  # Limit text length
-            embedding = await self.embeddings.aembed_query(
-                query_text
-            )
+            embedding = await self.embeddings.aembed_query(query_text)
             timestamp = datetime.utcnow()
             vector_id = f"req-{timestamp.timestamp()}"
 
@@ -128,9 +124,7 @@ class AIAssistant:
             metadata = {
                 "project_id": project_data.get("id"),
                 "type": "requirement_analysis",
-                "timestamp": (
-                    timestamp.isoformat()
-                ),
+                "timestamp": (timestamp.isoformat()),
             }
 
             # Store in Pinecone
@@ -143,9 +137,7 @@ class AIAssistant:
 
             # Parse analysis if needed
             parsed = (
-                json.loads(analysis)
-                if isinstance(analysis, str)
-                else analysis
+                json.loads(analysis) if isinstance(analysis, str) else analysis
             )
 
             # Return formatted response

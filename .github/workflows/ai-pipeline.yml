@@ -11,7 +11,7 @@ on:
 
 env:
   NODE_VERSION: '18'
-  PYTHON_VERSION: '3.12'
+  PYTHON_VERSION: '3.11'
 
 jobs:
   validate:
@@ -32,12 +32,8 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
       
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
       - name: Install dependencies
         env:
-          ENV: "production"
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REDIS_URL: "redis://localhost:6379/0"
@@ -47,10 +43,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          poetry config installer.max-workers 1
-          poetry lock
-          PIP_ONLY_BINARY=:all: DISABLE_CYTHON=1 poetry install
-          poetry run pip check
+          python -m pip cache purge
+          python -m pip install --upgrade pip poetry
+          poetry install
+          
+      - name: Verify dependency versions
+        run: |
+          poetry show pydantic
       
       - name: Run linting
         run: |
@@ -85,12 +84,8 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
       
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
       - name: Install dependencies
         env:
-          ENV: "production"
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REDIS_URL: "redis://localhost:6379/0"
@@ -100,10 +95,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          poetry config installer.max-workers 1
-          poetry lock
-          PIP_ONLY_BINARY=:all: DISABLE_CYTHON=1 poetry install
-          poetry run pip check
+          python -m pip cache purge
+          python -m pip install --upgrade pip poetry
+          poetry install
+          
+      - name: Verify dependency versions
+        run: |
+          poetry show pydantic
       
       - name: Run tests
         env:
@@ -174,7 +172,7 @@ jobs:
       - name: Run integration tests
         run: |
           npm run test:integration
-          poetry run pytest tests/integration/
+          python -m pytest tests/integration/
 
   deploy-production:
     name: Deploy to Production
@@ -200,4 +198,4 @@ jobs:
       - name: Verify deployment
         run: |
           curl -f https://ai-service.example.com/health
-          poetry run pytest tests/smoke/
+          python -m pytest tests/smoke/

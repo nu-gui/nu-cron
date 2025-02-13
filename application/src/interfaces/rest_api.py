@@ -1,12 +1,13 @@
 """REST API interface for project management."""
 
 from datetime import datetime
-from typing import List, Dict, Any, TypedDict
+from typing import Any, Dict, List, TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..models.database import User, Project
+from ..models.database import Project, User
 from ..services.auth_service import get_current_user
+
 
 class ProjectResponse(TypedDict):
     """Type definition for project response data."""
@@ -25,15 +26,13 @@ class ProjectListResponse(TypedDict):
     projects: List[ProjectResponse]
 
 
-
-
 router = APIRouter()
 
 
 @router.post("/projects/")
 async def create_project(
     project_data: Dict[str, Any],
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ) -> Dict[str, Any]:
     """Create a new project with requirements for analysis."""
     try:

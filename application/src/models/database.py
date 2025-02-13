@@ -1,13 +1,19 @@
 """Database models for the AI-driven SDLC system."""
 
 from datetime import datetime
+
 from sqlalchemy import (
-    Boolean, Column, DateTime, ForeignKey, Integer,
-    JSON, String, create_engine
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    create_engine,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-
 
 Base = declarative_base()
 

@@ -1,6 +1,5 @@
 """AI-powered test generation service using OpenAI models."""
 
-from typing import Dict, Any, Optional
 import json
 import os
 from datetime import datetime
@@ -10,8 +9,9 @@ import openai
 import redis
 from fastapi import HTTPException
 
+
 class TestGenerator:
-    """Manages test generation, validation, and performance testing using AI models."""
+    """Test generation service using AI."""
 
     def __init__(self):
         """Initialize test generator with OpenAI client and Redis cache."""
@@ -27,7 +27,7 @@ class TestGenerator:
         code: str,
         language: str,
         test_type: str,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Generate tests based on code using Mistral 7B.
 
@@ -49,32 +49,40 @@ class TestGenerator:
             prompt = self._create_test_generation_prompt(
                 code, language, test_type, context
             )
-            response = await openai.Completion.create(
-                model="text-davinci-003",
-                prompt=f"You are an expert test engineer. Generate comprehensive tests based on the provided code.\n\n{prompt}",
+            response = await openai.ChatCompletion.create(
+                model="gpt-4-turbo-preview",  # Will use Mistral later
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert test engineer. Generate "
+                            "comprehensive tests based on the provided code."
+                        ),
+                    },
+                    {"role": "user", "content": prompt},
+                ],
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
-            
-            generated_tests = response.choices[0].text.strip()
+
+            generated_tests = response.choices[0].message["content"]
             result = {
                 "status": "success",
                 "tests": generated_tests,
                 "language": language,
                 "test_type": test_type,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"  # Will be replaced with Mistral 7B
+                # Using GPT-4 for now, will switch to Mistral
+                "model_used": "gpt-4-turbo-preview",
             }
 
             # Cache the result
             self.redis_client.setex(
-                cache_key,
-                self.cache_ttl,
-                json.dumps(result)
+                cache_key, self.cache_ttl, json.dumps(result)
             )
 
             return result
-            
+
         except Exception as e:
             if isinstance(e, HTTPException):
                 raise e
@@ -85,7 +93,7 @@ class TestGenerator:
         code: str,
         language: str,
         test_type: str,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> str:
         """Create a detailed prompt for test generation."""
         framework = self._get_test_framework(language)
@@ -110,23 +118,25 @@ Additional Context:
         return prompt
 
     def _get_test_framework(self, language: str) -> str:
-        """
-        Get the appropriate testing framework based on language
+        """Get the appropriate testing framework based on language.
+
+        Args:
+            language: Programming language to get framework for
+
+        Returns:
+            Name of the recommended testing framework
         """
         frameworks = {
             "python": "pytest",
             "javascript": "jest",
             "typescript": "jest",
             "java": "junit",
-            "go": "testing"
+            "go": "testing",
         }
         return frameworks.get(language.lower(), "unknown")
 
     async def validate_tests(
-        self,
-        tests: str,
-        code: str,
-        language: str
+        self, tests: str, code: str, language: str
     ) -> Dict[str, Any]:
         """Validate generated tests for completeness and coverage.
 
@@ -140,19 +150,7 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
-<<<<<<< HEAD
-            response = await openai.Completion.create(
-                model="text-davinci-003",
-                prompt=f"You are an expert test validator. Analyze tests for completeness and coverage.\n\n{prompt}",
-||||||| parent of 13db74d (fix: improve code quality in test_generator.py)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert test validator. Analyze tests for completeness and coverage."},
-                    {"role": "user", "content": prompt}
-                ],
-=======
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -160,37 +158,40 @@ Additional Context:
                         "content": (
                             "You are an expert test validator. Analyze tests "
                             "for completeness and coverage."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
->>>>>>> 13db74d (fix: improve code quality in test_generator.py)
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
-            
-            validation_result = response.choices[0].text.strip()
+
+            validation_result = response.choices[0].message["content"]
             return {
                 "status": "success",
                 "validation": validation_result,
                 "language": language,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
-            
+
         except Exception as e:
             if isinstance(e, HTTPException):
                 raise e
             raise Exception(str(e))
 
     def _create_test_validation_prompt(
-        self,
-        tests: str,
-        code: str,
-        language: str
+        self, tests: str, code: str, language: str
     ) -> str:
-        """
-        Create a detailed prompt for test validation
+        """Create a detailed prompt for test validation.
+
+        Args:
+            tests: Test code to validate
+            code: Source code being tested
+            language: Programming language of the code
+
+        Returns:
+            Formatted prompt string for validation
         """
         return f"""Validate the following {language} tests against the code:
 
@@ -212,37 +213,23 @@ Please analyze:
         self,
         code: str,
         language: str,
-        performance_criteria: Optional[Dict[str, Any]] = None
+        performance_criteria: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Generate performance tests for the given code.
 
         Args:
             code: Source code to generate performance tests for
             language: Programming language of the code
-            performance_criteria: Optional performance requirements and thresholds
+            performance_criteria: Optional performance requirements
 
         Returns:
             Dict containing generated performance tests and metadata
         """
         try:
-<<<<<<< HEAD
             prompt = self._create_performance_test_prompt(
                 code, language, performance_criteria
             )
-            response = await openai.Completion.create(
-                model="text-davinci-003",
-                prompt=f"You are an expert in performance testing. Generate comprehensive performance tests.\n\n{prompt}",
-||||||| parent of 13db74d (fix: improve code quality in test_generator.py)
-            prompt = self._create_performance_test_prompt(code, language, performance_criteria)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are an expert in performance testing. Generate comprehensive performance tests."},
-                    {"role": "user", "content": prompt}
-                ],
-=======
-            prompt = self._create_performance_test_prompt(code, language, performance_criteria)
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -250,25 +237,24 @@ Please analyze:
                         "content": (
                             "You are an expert in performance testing. "
                             "Generate comprehensive performance tests."
-                        )
+                        ),
                     },
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
->>>>>>> 13db74d (fix: improve code quality in test_generator.py)
                 temperature=0.7,
-                max_tokens=2000
+                max_tokens=2000,
             )
-            
-            performance_tests = response.choices[0].text.strip()
+
+            performance_tests = response.choices[0].message["content"]
             return {
                 "status": "success",
                 "performance_tests": performance_tests,
                 "language": language,
                 "criteria": performance_criteria,
                 "timestamp": datetime.utcnow().isoformat(),
-                "model_used": "gpt-4-turbo-preview"
+                "model_used": "gpt-4-turbo-preview",
             }
-            
+
         except Exception as e:
             if isinstance(e, HTTPException):
                 raise e
@@ -278,14 +264,14 @@ Please analyze:
         self,
         code: str,
         language: str,
-        performance_criteria: Optional[Dict[str, Any]] = None
+        performance_criteria: Optional[Dict[str, Any]] = None,
     ) -> str:
         """Create a detailed prompt for performance test generation.
 
         Args:
             code: Source code to generate performance tests for
             language: Programming language of the code
-            performance_criteria: Optional performance requirements and thresholds
+            performance_criteria: Optional performance requirements
 
         Returns:
             Formatted prompt string for the AI model

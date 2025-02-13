@@ -16,9 +16,8 @@ alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
 pydantic = "1.10.13"  # Version compatible with langchain
-pydantic-settings = "0.2.5"  # Version compatible with pydantic v1
-typing-extensions = ">=3.7.4,<5.0.0"  # Allow versions required by pydantic while maintaining compatibility
-PyYAML = "5.4.1"  # Version compatible with pydantic-settings
+typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic v1
+PyYAML = "6.0.1"  # Version with PEP 517 support
 openai = "0.27.8"  # Version before typing-extensions requirement
 anthropic = "0.2.8"  # Version before typing-extensions requirement
 langchain = "0.0.352"  # Version compatible with pydantic v1
@@ -41,6 +40,7 @@ pytest = "7.4.4"
 pytest-asyncio = "0.23.3"
 httpx = "0.26.0"
 pytest-cov = "4.1.0"
+
 [tool.black]
 line-length = 79
 include = '\.pyi?$'

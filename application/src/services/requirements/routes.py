@@ -10,11 +10,12 @@ from application.src.services.auth_service import get_current_user
 
 router = APIRouter()
 
+
 @router.post("/analyze")
 async def analyze_requirements(
     project_data: Dict[str, Any],
-    current_user: User = Depends(get_current_user)
-):
+    current_user: User = Depends(get_current_user),
+) -> Dict[str, Any]:
     """Analyze project requirements using AI.
 
     Args:
@@ -31,11 +32,11 @@ async def analyze_requirements(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/risk-assessment")
 async def assess_risks(
-    project_id: int,
-    current_user: User = Depends(get_current_user)
-):
+    project_id: int, current_user: User = Depends(get_current_user)
+) -> Dict[str, Any]:
     """Perform risk assessment and feasibility analysis.
 
     Args:

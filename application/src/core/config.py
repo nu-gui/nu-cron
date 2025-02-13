@@ -1,10 +1,9 @@
-"""Application configuration and environment settings."""
-
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    """Application settings and environment configuration."""
+    """Application settings."""
+
     PROJECT_NAME: str = "AI-SDLC"
     API_V1_STR: str = "/api/v1"
 
@@ -25,6 +24,5 @@ class Settings(BaseSettings):
     GRAFANA_PORT: int = 3000
 
     class Config:
-        """Configuration for settings behavior."""
         case_sensitive = True
         env_file = ".env"

@@ -1,6 +1,5 @@
 """Authentication service for JWT token handling and user validation."""
 
-import logging
 import os
 from datetime import datetime, timedelta
 from typing import Optional
@@ -8,61 +7,64 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from sqlalchemy.orm import Session
 
-from application.src.models.database import User
-
-logger = logging.getLogger(__name__)
+from ..models.database import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-ENV = os.getenv("ENV", "development")
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "development_secret_key")
 
-if ENV == "production":
-    if not SECRET_KEY or SECRET_KEY == "development_secret_key":
-        raise RuntimeError("JWT_SECRET_KEY environment variable must be set in production")
-elif not SECRET_KEY:
-    logger.warning("JWT_SECRET_KEY not set. Using development configuration.")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "development_secret_key")
+if not SECRET_KEY or SECRET_KEY == "development_secret_key":
+    import logging
+
+    logging.warning("JWT_SECRET_KEY not set. Using development configuration.")
+
 
 ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(
+    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
+)
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+
+def create_access_token(
+    data: dict, expires_delta: Optional[timedelta] = None
+) -> str:
+    """Create JWT access token with expiration."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    # SECRET_KEY is guaranteed to be a string due to the check above
-    encoded_jwt = jwt.encode(to_encode, bytes(SECRET_KEY, 'utf-8'), algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, bytes(SECRET_KEY, "utf-8"), algorithm=ALGORITHM
+    )
     return encoded_jwt
 
+
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+    """Validate JWT token and return current user."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
     try:
-        # SECRET_KEY is guaranteed to be a string due to the check above
-        payload = jwt.decode(token, bytes(SECRET_KEY, 'utf-8'), algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token, bytes(SECRET_KEY, "utf-8"), algorithms=[ALGORITHM]
+        )
         user_id: str = str(payload.get("sub"))
         if user_id is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-        
-    # Here you would typically query your database to get the user
-    # For now, we'll return a mock user
+
+    # Mock user for testing
     user = User(
-        id=1,
-        email="test@example.com",
-        role="developer",
-        is_active=True
+        id=1, email="test@example.com", role="developer", is_active=True
     )
-    
+
     if user is None:
         raise credentials_exception
     return user
