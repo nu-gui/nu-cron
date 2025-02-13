@@ -11,7 +11,7 @@ from fastapi import HTTPException
 
 
 class TestGenerator:
-    """Manages test generation, validation, and performance testing using AI."""
+    """Test generation service using AI."""
 
     def __init__(self):
         """Initialize test generator with OpenAI client and Redis cache."""
@@ -271,7 +271,7 @@ Please analyze:
         Args:
             code: Source code to generate performance tests for
             language: Programming language of the code
-            performance_criteria: Optional performance requirements and thresholds
+            performance_criteria: Optional performance requirements
 
         Returns:
             Formatted prompt string for the AI model
