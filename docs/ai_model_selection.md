@@ -14,7 +14,7 @@ This document outlines the AI model selection strategy for the AI-Driven Softwar
 
 ## **2. AI Model Selection Criteria**
 
-### **2.1 Key Factors in Model Selection**
+### **2.1 AISuite Model Selection & Routing**
 | **Criteria** | **Description** |
 |------------|----------------|
 | **Task Type** | AI models optimized for coding, testing, deployment, etc. |
@@ -26,7 +26,7 @@ This document outlines the AI model selection strategy for the AI-Driven Softwar
 ### **2.2 AI Model Selection by Use Case**
 📌 **Best Model for Each Task:**
 | **Task** | **Recommended AI Model** | **Why?** |
-|--------------|-----------------|------------------|
+|--------------|-----------------|------------------|------------------|
 | Code Generation | OpenAI GPT-4 Turbo | High-quality code suggestions, scalable token usage. |
 | Code Review | Claude 3 Opus | Strong at contextual code understanding, PR reviews. |
 | Test Case Generation | Mistral 7B | Fast, cost-effective test automation. |
@@ -37,7 +37,7 @@ This document outlines the AI model selection strategy for the AI-Driven Softwar
 
 ## **3. AI Model Cost & Performance Trade-Offs**
 
-### **3.1 AI Model Efficiency & Cost Benchmarking**
+### **3.1 AISuite Model Efficiency & Cost Benchmarking**
 📌 **Comparison of Models by Cost vs. Performance:**
 | **Model** | **Cost Efficiency** | **Performance** | **Best Use Case** |
 |-----------|----------------|--------------|----------------|
@@ -56,7 +56,7 @@ This document outlines the AI model selection strategy for the AI-Driven Softwar
 
 ## **4. AI Model Switching & Hybrid AI Strategy**
 
-### **4.1 Dynamic AI Model Switching**
+### **4.1 AISuite Dynamic Model Routing**
 📌 **How It Works:**
 1. AI Mediator **analyzes the task** and selects the best model.
 2. **Lightweight models** handle simple queries, while **powerful models** process complex tasks.
