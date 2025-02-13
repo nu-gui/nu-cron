@@ -1,40 +1,48 @@
-# 📋 AI Next Session Tasks
+# 📋 AI Next Session Tasks (ACU-Optimized)
 
-## 🎯 Planned Tasks for Next Session
+## 🎯 Session 1: Model Integration (8-10 ACU)
+### OpenAI Client Optimization
+- [ ] Update OpenAI client initialization with latest API standards
+- [ ] Implement dynamic model selection (GPT-4o, GPT-4o-mini, GPT-4 Turbo)
+- [ ] Configure token usage optimization and caching with Helicone
+- [ ] Set up model fallback strategies
 
-### 1. Testing & Quality Assurance
-- [ ] Complete remaining test implementations for OpenAI client changes
-- [ ] Configure GitHub API permissions for AI Quality Gates
-- [ ] Update test environment variables for Poetry-based setup
-- [ ] Implement comprehensive test coverage for new features
+## 🎯 Session 2: Testing Framework (8-10 ACU)
+### Testing & Quality Assurance
+- [ ] Implement test suite for model selection logic
+- [ ] Configure test environments for different OpenAI models
+- [ ] Set up token usage monitoring in test environment
+- [ ] Add integration tests for model fallback scenarios
 
-### 2. CI/CD Pipeline Enhancement
-- [ ] Fix remaining CI issues with Poetry integration
-- [ ] Update GitHub Actions workflows for Poetry-based builds
-- [ ] Configure proper test environment variables in CI
-- [ ] Implement automated dependency validation
+## 🎯 Session 3: CI/CD Enhancement (6-8 ACU)
+### Pipeline Optimization
+- [ ] Update GitHub Actions for model-specific testing
+- [ ] Configure CI environment for OpenAI API integration
+- [ ] Implement automated model performance validation
+- [ ] Set up deployment checks for token usage limits
 
-### 3. Documentation Updates
-- [ ] Create comprehensive Poetry setup guide
-- [ ] Document OpenAI client initialization best practices
-- [ ] Update dependency compatibility matrix
-- [ ] Create troubleshooting guide for common issues
+## 🎯 Session 4: Documentation & Monitoring (4-6 ACU)
+### Documentation Updates
+- [ ] Document model selection strategy
+- [ ] Create token optimization guidelines
+- [ ] Update API integration guides
+- [ ] Document ACU optimization practices
 
-### 4. Security & Monitoring
-- [ ] Implement continuous dependency monitoring
-- [ ] Configure automated security scanning with updated dependencies
-- [ ] Set up performance metrics collection for Poetry-based builds
-- [ ] Create alert configurations for dependency issues
+## 📊 ACU Management
+- Each session is optimized to stay under 10 ACU limit
+- Model selection prioritizes cost-efficiency:
+  - Use GPT-4o-mini for documentation and simple tasks
+  - Use GPT-4o for complex reasoning and system design
+  - Use GPT-4 Turbo for stable CI/CD operations
 
-## 📅 Timeline & Dependencies
-- Priority: High
-- Estimated Timeline: 1-2 weeks
-- Dependencies: 
-  - Poetry environment setup
-  - OpenAI API access
-  - GitHub API permissions
+## 📅 Dependencies & Requirements
+- OpenAI API access with latest model support
+- Helicone integration for token tracking
+- GitHub API permissions for CI/CD
+- Access to model performance metrics
 
-## 🔍 Notes
-- Maintain compatibility with pydantic v1.10.13
-- Ensure proper error handling for OpenAI client
-- Follow Poetry best practices for dependency management
+## 🔍 Optimization Notes
+- Cache frequent API calls to reduce token usage
+- Use incremental updates to minimize token consumption
+- Monitor ACU usage through Helicone dashboard
+- Implement efficient prompt design patterns
