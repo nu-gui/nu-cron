@@ -18,7 +18,7 @@ redis = "5.0.1"
 pydantic = "1.10.13"  # Version compatible with langchain
 typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic v1
 PyYAML = "6.0.1"  # Version with PEP 517 support
-openai = "0.27.8"  # Version before typing-extensions requirement
+openai = "^1.0.0"  # Using latest version for new client style
 anthropic = "0.2.8"  # Version before typing-extensions requirement
 langchain = "0.0.352"  # Version compatible with pydantic v1
 pinecone-client = "2.2.4"  # Older version for compatibility
