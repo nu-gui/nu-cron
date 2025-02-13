@@ -15,7 +15,7 @@ class TestGenerator:
 
     def __init__(self):
         """Initialize test generator with OpenAI client and Redis cache."""
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
@@ -49,7 +49,7 @@ class TestGenerator:
             prompt = self._create_test_generation_prompt(
                 code, language, test_type, context
             )
-            response = await openai.ChatCompletion.create(
+            response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",  # Will use Mistral later
                 messages=[
                     {
@@ -150,7 +150,7 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
-            response = await openai.ChatCompletion.create(
+            response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -229,7 +229,7 @@ Please analyze:
             prompt = self._create_performance_test_prompt(
                 code, language, performance_criteria
             )
-            response = await openai.ChatCompletion.create(
+            response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {

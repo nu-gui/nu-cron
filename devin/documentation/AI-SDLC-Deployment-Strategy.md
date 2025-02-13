@@ -15,11 +15,11 @@ To ensure seamless AI-assisted deployments, Devin AI follows a structured CI/CD 
 
 | **Deployment Stage** | **Task** | **AI Execution** |
 |------------------|---------|---------------|
-| **1️⃣ AI Code Generation** | Devin AI writes & optimizes new code | ✅ AI submits PRs via GitHub |
-| **2️⃣ AI Test Automation** | Run AI-generated unit & integration tests | ✅ AI validates test results before merging |
-| **3️⃣ AI-Managed Build Process** | AI executes CI pipeline to build artifacts | ✅ AI triggers automated builds |
-| **4️⃣ AI-Powered Deployment** | Deploy changes to staging & production | ✅ AI executes GitHub Actions & rollbacks |
-| **5️⃣ AI Post-Deployment Monitoring** | AI verifies system stability after deployment | ✅ AI monitors logs & performance |
+| **1️⃣ AI Code Generation** | GPT-4o for complex code, GPT-4o-mini for simple tasks | ✅ AI submits PRs via GitHub |
+| **2️⃣ AI Test Automation** | Efficient model selection based on test complexity | ✅ AI validates test results before merging |
+| **3️⃣ AI-Managed Build Process** | Cost-optimized model routing for CI tasks | ✅ AI triggers automated builds |
+| **4️⃣ AI-Powered Deployment** | GPT-4 Turbo for stable deployment automation | ✅ AI executes GitHub Actions & rollbacks |
+| **5️⃣ AI Post-Deployment Monitoring** | Dynamic model switching based on analysis needs | ✅ AI monitors logs & performance |
 
 By automating CI/CD pipelines, Devin AI ensures **fast, efficient, and error-free software releases**.
 
@@ -72,10 +72,12 @@ jobs:
 ## 🔄 **3. AI Deployment Rollback & Monitoring**  
 To prevent deployment failures, Devin AI **automatically detects issues and triggers rollback when needed**.
 
-### 📝 **AI Rollback Strategy**  
+### 📝 **AI Rollback & Model Optimization Strategy**  
 ✅ **Monitor AI-Managed Deployments** for errors & anomalies.  
+✅ **Dynamic Model Selection** based on deployment complexity & cost efficiency.  
 ✅ **If failure is detected, AI triggers auto-rollback** to the last stable version.  
 ✅ **AI notifies developers via Slack** in case of critical failures.  
+✅ **Optimize token usage** through caching and efficient prompt design.
 
 💡 **Example AI Slack Notification (Rollback Triggered)**  
 🚨 **AI Deployment Alert:**  
