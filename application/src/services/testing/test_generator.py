@@ -206,8 +206,8 @@ Additional Context:
                         {
                             "role": "system",
                             "content": (
-                                "You are an expert test validator. Analyze tests "
-                                "for completeness and coverage."
+                                "You are an expert test validator. "
+                                "Analyze tests for completeness."
                             ),
                         },
                         {"role": "user", "content": prompt},

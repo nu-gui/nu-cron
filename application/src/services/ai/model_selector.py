@@ -36,13 +36,12 @@ class ModelSelector:
         token_estimate: Optional[int] = None,
         context: Optional[Dict] = None,
     ) -> Dict:
-        """
-        Select the most appropriate model based on task requirements.
+        """Select the most appropriate model based on task requirements.
 
         Args:
-            task_type: Type of task (e.g., 'code_generation', 'test_generation')
-            token_estimate: Estimated tokens needed for the task
-            context: Additional context for model selection
+            task_type: Type of task (e.g., 'code_generation')
+            token_estimate: Estimated tokens needed
+            context: Additional context for selection
 
         Returns:
             Dict containing model configuration
@@ -64,9 +63,7 @@ class ModelSelector:
 
         # If no models meet token requirements, use the model with highest max_tokens
         if not available_models:
-            logger.warning(
-                "No models meet token requirements, using fallback model"
-            )
+            logger.warning("No models meet requirements, using fallback")
             models = self.models.items()
             return max(models, key=lambda x: x[1]["max_tokens"])[1]
 
