@@ -15,8 +15,9 @@ def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
     with patch("redis.Redis.from_url") as mock_redis, \
             patch("openai.OpenAI") as mock_openai, \
-            patch("application.src.services.ai"
-                  ".model_selector.ModelSelector"
+            patch(
+                "application.src.services.ai"
+                ".model_selector.ModelSelector"
             ) as mock_selector, \
             patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
         # Mock Redis
