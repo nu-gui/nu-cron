@@ -6,10 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from application.src.models.database import User
 from application.src.services.auth_service import get_current_user
+
 from .test_generator import TestGenerator
 
 router = APIRouter()
 test_generator = TestGenerator()
+
 
 @router.post("/generate")
 async def generate_tests(
@@ -23,10 +25,13 @@ async def generate_tests(
     Generate tests based on code using Mistral 7B
     """
     try:
-        result = await test_generator.generate_tests(code, language, test_type, context)
+        result = await test_generator.generate_tests(
+            code, language, test_type, context
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/validate")
 async def validate_tests(
@@ -39,10 +44,13 @@ async def validate_tests(
     Validate generated tests for completeness and coverage
     """
     try:
-        result = await test_generator.validate_tests(tests, code, language)
+        result = await test_generator.validate_tests(
+            tests, code, language
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/performance")
 async def generate_performance_tests(
@@ -55,7 +63,9 @@ async def generate_performance_tests(
     Generate performance tests for the code
     """
     try:
-        result = await test_generator.generate_performance_tests(code, language, performance_criteria)
+        result = await test_generator.generate_performance_tests(
+            code, language, performance_criteria
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,5 +1,6 @@
 """AI-powered test generation service using OpenAI models."""
 
+from typing import Dict, Any, Optional
 import json
 import os
 from datetime import datetime
@@ -86,25 +87,24 @@ class TestGenerator:
         test_type: str,
         context: Optional[Dict[str, Any]] = None
     ) -> str:
-        """
-        Create a detailed prompt for test generation
-        """
-        prompt = f"""Generate {test_type} tests for the following {language} code:
-
-{code}
-
-Test Requirements:
-1. Use appropriate testing framework ({self._get_test_framework(language)})
-2. Include edge cases and error scenarios
-3. Follow testing best practices
-4. Add comprehensive assertions
-5. Include setup and teardown if needed
-"""
+        """Create a detailed prompt for test generation."""
+        framework = self._get_test_framework(language)
+        prompt = (
+            f"Generate {test_type} tests ({language}):\n\n"
+            f"{code}\n\n"
+            "Test Requirements:\n"
+            f"1. Use appropriate testing framework ({framework})\n"
+            "2. Include edge cases and error scenarios\n"
+            "3. Follow testing best practices\n"
+            "4. Add comprehensive assertions\n"
+            "5. Include setup and teardown if needed\n"
+        )
 
         if context:
+            context_json = json.dumps(context, indent=2)
             prompt += f"""
 Additional Context:
-{json.dumps(context, indent=2)}
+{context_json}
 """
 
         return prompt
@@ -140,9 +140,31 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
+<<<<<<< HEAD
             response = await openai.Completion.create(
                 model="text-davinci-003",
                 prompt=f"You are an expert test validator. Analyze tests for completeness and coverage.\n\n{prompt}",
+||||||| parent of 13db74d (fix: improve code quality in test_generator.py)
+            response = await self.openai_client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                    {"role": "system", "content": "You are an expert test validator. Analyze tests for completeness and coverage."},
+                    {"role": "user", "content": prompt}
+                ],
+=======
+            response = await self.openai_client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert test validator. Analyze tests "
+                            "for completeness and coverage."
+                        )
+                    },
+                    {"role": "user", "content": prompt}
+                ],
+>>>>>>> 13db74d (fix: improve code quality in test_generator.py)
                 temperature=0.7,
                 max_tokens=2000
             )
@@ -203,12 +225,36 @@ Please analyze:
             Dict containing generated performance tests and metadata
         """
         try:
+<<<<<<< HEAD
             prompt = self._create_performance_test_prompt(
                 code, language, performance_criteria
             )
             response = await openai.Completion.create(
                 model="text-davinci-003",
                 prompt=f"You are an expert in performance testing. Generate comprehensive performance tests.\n\n{prompt}",
+||||||| parent of 13db74d (fix: improve code quality in test_generator.py)
+            prompt = self._create_performance_test_prompt(code, language, performance_criteria)
+            response = await self.openai_client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                    {"role": "system", "content": "You are an expert in performance testing. Generate comprehensive performance tests."},
+                    {"role": "user", "content": prompt}
+                ],
+=======
+            prompt = self._create_performance_test_prompt(code, language, performance_criteria)
+            response = await self.openai_client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert in performance testing. "
+                            "Generate comprehensive performance tests."
+                        )
+                    },
+                    {"role": "user", "content": prompt}
+                ],
+>>>>>>> 13db74d (fix: improve code quality in test_generator.py)
                 temperature=0.7,
                 max_tokens=2000
             )
@@ -245,7 +291,7 @@ Please analyze:
             Formatted prompt string for the AI model
         """
         prompt = (
-            f"Generate performance tests for the following {language} code:\n\n"
+            f"Generate performance tests ({language}):\n\n"
             f"{code}\n\n"
             "Focus on:\n"
             "1. Response time measurements\n"
@@ -256,9 +302,10 @@ Please analyze:
         )
 
         if performance_criteria:
+            criteria_json = json.dumps(performance_criteria, indent=2)
             prompt += f"""
 Performance Criteria:
-{json.dumps(performance_criteria, indent=2)}
+{criteria_json}
 """
 
         return prompt

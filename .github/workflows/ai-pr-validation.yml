@@ -13,6 +13,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Validate AI Task History
+        run: |
+          if ! grep -q "Task:" devin/logs/AI-Task-History.md; then
+            echo "Error: AI Task History missing required format"
+            exit 1
+          fi
+      
+      - name: Check PR Description
+        run: |
+          PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body -q .body)
+          if ! echo "$PR_BODY" | grep -q "Link to Devin run"; then
+            echo "Error: PR description missing Devin run link"
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Security Scan AI Changes
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+      
+      - name: Validate Kubernetes Resources
+        run: |
+          if [ -d "kubernetes/" ]; then
+            find kubernetes/ -type f \( -name "*.yaml" -o -name "*.yml" -o -name "*.json" \) -exec kubectl apply --dry-run=client -f {} \;
+          fi
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,9 +58,9 @@ jobs:
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          
       - name: Install dependencies
         env:
+          ENV: "production"
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REDIS_URL: "redis://localhost:6379/0"
@@ -40,7 +70,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          poetry install
+          poetry config installer.max-workers 1
+          poetry lock
+          PIP_ONLY_BINARY=:all: DISABLE_CYTHON=1 poetry install
           poetry run pip check
       
       - name: Check Code Style

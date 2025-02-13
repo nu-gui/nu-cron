@@ -1,14 +1,16 @@
+"""REST API interface for project management."""
+
 from datetime import datetime
-from typing import Any, Dict, List, TypedDict
+from typing import List, Dict, Any, TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
-from application.src.models.database import Project, User
-from application.src.services.auth_service import get_current_user
-
+from ..models.database import User, Project
+from ..services.auth_service import get_current_user
 
 class ProjectResponse(TypedDict):
+    """Type definition for project response data."""
+
     id: int
     name: str
     description: str
@@ -17,26 +19,30 @@ class ProjectResponse(TypedDict):
 
 
 class ProjectListResponse(TypedDict):
+    """Type definition for project list response data."""
+
     status: str
     projects: List[ProjectResponse]
 
+
+
+
 router = APIRouter()
+
 
 @router.post("/projects/")
 async def create_project(
     project_data: Dict[str, Any],
     current_user: User = Depends(get_current_user)
 ) -> Dict[str, Any]:
-    """
-    Create a new project with requirements for analysis
-    """
+    """Create a new project with requirements for analysis."""
     try:
         project = Project(
             name=project_data["name"],
             description=project_data["description"],
             requirements=project_data.get("requirements", {}),
             created_by_id=current_user.id,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
         )
         # Note: In a real implementation, we would save to database here
         return {
@@ -46,20 +52,18 @@ async def create_project(
                 "name": project.name,
                 "description": project.description,
                 "requirements": project.requirements,
-                "created_at": project.created_at.isoformat()
-            }
+                "created_at": project.created_at.isoformat(),
+            },
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/projects/{project_id}")
 async def get_project(
-    project_id: int,
-    current_user: User = Depends(get_current_user)
+    project_id: int, current_user: User = Depends(get_current_user)
 ) -> Dict[str, Any]:
-    """
-    Get project details by ID
-    """
+    """Get project details by ID."""
     # Note: In a real implementation, we would fetch from database
     project = Project(
         id=project_id,
@@ -67,7 +71,7 @@ async def get_project(
         description="Test Description",
         requirements={},
         created_by_id=current_user.id,
-        created_at=datetime.utcnow()
+        created_at=datetime.utcnow(),
     )
     return {
         "status": "success",
@@ -76,17 +80,16 @@ async def get_project(
             "name": project.name,
             "description": project.description,
             "requirements": project.requirements,
-            "created_at": project.created_at.isoformat()
-        }
+            "created_at": project.created_at.isoformat(),
+        },
     }
+
 
 @router.get("/projects/")
 async def list_projects(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ) -> ProjectListResponse:
-    """
-    List all projects for the current user
-    """
+    """List all projects for the current user."""
     # Note: In a real implementation, we would fetch from database
     projects = [
         Project(
@@ -95,7 +98,7 @@ async def list_projects(
             description="Test Description 1",
             requirements={},
             created_by_id=current_user.id,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
         )
     ]
     return ProjectListResponse(
@@ -106,21 +109,20 @@ async def list_projects(
                 name=project.name,
                 description=project.description,
                 requirements=project.requirements,
-                created_at=project.created_at.isoformat()
+                created_at=project.created_at.isoformat(),
             )
             for project in projects
-        ]
+        ],
     )
+
 
 @router.put("/projects/{project_id}")
 async def update_project(
     project_id: int,
     project_data: Dict[str, Any],
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ) -> Dict[str, Any]:
-    """
-    Update project details and requirements
-    """
+    """Update project details and requirements."""
     try:
         # Note: In a real implementation, we would update in database
         project = Project(
@@ -129,7 +131,7 @@ async def update_project(
             description=project_data.get("description", ""),
             requirements=project_data.get("requirements", {}),
             created_by_id=current_user.id,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
         )
         return {
             "status": "success",
@@ -138,8 +140,8 @@ async def update_project(
                 "name": project.name,
                 "description": project.description,
                 "requirements": project.requirements,
-                "created_at": project.created_at.isoformat()
-            }
+                "created_at": project.created_at.isoformat(),
+            },
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

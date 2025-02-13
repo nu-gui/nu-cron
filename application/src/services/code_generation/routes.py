@@ -1,9 +1,11 @@
-from typing import Any, Dict, List, Optional
+"""Routes for code generation and optimization using AI models."""
 
+from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from application.src.models.database import User
 from application.src.services.auth_service import get_current_user
+
 from .code_generator import CodeGenerator
 
 router = APIRouter()
@@ -29,7 +31,9 @@ async def generate_code(
         Dict containing generated code and metadata
     """
     try:
-        result = await code_generator.generate_code(requirements, language, context)
+        result = await code_generator.generate_code(
+            requirements, language, context
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -79,7 +83,9 @@ async def optimize_code(
         Dict containing optimized code and performance metrics
     """
     try:
-        result = await code_generator.optimize_code(code, language, optimization_goals)
+        result = await code_generator.optimize_code(
+            code, language, optimization_goals
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
