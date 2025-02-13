@@ -17,7 +17,7 @@ psycopg2-binary = "2.9.9"
 redis = "5.0.1"
 pydantic = "1.10.13"  # Version compatible with langchain
 typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic v1
-PyYAML = "5.4.1"  # Version compatible with pydantic-settings
+PyYAML = "6.0.1"  # Version with PEP 517 support
 openai = "0.27.8"  # Version before typing-extensions requirement
 anthropic = "0.2.8"  # Version before typing-extensions requirement
 langchain = "0.0.352"  # Version compatible with pydantic v1
