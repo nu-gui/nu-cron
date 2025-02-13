@@ -73,12 +73,12 @@ class TestGenerator:
                     messages=[
                         {
                             "role": "system",
-                            "content": (
-                                "You are an expert test engineer. Generate "
-                                "comprehensive tests based on the provided code."
-                            ),
+                            "content": "Generate tests for the code."
                         },
-                        {"role": "user", "content": prompt},
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
                     ],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
@@ -96,12 +96,12 @@ class TestGenerator:
                     messages=[
                         {
                             "role": "system",
-                            "content": (
-                                "You are an expert test engineer. Generate "
-                                "comprehensive tests based on the provided code."
-                            ),
+                            "content": "Generate tests for the code."
                         },
-                        {"role": "user", "content": prompt},
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
                     ],
                     temperature=fallback_config["temperature"],
                     max_tokens=fallback_config["max_tokens"],
@@ -224,16 +224,13 @@ Additional Context:
 
                 response = await self.openai_client.chat.completions.create(
                     model=fallback_config["name"],
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": (
-                                "You are an expert test validator. Analyze tests "
-                                "for completeness and coverage."
-                            ),
-                        },
-                        {"role": "user", "content": prompt},
-                    ],
+                    messages=[{
+                        "role": "system",
+                        "content": "Validate tests."
+                    }, {
+                        "role": "user",
+                        "content": prompt
+                    }],
                     temperature=fallback_config["temperature"],
                     max_tokens=fallback_config["max_tokens"],
                 )
