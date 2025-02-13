@@ -14,9 +14,7 @@ from application.src.services.code_generation.code_generator import (
 @pytest.fixture
 def code_generator():
     """Create a CodeGenerator instance with mocked dependencies."""
-    with patch("redis.Redis.from_url") as mock_redis, patch(
-        "openai.api_key"
-    ) as mock_api_key:
+    with patch("redis.Redis.from_url") as mock_redis, patch("openai.api_key"):
         mock_redis.return_value = Mock()
         yield CodeGenerator()
 

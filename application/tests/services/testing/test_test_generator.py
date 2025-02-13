@@ -12,9 +12,7 @@ from application.src.services.testing.test_generator import TestGenerator
 @pytest.fixture
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
-    with patch("redis.Redis.from_url") as mock_redis, patch(
-        "openai.api_key"
-    ) as mock_api_key:
+    with patch("redis.Redis.from_url") as mock_redis, patch("openai.api_key"):
         mock_redis.return_value = Mock()
         yield TestGenerator()
 
