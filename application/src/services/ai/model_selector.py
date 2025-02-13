@@ -47,18 +47,20 @@ class ModelSelector:
         Returns:
             Dict containing model configuration
         """
+        models = self.models.items()
         available_models = sorted(
-            self.models.items(),
+            models,
             key=lambda x: x[1]["priority"]
         )
 
         # Select model based on token requirements
         if token_estimate:
-            available_models = [
-                (model_id, config)
-                for model_id, config in available_models
-                if config["max_tokens"] >= token_estimate
+            filtered = [
+                (mid, cfg)
+                for mid, cfg in available_models
+                if cfg["max_tokens"] >= token_estimate
             ]
+            available_models = filtered
 
         # If no models meet token requirements, use the model with highest max_tokens
         if not available_models:

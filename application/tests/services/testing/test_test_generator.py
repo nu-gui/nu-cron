@@ -8,7 +8,6 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 
 from application.src.services.testing.test_generator import TestGenerator
-from application.src.services.testing.test_generator import TestGenerator
 
 
 @pytest.fixture
@@ -17,8 +16,8 @@ def test_generator():
     with patch("redis.Redis.from_url") as mock_redis, \
          patch("openai.OpenAI") as mock_openai, \
          patch(
-             "application.src.services.ai.model_selector.ModelSelector"
-         ) as mock_selector, \
+            "application.src.services.ai.model_selector.ModelSelector"
+        ) as mock_selector, \
          patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
         # Mock Redis
         mock_redis_client = Mock()
@@ -30,8 +29,8 @@ def test_generator():
         mock_response = Mock()
         mock_response.choices = [Mock()]
         mock_response.choices[0].message = {"content": "Generated test content"}
-        mock_openai.return_value.chat.completions.create = AsyncMock(
-            return_value=mock_response
+        mock_openai.return_value.chat.completions.create = (
+            AsyncMock(return_value=mock_response)
         )
 
         # Mock ModelSelector
