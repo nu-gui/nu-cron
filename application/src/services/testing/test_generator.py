@@ -15,7 +15,7 @@ class TestGenerator:
 
     def __init__(self):
         """Initialize test generator with OpenAI client and Redis cache."""
-        self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
@@ -49,7 +49,7 @@ class TestGenerator:
             prompt = self._create_test_generation_prompt(
                 code, language, test_type, context
             )
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",  # Will use Mistral later
                 messages=[
                     {
@@ -65,7 +65,7 @@ class TestGenerator:
                 max_tokens=2000,
             )
 
-            generated_tests = response.choices[0].message.content
+            generated_tests = response.choices[0].message['content']
             result = {
                 "status": "success",
                 "tests": generated_tests,
@@ -150,7 +150,7 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -166,7 +166,7 @@ Additional Context:
                 max_tokens=2000,
             )
 
-            validation_result = response.choices[0].message.content
+            validation_result = response.choices[0].message['content']
             return {
                 "status": "success",
                 "validation": validation_result,
@@ -229,7 +229,7 @@ Please analyze:
             prompt = self._create_performance_test_prompt(
                 code, language, performance_criteria
             )
-            response = await self.openai_client.chat.completions.create(
+            response = await openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -245,7 +245,7 @@ Please analyze:
                 max_tokens=2000,
             )
 
-            performance_tests = response.choices[0].message.content
+            performance_tests = response.choices[0].message['content']
             return {
                 "status": "success",
                 "performance_tests": performance_tests,
