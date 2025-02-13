@@ -10,7 +10,7 @@ from application.src.services.auth_service import get_current_user
 from .test_generator import TestGenerator
 
 router = APIRouter()
-test_generator = TestGenerator()
+test_generator = TestGenerator()  # Initialize with OpenAI API key from env
 
 
 @router.post("/generate")
