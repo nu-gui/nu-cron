@@ -1,4 +1,4 @@
-"""Test generator module for AI-driven code."""
+"""AI-powered test generation service using OpenAI models."""
 
 import json
 import os
@@ -11,12 +11,15 @@ from fastapi import HTTPException
 
 
 class TestGenerator:
+    """Manages test generation, validation, and performance testing using AI models."""
+
     def __init__(self):
+        """Initialize test generator with OpenAI client and Redis cache."""
         self.openai_client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
         )
-        # 1 hour default
+        # 1 hour default cache TTL
         self.cache_ttl = int(os.getenv("TEST_GENERATION_CACHE_TTL", "3600"))
 
     async def generate_tests(
@@ -28,8 +31,14 @@ class TestGenerator:
     ) -> Dict[str, Any]:
         """Generate tests based on code using Mistral 7B.
 
-        Currently using GPT-4 as placeholder. Generates unit, integration,
-        and performance tests based on provided code.
+        Args:
+            code: Source code to generate tests for
+            language: Programming language of the code
+            test_type: Type of tests to generate (unit, integration, etc.)
+            context: Additional context for test generation
+
+        Returns:
+            Dict containing generated tests and metadata
         """
         cache_key = f"test_gen:{hash(code + language + test_type)}"
         cached_result = self.redis_client.get(cache_key)
@@ -75,7 +84,9 @@ class TestGenerator:
             return result
 
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_test_generation_prompt(
         self,
@@ -107,8 +118,13 @@ Additional Context:
         return prompt
 
     def _get_test_framework(self, language: str) -> str:
-        """
-        Get the appropriate testing framework based on language
+        """Get the appropriate testing framework based on language.
+
+        Args:
+            language: Programming language to get framework for
+
+        Returns:
+            Name of the recommended testing framework
         """
         frameworks = {
             "python": "pytest",
@@ -122,8 +138,15 @@ Additional Context:
     async def validate_tests(
         self, tests: str, code: str, language: str
     ) -> Dict[str, Any]:
-        """
-        Validate generated tests for completeness and coverage
+        """Validate generated tests for completeness and coverage.
+
+        Args:
+            tests: Test code to validate
+            code: Source code being tested
+            language: Programming language of the code
+
+        Returns:
+            Dict containing validation results and metadata
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
@@ -153,13 +176,22 @@ Additional Context:
             }
 
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_test_validation_prompt(
         self, tests: str, code: str, language: str
     ) -> str:
-        """
-        Create a detailed prompt for test validation
+        """Create a detailed prompt for test validation.
+
+        Args:
+            tests: Test code to validate
+            code: Source code being tested
+            language: Programming language of the code
+
+        Returns:
+            Formatted prompt string for validation
         """
         return f"""Validate the following {language} tests against the code:
 
@@ -183,8 +215,15 @@ Please analyze:
         language: str,
         performance_criteria: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """
-        Generate performance tests for the code
+        """Generate performance tests for the given code.
+
+        Args:
+            code: Source code to generate performance tests for
+            language: Programming language of the code
+            performance_criteria: Optional performance requirements and thresholds
+
+        Returns:
+            Dict containing generated performance tests and metadata
         """
         try:
             prompt = self._create_performance_test_prompt(
@@ -217,7 +256,9 @@ Please analyze:
             }
 
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            if isinstance(e, HTTPException):
+                raise e
+            raise Exception(str(e))
 
     def _create_performance_test_prompt(
         self,
@@ -225,7 +266,16 @@ Please analyze:
         language: str,
         performance_criteria: Optional[Dict[str, Any]] = None,
     ) -> str:
-        """Create a detailed prompt for performance test generation."""
+        """Create a detailed prompt for performance test generation.
+
+        Args:
+            code: Source code to generate performance tests for
+            language: Programming language of the code
+            performance_criteria: Optional performance requirements and thresholds
+
+        Returns:
+            Formatted prompt string for the AI model
+        """
         prompt = (
             f"Generate performance tests ({language}):\n\n"
             f"{code}\n\n"
