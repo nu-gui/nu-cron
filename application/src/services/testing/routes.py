@@ -1,12 +1,12 @@
-"""Routes for test generation and validation."""
+"""Routes for test generation and validation using AI models."""
 
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from .test_generator import TestGenerator
 from application.src.models.database import User
 from application.src.services.auth_service import get_current_user
+from .test_generator import TestGenerator
 
 router = APIRouter()
 test_generator = TestGenerator()
