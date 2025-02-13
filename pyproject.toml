@@ -16,7 +16,7 @@ alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
 pydantic = "1.10.13"  # Version compatible with langchain
-pydantic-settings = "0.2.5"  # Version compatible with pydantic v1
+pydantic-settings = "1.2.0"  # Version compatible with pydantic v1 and typing-extensions
 typing-extensions = ">=4.2.0,<5.0"  # Version required by pydantic
 PyYAML = "5.4.1"  # Version compatible with pydantic-settings
 openai = "0.27.8"  # Version before typing-extensions requirement
