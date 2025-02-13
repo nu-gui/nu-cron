@@ -74,8 +74,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
-          python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip poetry
+          poetry install
       
       - name: Check Code Style
         run: |
