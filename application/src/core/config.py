@@ -11,6 +11,28 @@ class Settings(BaseSettings):
     OPENAI_MAX_RETRIES: int = 3
     OPENAI_TIMEOUT: float = 30.0
     OPENAI_DEFAULT_HEADERS: dict = {"X-Custom-Header": "nu-cron"}
+    
+    # Model configuration
+    OPENAI_MODELS = {
+        "gpt-4-turbo": {
+            "name": "gpt-4-turbo-preview",
+            "max_tokens": 4096,
+            "temperature": 0.7,
+            "priority": 1,  # Default model
+        },
+        "gpt-4-mini": {
+            "name": "gpt-4-0125-preview",
+            "max_tokens": 4096,
+            "temperature": 0.7,
+            "priority": 2,  # Fallback model
+        },
+        "gpt-4": {
+            "name": "gpt-4",
+            "max_tokens": 8192,
+            "temperature": 0.7,
+            "priority": 3,  # Last resort
+        },
+    }
 
     # Environment configuration
     DOCKER_COMPOSE_PATH: str = "docker-compose.yml"

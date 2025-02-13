@@ -9,6 +9,9 @@ import openai
 import redis
 from fastapi import HTTPException
 
+from application.src.core.config import Settings
+from application.src.services.ai.model_selector import ModelSelector
+
 
 class TestGenerator:
     """Test generation service using AI."""
@@ -29,6 +32,7 @@ class TestGenerator:
         )
         # 1 hour default cache TTL
         self.cache_ttl = int(os.getenv("TEST_GENERATION_CACHE_TTL", "3600"))
+        self.model_selector = ModelSelector(Settings())
 
     async def generate_tests(
         self,
@@ -57,21 +61,52 @@ class TestGenerator:
             prompt = self._create_test_generation_prompt(
                 code, language, test_type, context
             )
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",  # Will use Mistral later
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert test engineer. Generate "
-                            "comprehensive tests based on the provided code."
-                        ),
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.7,
-                max_tokens=2000,
+            # Select appropriate model based on task requirements
+            model_config = self.model_selector.select_model(
+                task_type="test_generation",
+                token_estimate=len(prompt) * 2,  # Rough estimate
+                context={"test_type": test_type}
             )
+
+            try:
+                response = await self.openai_client.chat.completions.create(
+                    model=model_config["name"],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert test engineer. Generate "
+                                "comprehensive tests based on the provided code."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=model_config["temperature"],
+                    max_tokens=model_config["max_tokens"],
+                )
+            except Exception as e:
+                # Try fallback model if available
+                fallback_config = self.model_selector.get_fallback_model(
+                    model_config["name"]
+                )
+                if not fallback_config:
+                    raise e
+
+                response = await self.openai_client.chat.completions.create(
+                    model=fallback_config["name"],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert test engineer. Generate "
+                                "comprehensive tests based on the provided code."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=fallback_config["temperature"],
+                    max_tokens=fallback_config["max_tokens"],
+                )
 
             generated_tests = response.choices[0].message["content"]
             result = {
@@ -158,21 +193,50 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert test validator. Analyze tests "
-                            "for completeness and coverage."
-                        ),
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.7,
-                max_tokens=2000,
+            model_config = self.model_selector.select_model(
+                task_type="test_validation",
+                token_estimate=len(prompt) * 1.5,  # Validation typically needs less tokens
+                context={"language": language}
             )
+
+            try:
+                response = await self.openai_client.chat.completions.create(
+                    model=model_config["name"],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert test validator. Analyze tests "
+                                "for completeness and coverage."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=model_config["temperature"],
+                    max_tokens=model_config["max_tokens"],
+                )
+            except Exception as e:
+                fallback_config = self.model_selector.get_fallback_model(
+                    model_config["name"]
+                )
+                if not fallback_config:
+                    raise e
+
+                response = await self.openai_client.chat.completions.create(
+                    model=fallback_config["name"],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert test validator. Analyze tests "
+                                "for completeness and coverage."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=fallback_config["temperature"],
+                    max_tokens=fallback_config["max_tokens"],
+                )
 
             validation_result = response.choices[0].message["content"]
             return {
@@ -237,21 +301,50 @@ Please analyze:
             prompt = self._create_performance_test_prompt(
                 code, language, performance_criteria
             )
-            response = await self.openai_client.chat.completions.create(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert in performance testing. "
-                            "Generate comprehensive performance tests."
-                        ),
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.7,
-                max_tokens=2000,
+            model_config = self.model_selector.select_model(
+                task_type="performance_test_generation",
+                token_estimate=len(prompt) * 2,  # Performance tests can be complex
+                context={"language": language, "criteria": performance_criteria}
             )
+
+            try:
+                response = await self.openai_client.chat.completions.create(
+                    model=model_config["name"],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert in performance testing. "
+                                "Generate comprehensive performance tests."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=model_config["temperature"],
+                    max_tokens=model_config["max_tokens"],
+                )
+            except Exception as e:
+                fallback_config = self.model_selector.get_fallback_model(
+                    model_config["name"]
+                )
+                if not fallback_config:
+                    raise e
+
+                response = await self.openai_client.chat.completions.create(
+                    model=fallback_config["name"],
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert in performance testing. "
+                                "Generate comprehensive performance tests."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=fallback_config["temperature"],
+                    max_tokens=fallback_config["max_tokens"],
+                )
 
             performance_tests = response.choices[0].message["content"]
             return {
