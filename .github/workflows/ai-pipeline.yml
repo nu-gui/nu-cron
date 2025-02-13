@@ -44,12 +44,12 @@ jobs:
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
           python -m pip cache purge
-          python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip poetry
+          poetry install
           
       - name: Verify dependency versions
         run: |
-          pip freeze | grep pydantic-settings
+          poetry show pydantic-settings
       
       - name: Run linting
         run: |
@@ -94,12 +94,12 @@ jobs:
           sudo apt-get install -y libyaml-dev python3-dev
           npm ci
           python -m pip cache purge
-          python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip poetry
+          poetry install
           
       - name: Verify dependency versions
         run: |
-          pip freeze | grep pydantic-settings
+          poetry show pydantic-settings
       
       - name: Run tests
         env:
