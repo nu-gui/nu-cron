@@ -13,10 +13,9 @@ from application.src.services.testing.test_generator import TestGenerator
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
     with patch("redis.Redis.from_url") as mock_redis, patch(
-        "openai.OpenAI"
-    ) as mock_openai:
+        "openai.api_key"
+    ) as mock_api_key:
         mock_redis.return_value = Mock()
-        mock_openai.return_value = Mock()
         yield TestGenerator()
 
 

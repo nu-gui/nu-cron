@@ -15,10 +15,9 @@ from application.src.services.code_generation.code_generator import (
 def code_generator():
     """Create a CodeGenerator instance with mocked dependencies."""
     with patch("redis.Redis.from_url") as mock_redis, patch(
-        "openai.OpenAI"
-    ) as mock_openai:
+        "openai.api_key"
+    ) as mock_api_key:
         mock_redis.return_value = Mock()
-        mock_openai.return_value = Mock()
         yield CodeGenerator()
 
 
