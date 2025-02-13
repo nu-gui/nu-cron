@@ -65,7 +65,10 @@ class ModelSelector:
         if not available_models:
             logger.warning("No models meet requirements, using fallback")
             models = self.models.items()
-            return max(models, key=lambda x: x[1]["max_tokens"])[1]
+            return max(
+                models,
+                key=lambda x: x[1]["max_tokens"]
+            )[1]
 
         # Return the highest priority model that meets requirements
         return available_models[0][1]

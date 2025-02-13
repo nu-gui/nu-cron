@@ -202,16 +202,16 @@ Additional Context:
             try:
                 response = await self.openai_client.chat.completions.create(
                     model=model_config["name"],
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": (
-                                "You are an expert test validator. "
-                                "Analyze tests for completeness."
-                            ),
-                        },
-                        {"role": "user", "content": prompt},
-                    ],
+                    messages=[{
+                        "role": "system",
+                        "content": (
+                            "You are an expert test validator. "
+                            "Analyze tests for completeness."
+                        ),
+                    }, {
+                        "role": "user",
+                        "content": prompt
+                    }],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
                 )
