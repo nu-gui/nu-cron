@@ -1,6 +1,5 @@
 """Test suite for the CodeGenerator class."""
 
-import asyncio
 import json
 import os
 from datetime import datetime
