@@ -64,7 +64,7 @@ class ModelSelector:
         # If no models meet token requirements, use the model with highest max_tokens
         if not available_models:
             logger.warning(
-                "No models meet requirements, using fallback"
+                "No models meet requirements"
             )
             models = self.models.items()
             return max(
