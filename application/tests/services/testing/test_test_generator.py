@@ -1,6 +1,5 @@
 """Test suite for the TestGenerator class."""
 
-import asyncio
 import json
 import os
 from datetime import datetime
@@ -9,28 +8,47 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 
 from application.src.services.testing.test_generator import TestGenerator
+from application.src.services.testing.test_generator import TestGenerator
 
 
 @pytest.fixture
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
-    with patch("redis.Redis.from_url") as mock_redis, patch(
-        "openai.OpenAI"
-    ) as mock_openai, patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+    with patch("redis.Redis.from_url") as mock_redis, \
+         patch("openai.OpenAI") as mock_openai, \
+         patch(
+             "application.src.services.ai.model_selector.ModelSelector"
+         ) as mock_selector, \
+         patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+        # Mock Redis
         mock_redis_client = Mock()
         mock_redis_client.get.return_value = None
         mock_redis.return_value = mock_redis_client
-        mock_openai.return_value = Mock()
 
-        # Set up async response mock
+        # Mock OpenAI
+        mock_openai.return_value = Mock()
         mock_response = Mock()
         mock_response.choices = [Mock()]
-        mock_response.choices[0].message = {
-            "content": "Generated test content"
-        }
+        mock_response.choices[0].message = {"content": "Generated test content"}
         mock_openai.return_value.chat.completions.create = AsyncMock(
             return_value=mock_response
         )
+
+        # Mock ModelSelector
+        mock_selector.return_value = Mock()
+        mock_selector.return_value.select_model.return_value = {
+            "name": "gpt-4-turbo-preview",
+            "max_tokens": 4096,
+            "temperature": 0.7,
+            "priority": 1,
+        }
+        mock_selector.return_value.get_fallback_model.return_value = {
+            "name": "gpt-4-0125-preview",
+            "max_tokens": 4096,
+            "temperature": 0.7,
+            "priority": 2,
+        }
+
         yield TestGenerator()
 
 

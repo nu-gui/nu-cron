@@ -25,8 +25,9 @@ class ModelSelector:
             required_fields = ["name", "max_tokens", "temperature", "priority"]
             missing = [f for f in required_fields if f not in config]
             if missing:
+                fields = ", ".join(missing)
                 raise ValueError(
-                    f"Model {model_id} missing required fields: {', '.join(missing)}"
+                    f"Model {model_id} missing required fields: {fields}"
                 )
 
     def select_model(
