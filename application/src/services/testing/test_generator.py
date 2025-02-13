@@ -193,8 +193,7 @@ Additional Context:
             prompt = self._create_test_validation_prompt(tests, code, language)
             model_config = self.model_selector.select_model(
                 task_type="test_validation",
-                token_estimate=len(prompt)
-                * 1.5,  # Validation typically needs less tokens
+                token_estimate=int(len(prompt) * 1.5),  # Less tokens
                 context={"language": language},
             )
 
@@ -302,8 +301,7 @@ Please analyze:
             )
             model_config = self.model_selector.select_model(
                 task_type="performance_test_generation",
-                token_estimate=len(prompt)
-                * 2,  # Performance tests can be complex
+                token_estimate=int(len(prompt) * 2),  # Complex tests
                 context={
                     "language": language,
                     "criteria": performance_criteria,

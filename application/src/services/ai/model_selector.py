@@ -48,7 +48,8 @@ class ModelSelector:
             Dict containing model configuration
         """
         available_models = sorted(
-            self.models.items(), key=lambda x: x[1]["priority"]
+            self.models.items(),
+            key=lambda x: x[1]["priority"]
         )
 
         # Select model based on token requirements
@@ -64,9 +65,8 @@ class ModelSelector:
             logger.warning(
                 "No models meet token requirements, using fallback model"
             )
-            return max(self.models.items(), key=lambda x: x[1]["max_tokens"])[
-                1
-            ]
+            models = self.models.items()
+            return max(models, key=lambda x: x[1]["max_tokens"])[1]
 
         # Return the highest priority model that meets requirements
         return available_models[0][1]
