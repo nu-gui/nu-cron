@@ -51,7 +51,7 @@ class CodeGenerator:
                 max_tokens=2000,
             )
 
-            generated_code = response.choices[0].message['content']
+            generated_code = response.choices[0].message["content"]
             result = {
                 "status": "success",
                 "code": generated_code,
@@ -130,7 +130,7 @@ class CodeGenerator:
                 max_tokens=2000,
             )
 
-            review_result = response.choices[0].message['content']
+            review_result = response.choices[0].message["content"]
             return {
                 "status": "success",
                 "review": review_result,
@@ -200,7 +200,7 @@ Additional Context:
                 max_tokens=2000,
             )
 
-            optimized_code = response.choices[0].message['content']
+            optimized_code = response.choices[0].message["content"]
             return {
                 "status": "success",
                 "optimized_code": optimized_code,
