@@ -35,7 +35,7 @@ class CodeGenerator:
             prompt = self._create_code_generation_prompt(
                 requirements, language, context
             )
-            response = await openai.ChatCompletion.create(
+            response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -114,7 +114,7 @@ class CodeGenerator:
             prompt = self._create_code_review_prompt(code, language, context)
             # Note: Claude integration will be added here
             # For now, using GPT-4 as a placeholder
-            response = await openai.ChatCompletion.create(
+            response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
@@ -184,7 +184,7 @@ Additional Context:
             prompt = self._create_optimization_prompt(
                 code, language, optimization_goals
             )
-            response = await openai.ChatCompletion.create(
+            response = await self.openai_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {
