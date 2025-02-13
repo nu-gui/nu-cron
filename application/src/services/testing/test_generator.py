@@ -65,7 +65,7 @@ class TestGenerator:
                 max_tokens=2000,
             )
 
-            generated_tests = response.choices[0].message['content']
+            generated_tests = response.choices[0].message["content"]
             result = {
                 "status": "success",
                 "tests": generated_tests,
@@ -166,7 +166,7 @@ Additional Context:
                 max_tokens=2000,
             )
 
-            validation_result = response.choices[0].message['content']
+            validation_result = response.choices[0].message["content"]
             return {
                 "status": "success",
                 "validation": validation_result,
@@ -245,7 +245,7 @@ Please analyze:
                 max_tokens=2000,
             )
 
-            performance_tests = response.choices[0].message['content']
+            performance_tests = response.choices[0].message["content"]
             return {
                 "status": "success",
                 "performance_tests": performance_tests,
