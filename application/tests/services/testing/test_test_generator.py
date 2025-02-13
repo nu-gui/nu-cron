@@ -1,10 +1,10 @@
 """Test suite for the TestGenerator class."""
 
-import os
-import json
-from datetime import datetime
 import asyncio
-from unittest.mock import Mock, patch, AsyncMock
+import json
+import os
+from datetime import datetime
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -14,19 +14,23 @@ from application.src.services.testing.test_generator import TestGenerator
 @pytest.fixture
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
-    with patch("redis.Redis.from_url") as mock_redis, \
-         patch("openai.OpenAI") as mock_openai, \
-         patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+    with patch("redis.Redis.from_url") as mock_redis, patch(
+        "openai.OpenAI"
+    ) as mock_openai, patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
         mock_redis_client = Mock()
         mock_redis_client.get.return_value = None
         mock_redis.return_value = mock_redis_client
         mock_openai.return_value = Mock()
-        
+
         # Set up async response mock
         mock_response = Mock()
         mock_response.choices = [Mock()]
-        mock_response.choices[0].message = {"content": "Generated test content"}
-        mock_openai.return_value.chat.completions.create = AsyncMock(return_value=mock_response)
+        mock_response.choices[0].message = {
+            "content": "Generated test content"
+        }
+        mock_openai.return_value.chat.completions.create = AsyncMock(
+            return_value=mock_response
+        )
         yield TestGenerator()
 
 
@@ -39,7 +43,9 @@ async def test_generate_tests_success(test_generator):
     test_type = "unit"
     mock_response = Mock()
     mock_response.choices = [Mock()]
-    mock_response.choices[0].message = {"content": "def test_add(): assert add(1, 2) == 3"}
+    mock_response.choices[0].message = {
+        "content": "def test_add(): assert add(1, 2) == 3"
+    }
     test_generator.openai_client.chat.completions.create = AsyncMock(
         return_value=mock_response
     )
@@ -91,7 +97,9 @@ async def test_validate_tests_success(test_generator):
     language = "python"
     mock_response = Mock()
     mock_response.choices = [Mock()]
-    mock_response.choices[0].message = {"content": "Test validation: Good coverage"}
+    mock_response.choices[0].message = {
+        "content": "Test validation: Good coverage"
+    }
     test_generator.openai_client.chat.completions.create = AsyncMock(
         return_value=mock_response
     )
@@ -115,7 +123,9 @@ async def test_generate_performance_tests_success(test_generator):
     performance_criteria = {"response_time": "100ms", "throughput": "1000rps"}
     mock_response = Mock()
     mock_response.choices = [Mock()]
-    mock_response.choices[0].message = {"content": "Performance test: measure response time"}
+    mock_response.choices[0].message = {
+        "content": "Performance test: measure response time"
+    }
     test_generator.openai_client.chat.completions.create = AsyncMock(
         return_value=mock_response
     )

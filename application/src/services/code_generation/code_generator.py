@@ -15,9 +15,7 @@ class CodeGenerator:
             raise ValueError("OPENAI_API_KEY environment variable is required")
 
         self.openai_client = openai.OpenAI(
-            api_key=openai_key,
-            max_retries=3,
-            timeout=30.0
+            api_key=openai_key, max_retries=3, timeout=30.0
         )
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
