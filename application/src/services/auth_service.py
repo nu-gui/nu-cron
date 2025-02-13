@@ -16,6 +16,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "development_secret_key")
 if not SECRET_KEY or SECRET_KEY == "development_secret_key":
     import logging
+
     logging.warning("JWT_SECRET_KEY not set. Using development configuration.")
 
 
