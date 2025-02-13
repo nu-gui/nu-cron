@@ -49,7 +49,7 @@ jobs:
           
       - name: Verify dependency versions
         run: |
-          poetry show pydantic-settings
+          poetry show pydantic
       
       - name: Run linting
         run: |
@@ -101,7 +101,7 @@ jobs:
           
       - name: Verify dependency versions
         run: |
-          poetry show pydantic-settings
+          poetry show pydantic
       
       - name: Run tests
         env:
