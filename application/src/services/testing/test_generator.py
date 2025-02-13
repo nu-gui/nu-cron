@@ -192,10 +192,11 @@ Additional Context:
         """
         try:
             prompt = self._create_test_validation_prompt(tests, code, language)
+            token_est = int(len(prompt) * 1.5)  # Less tokens
             model_config = self.model_selector.select_model(
                 task_type="test_validation",
-                token_estimate=int(len(prompt) * 1.5),  # Less tokens
-                context={"language": language},
+                token_estimate=token_est,
+                context={"language": language}
             )
 
             try:

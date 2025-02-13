@@ -14,11 +14,11 @@ from application.src.services.testing.test_generator import TestGenerator
 def test_generator():
     """Create a TestGenerator instance with mocked dependencies."""
     with patch("redis.Redis.from_url") as mock_redis, \
-         patch("openai.OpenAI") as mock_openai, \
-         patch(
-            "application.src.services.ai.model_selector.ModelSelector"
-        ) as mock_selector, \
-         patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+            patch("openai.OpenAI") as mock_openai, \
+            patch(
+                "application.src.services.ai.model_selector.ModelSelector"
+            ) as mock_selector, \
+            patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
         # Mock Redis
         mock_redis_client = Mock()
         mock_redis_client.get.return_value = None
