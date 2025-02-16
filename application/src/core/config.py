@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     OPENAI_DEFAULT_HEADERS: dict = {"X-Custom-Header": "nu-cron"}
 
     # Model configuration
-    OPENAI_MODELS = {
+    OPENAI_MODELS: dict[str, dict[str, int | str | float]] = {
         "gpt-4-turbo": {
             "name": "gpt-4-turbo-preview",
             "max_tokens": 4096,
