@@ -27,29 +27,29 @@ class Settings(BaseSettings):
             "max_tokens": 4096,
             "temperature": 0.7,
             "priority": 1,
-            "fallback_chain": ["gpt-4-0125-preview", "gpt-4"]
+            "fallback_chain": ["gpt-4-0125-preview", "gpt-4"],
         },
         "claude": {
             "name": "claude-3-opus-20240229",
             "max_tokens": 4096,
             "temperature": 0.7,
             "priority": 2,
-            "fallback_chain": []
+            "fallback_chain": [],
         },
         "mistral": {
             "name": "mistral-large-latest",
             "max_tokens": 4096,
             "temperature": 0.7,
             "priority": 3,
-            "fallback_chain": []
+            "fallback_chain": [],
         },
         "groq": {
             "name": "mixtral-8x7b-32768",
             "max_tokens": 4096,
             "temperature": 0.7,
             "priority": 4,
-            "fallback_chain": []
-        }
+            "fallback_chain": [],
+        },
     }
 
     # Environment configuration
