@@ -161,8 +161,8 @@ async def test_token_monitoring_with_cache(model_selector):
             )
 
             assert response1.usage.total_tokens == response2.usage.total_tokens
-            mock_completions = mock_openai.return_value.chat.completions
-            mock_completions.create.assert_called_once()
+            chat_completions = mock_openai.return_value.chat.completions.create
+            chat_completions.assert_called_once()
 
 
 @pytest.mark.asyncio
