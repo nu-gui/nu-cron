@@ -1,7 +1,7 @@
 """Test suite for token usage monitoring across different AI models."""
 
 import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 import os
 
 from application.src.services.ai.model_selector import ModelSelector

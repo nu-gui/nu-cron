@@ -1,7 +1,7 @@
 """Test suite for model environments and configurations."""
 
 import pytest
-from unittest.mock import AsyncMock, Mock, patch, DEFAULT
+from unittest.mock import patch, DEFAULT
 import os
 
 from application.src.services.ai.model_selector import ModelSelector
@@ -46,8 +46,8 @@ async def test_model_token_tracking(model_environments):
     # Test OpenAI token tracking
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        mock_openai.return_value.chat.completions.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_openai.return_value.chat.completions.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
         # Test implementation for OpenAI
 

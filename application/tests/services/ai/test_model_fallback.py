@@ -1,7 +1,7 @@
 """Test suite for model fallback scenarios."""
 
 import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import patch
 import os
 
 from application.src.services.ai.model_selector import ModelSelector
@@ -30,7 +30,7 @@ async def test_openai_fallback_chain(model_selector):
 
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        
+
         # Configure mock to fail with primary model and succeed with fallback
         mock_openai.return_value.chat.completions.create.side_effect = [
             Exception("Primary model error"),  # gpt-4-turbo-preview fails
@@ -56,7 +56,7 @@ async def test_openai_complete_fallback_chain(model_selector):
 
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        
+
         # Configure mock to fail twice and succeed with last resort
         mock_openai.return_value.chat.completions.create.side_effect = [
             Exception("Primary model error"),  # gpt-4-turbo-preview fails
@@ -119,11 +119,11 @@ async def test_cross_model_fallback(model_selector):
 
         assert response.choices[0].message["content"] == test_content
         assert response.usage.total_tokens == test_tokens["total_tokens"]
-        
+
         # Verify OpenAI attempts and Claude success
         assert mocks["openai"].return_value.chat.completions.create.call_count == 3
         assert mocks["anthropic"].return_value.messages.create.call_count == 1
-        
+
         # Verify other models weren't called
         assert mocks["mistral"].return_value.chat.completions.create.call_count == 0
         assert mocks["groq"].return_value.chat.completions.create.call_count == 0
@@ -137,7 +137,7 @@ async def test_fallback_with_token_monitoring(model_selector):
 
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        
+
         # Configure mock to fail with primary model and succeed with fallback
         mock_openai.return_value.chat.completions.create.side_effect = [
             setup_mock_future("", primary_tokens),  # Primary model fails after tokenizing
@@ -160,7 +160,7 @@ async def test_fallback_error_handling(model_selector):
     """Test error handling when all fallbacks fail."""
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        
+
         # Configure all attempts to fail
         mock_openai.return_value.chat.completions.create.side_effect = Exception(
             "Model error"
@@ -172,6 +172,6 @@ async def test_fallback_error_handling(model_selector):
                 "test prompt",
                 model="openai"
             )
-        
+
         assert "Model error" in str(exc_info.value)
         assert mock_openai.return_value.chat.completions.create.call_count == 3

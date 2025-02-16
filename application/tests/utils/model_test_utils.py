@@ -7,11 +7,11 @@ from unittest.mock import AsyncMock, Mock
 
 def create_mock_completion(content: str, tokens: Optional[Dict[str, int]] = None) -> Mock:
     """Create mock completion response for AI models.
-    
+
     Args:
         content: The response content
         tokens: Optional token usage statistics
-    
+
     Returns:
         Mock object simulating model response
     """
@@ -25,11 +25,11 @@ def create_mock_completion(content: str, tokens: Optional[Dict[str, int]] = None
 
 def setup_mock_future(content: str, tokens: Optional[Dict[str, int]] = None) -> asyncio.Future:
     """Setup asyncio.Future with mock response.
-    
+
     Args:
         content: The response content
         tokens: Optional token usage statistics
-    
+
     Returns:
         Future containing mock response
     """
@@ -40,11 +40,11 @@ def setup_mock_future(content: str, tokens: Optional[Dict[str, int]] = None) -> 
 
 def mock_token_usage(prompt_tokens: int, completion_tokens: int) -> Dict[str, int]:
     """Create token usage dictionary.
-    
+
     Args:
         prompt_tokens: Number of tokens in prompt
         completion_tokens: Number of tokens in completion
-    
+
     Returns:
         Dictionary with token usage statistics
     """
@@ -57,15 +57,15 @@ def mock_token_usage(prompt_tokens: int, completion_tokens: int) -> Dict[str, in
 
 def create_mock_client(model: str) -> Mock:
     """Create mock client for different AI models.
-    
+
     Args:
         model: The model type ('openai', 'claude', 'mistral', 'groq')
-    
+
     Returns:
         Mock client object
     """
     mock_client = Mock()
-    
+
     if model == 'openai':
         mock_client.chat.completions.create = AsyncMock()
     elif model == 'claude':
@@ -74,13 +74,13 @@ def create_mock_client(model: str) -> Mock:
         mock_client.chat.completions.create = AsyncMock()
     elif model == 'groq':
         mock_client.chat.completions.create = AsyncMock()
-    
+
     return mock_client
 
 
 def setup_model_environment() -> Dict[str, Any]:
     """Setup test environment variables for all models.
-    
+
     Returns:
         Dictionary of test environment variables
     """
