@@ -26,9 +26,7 @@ class ModelSelector:
             missing = [f for f in fields if f not in config]
             if missing:
                 msg = ", ".join(missing)
-                raise ValueError(
-                    f"Model {model_id} missing fields: {msg}"
-                )
+                raise ValueError(f"Model {model_id} missing fields: {msg}")
 
     def select_model(
         self,
@@ -47,15 +45,13 @@ class ModelSelector:
             Dict containing model configuration
         """
         models = self.models.items()
-        available_models = sorted(
-            models,
-            key=lambda x: x[1]["priority"]
-        )
+        available_models = sorted(models, key=lambda x: x[1]["priority"])
 
         # Filter models by token limit
         if token_estimate:
             available_models = [
-                m for m in available_models
+                m
+                for m in available_models
                 if m[1]["max_tokens"] >= token_estimate
             ]
 
@@ -63,10 +59,7 @@ class ModelSelector:
         if not available_models:
             logger.warning("No models meet requirements")
             models = self.models.items()
-            return max(
-                models,
-                key=lambda x: x[1]["max_tokens"]
-            )[1]
+            return max(models, key=lambda x: x[1]["max_tokens"])[1]
 
         # Return the highest priority model that meets requirements
         return available_models[0][1]

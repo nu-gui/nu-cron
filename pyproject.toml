@@ -15,7 +15,7 @@ sqlalchemy = "2.0.25"
 alembic = "1.13.1"
 psycopg2-binary = "2.9.9"
 redis = "5.0.1"
-pydantic = "2.6.1"  # Updated for FastAPI compatibility
+pydantic = ">=2.7.0"  # Updated for FastAPI compatibility
 typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic
 PyYAML = "6.0.1"  # Version with PEP 517 support
 openai = "^1.0.0"  # Using latest version for new client style
@@ -31,6 +31,7 @@ python-multipart = "0.0.6"
 # Monitoring
 prometheus-client = "0.19.0"
 python-json-logger = "2.0.7"
+pydantic-settings = "^2.7.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "23.12.1"

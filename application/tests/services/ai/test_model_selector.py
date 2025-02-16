@@ -75,7 +75,7 @@ def test_validate_models_missing_fields():
     }
     with pytest.raises(ValueError) as exc_info:
         ModelSelector(settings)
-    assert "missing required fields" in str(exc_info.value)
+    assert "missing fields" in str(exc_info.value)
 
 
 def test_validate_models_empty_config():

@@ -30,11 +30,27 @@ class AIAssistant:
                 "ANTHROPIC_API_KEY environment variable is required"
             )
 
+        # Initialize Helicone configuration
+        helicone_key = os.getenv("HELICONE_API_KEY")
+        if not helicone_key:
+            raise ValueError(
+                "HELICONE_API_KEY environment variable is required"
+            )
+
+        # Configure OpenAI client with Helicone integration
         self.openai_client = openai.OpenAI(
             api_key=openai_key,
             max_retries=3,
             timeout=30.0,
-            default_headers={"X-Custom-Header": "nu-cron"},
+            default_headers={
+                "X-Custom-Header": "nu-cron",
+                "Helicone-Auth": f"Bearer {helicone_key}",
+                "Helicone-Cache-Enabled": "true",
+                "Helicone-Cache-TTL": "3600",
+                "Helicone-Retry-Enabled": "true",
+                "Helicone-Rate-Limit-Policy": "throttle",
+            },
+            base_url="https://api.helicone.ai/v1/openai",
         )
         self.claude_client = anthropic.Anthropic(api_key=anthropic_key)
         self.embeddings = OpenAIEmbeddings(openai_api_key=openai_key)

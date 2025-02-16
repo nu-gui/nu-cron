@@ -14,8 +14,26 @@ class CodeGenerator:
         if not openai_key:
             raise ValueError("OPENAI_API_KEY environment variable is required")
 
+        # Initialize Helicone configuration
+        helicone_key = os.getenv("HELICONE_API_KEY")
+        if not helicone_key:
+            raise ValueError(
+                "HELICONE_API_KEY environment variable is required"
+            )
+
+        # Configure OpenAI client with Helicone integration
         self.openai_client = openai.OpenAI(
-            api_key=openai_key, max_retries=3, timeout=30.0
+            api_key=openai_key,
+            max_retries=3,
+            timeout=30.0,
+            default_headers={
+                "Helicone-Auth": f"Bearer {helicone_key}",
+                "Helicone-Cache-Enabled": "true",
+                "Helicone-Cache-TTL": "3600",
+                "Helicone-Retry-Enabled": "true",
+                "Helicone-Rate-Limit-Policy": "throttle",
+            },
+            base_url="https://api.helicone.ai/v1/openai",
         )
         self.redis_client = redis.Redis.from_url(
             os.getenv("REDIS_URL", "redis://redis:6379/0")
