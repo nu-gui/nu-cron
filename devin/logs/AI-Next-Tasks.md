@@ -8,11 +8,13 @@
 - [x] Set up model fallback strategies
 
 ## 🎯 Session 2: Testing Framework (8-10 ACU)
-### Testing & Quality Assurance
-- [ ] Implement test suite for model selection logic
-- [ ] Configure test environments for different OpenAI models
-- [ ] Set up token usage monitoring in test environment
-- [ ] Add integration tests for model fallback scenarios
+### Multi-Model Testing & Quality Assurance
+- [ ] Implement shared test utilities for model testing
+- [ ] Configure test environments for OpenAI, Claude, Mistral, and Groq
+- [ ] Set up token usage monitoring across all models
+- [ ] Add integration tests for model selection and fallback scenarios
+- [ ] Implement cross-model fallback testing
+- [ ] Add comprehensive token tracking validation
 
 ## 🎯 Session 3: CI/CD Enhancement (6-8 ACU)
 ### Pipeline Optimization
