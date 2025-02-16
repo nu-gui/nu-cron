@@ -12,9 +12,7 @@ class CodeGenerator:
     def __init__(self):
         openai_key = os.getenv("OPENAI_API_KEY")
         if not openai_key:
-            raise ValueError(
-                "OPENAI_API_KEY environment variable is required"
-            )
+            raise ValueError("OPENAI_API_KEY environment variable is required")
 
         # Initialize Helicone configuration
         helicone_key = os.getenv("HELICONE_API_KEY")

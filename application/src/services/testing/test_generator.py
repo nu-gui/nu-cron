@@ -20,9 +20,7 @@ class TestGenerator:
         """Initialize test generator with OpenAI client and Redis cache."""
         openai_key = os.getenv("OPENAI_API_KEY")
         if not openai_key:
-            raise ValueError(
-                "OPENAI_API_KEY environment variable is required"
-            )
+            raise ValueError("OPENAI_API_KEY environment variable is required")
 
         # Initialize Helicone configuration
         helicone_key = os.getenv("HELICONE_API_KEY")
@@ -94,12 +92,9 @@ class TestGenerator:
                     messages=[
                         {
                             "role": "system",
-                            "content": "Generate tests for the code."
+                            "content": "Generate tests for the code.",
                         },
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
+                        {"role": "user", "content": prompt},
                     ],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
@@ -117,12 +112,9 @@ class TestGenerator:
                     messages=[
                         {
                             "role": "system",
-                            "content": "Generate tests for the code."
+                            "content": "Generate tests for the code.",
                         },
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
+                        {"role": "user", "content": prompt},
                     ],
                     temperature=fallback_config["temperature"],
                     max_tokens=fallback_config["max_tokens"],
@@ -217,7 +209,7 @@ Additional Context:
             model_config = self.model_selector.select_model(
                 "test_validation",
                 token_estimate=token_est,
-                context={"lang": language}
+                context={"lang": language},
             )
 
             try:
@@ -226,12 +218,9 @@ Additional Context:
                     messages=[
                         {
                             "role": "system",
-                            "content": "You are a test validator."
+                            "content": "You are a test validator.",
                         },
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
+                        {"role": "user", "content": prompt},
                     ],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
@@ -245,13 +234,10 @@ Additional Context:
 
                 response = await self.openai_client.chat.completions.create(
                     model=fallback_config["name"],
-                    messages=[{
-                        "role": "system",
-                        "content": "Validate tests."
-                    }, {
-                        "role": "user",
-                        "content": prompt
-                    }],
+                    messages=[
+                        {"role": "system", "content": "Validate tests."},
+                        {"role": "user", "content": prompt},
+                    ],
                     temperature=fallback_config["temperature"],
                     max_tokens=fallback_config["max_tokens"],
                 )
@@ -322,7 +308,7 @@ Please analyze:
             model_config = self.model_selector.select_model(
                 "performance_test",
                 token_estimate=int(len(prompt) * 2),
-                context={"lang": language}
+                context={"lang": language},
             )
 
             try:
@@ -331,12 +317,9 @@ Please analyze:
                     messages=[
                         {
                             "role": "system",
-                            "content": "Generate performance tests."
+                            "content": "Generate performance tests.",
                         },
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
+                        {"role": "user", "content": prompt},
                     ],
                     temperature=model_config["temperature"],
                     max_tokens=model_config["max_tokens"],
@@ -353,12 +336,9 @@ Please analyze:
                     messages=[
                         {
                             "role": "system",
-                            "content": "Generate performance tests."
+                            "content": "Generate performance tests.",
                         },
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
+                        {"role": "user", "content": prompt},
                     ],
                     temperature=fallback_config["temperature"],
                     max_tokens=fallback_config["max_tokens"],
