@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     OPENAI_MAX_RETRIES: int = 3
     OPENAI_TIMEOUT: float = 30.0
     OPENAI_DEFAULT_HEADERS: dict = {"X-Custom-Header": "nu-cron"}
-    
+
     # Helicone configuration
     HELICONE_API_KEY: str = ""  # Set via environment variable
     HELICONE_CACHE_ENABLED: bool = True
