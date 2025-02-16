@@ -1,3 +1,4 @@
+from typing import Any
 from pydantic_settings import BaseSettings
 
 
@@ -20,24 +21,34 @@ class Settings(BaseSettings):
     HELICONE_RATE_LIMIT_POLICY: str = "throttle"
 
     # Model configuration
-    OPENAI_MODELS: dict[str, dict[str, int | str | float]] = {
-        "gpt-4-turbo": {
+    AI_MODELS: dict[str, dict[str, Any]] = {
+        "openai": {
             "name": "gpt-4-turbo-preview",
             "max_tokens": 4096,
             "temperature": 0.7,
-            "priority": 1,  # Default model
+            "priority": 1,
+            "fallback_chain": ["gpt-4-0125-preview", "gpt-4"],
         },
-        "gpt-4-mini": {
-            "name": "gpt-4-0125-preview",
+        "claude": {
+            "name": "claude-3-opus-20240229",
             "max_tokens": 4096,
             "temperature": 0.7,
-            "priority": 2,  # Fallback model
+            "priority": 2,
+            "fallback_chain": [],
         },
-        "gpt-4": {
-            "name": "gpt-4",
-            "max_tokens": 8192,
+        "mistral": {
+            "name": "mistral-large-latest",
+            "max_tokens": 4096,
             "temperature": 0.7,
-            "priority": 3,  # Last resort
+            "priority": 3,
+            "fallback_chain": [],
+        },
+        "groq": {
+            "name": "mixtral-8x7b-32768",
+            "max_tokens": 4096,
+            "temperature": 0.7,
+            "priority": 4,
+            "fallback_chain": [],
         },
     }
 
