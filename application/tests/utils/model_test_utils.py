@@ -5,7 +5,9 @@ from typing import Any, Dict, Optional
 from unittest.mock import AsyncMock, Mock
 
 
-def create_mock_completion(content: str, tokens: Optional[Dict[str, int]] = None) -> Mock:
+def create_mock_completion(
+    content: str, tokens: Optional[Dict[str, int]] = None
+) -> Mock:
     """Create mock completion response for AI models.
 
     Args:
@@ -23,7 +25,9 @@ def create_mock_completion(content: str, tokens: Optional[Dict[str, int]] = None
     return mock_response
 
 
-def setup_mock_future(content: str, tokens: Optional[Dict[str, int]] = None) -> asyncio.Future:
+def setup_mock_future(
+    content: str, tokens: Optional[Dict[str, int]] = None
+) -> asyncio.Future:
     """Setup asyncio.Future with mock response.
 
     Args:
@@ -38,7 +42,9 @@ def setup_mock_future(content: str, tokens: Optional[Dict[str, int]] = None) -> 
     return future
 
 
-def mock_token_usage(prompt_tokens: int, completion_tokens: int) -> Dict[str, int]:
+def mock_token_usage(
+    prompt_tokens: int, completion_tokens: int
+) -> Dict[str, int]:
     """Create token usage dictionary.
 
     Args:
@@ -51,7 +57,7 @@ def mock_token_usage(prompt_tokens: int, completion_tokens: int) -> Dict[str, in
     return {
         "prompt_tokens": prompt_tokens,
         "completion_tokens": completion_tokens,
-        "total_tokens": prompt_tokens + completion_tokens
+        "total_tokens": prompt_tokens + completion_tokens,
     }
 
 
@@ -66,13 +72,13 @@ def create_mock_client(model: str) -> Mock:
     """
     mock_client = Mock()
 
-    if model == 'openai':
+    if model == "openai":
         mock_client.chat.completions.create = AsyncMock()
-    elif model == 'claude':
+    elif model == "claude":
         mock_client.messages.create = AsyncMock()
-    elif model == 'mistral':
+    elif model == "mistral":
         mock_client.chat.completions.create = AsyncMock()
-    elif model == 'groq':
+    elif model == "groq":
         mock_client.chat.completions.create = AsyncMock()
 
     return mock_client
@@ -89,5 +95,5 @@ def setup_model_environment() -> Dict[str, Any]:
         "ANTHROPIC_API_KEY": "test-claude-key",
         "GROQ_API_KEY": "test-groq-key",
         "MISTRAL_API_KEY": "test-mistral-key",
-        "HELICONE_API_KEY": "test-helicone-key"
+        "HELICONE_API_KEY": "test-helicone-key",
     }

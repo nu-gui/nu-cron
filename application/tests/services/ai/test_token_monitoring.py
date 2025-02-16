@@ -1,8 +1,8 @@
 """Test suite for token usage monitoring across different AI models."""
 
 import pytest
-from unittest.mock import Mock, patch
 import os
+from unittest.mock import Mock, patch
 
 from application.src.services.ai.model_selector import ModelSelector
 from application.src.core.config import Settings
@@ -10,7 +10,7 @@ from application.tests.utils.model_test_utils import (
     setup_mock_future,
     mock_token_usage,
     create_mock_client,
-    setup_model_environment
+    setup_model_environment,
 )
 
 
@@ -30,18 +30,20 @@ async def test_openai_token_monitoring(model_selector):
 
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        mock_openai.return_value.chat.completions.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_openai.return_value.chat.completions.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
 
         # Test token tracking
         response = await model_selector.generate_completion(
-            "test prompt",
-            model="openai"
+            "test prompt", model="openai"
         )
 
         assert response.usage.prompt_tokens == test_tokens["prompt_tokens"]
-        assert response.usage.completion_tokens == test_tokens["completion_tokens"]
+        assert (
+            response.usage.completion_tokens
+            == test_tokens["completion_tokens"]
+        )
         assert response.usage.total_tokens == test_tokens["total_tokens"]
 
         # Verify Helicone headers
@@ -60,18 +62,20 @@ async def test_claude_token_monitoring(model_selector):
 
     with patch("anthropic.Anthropic") as mock_claude:
         mock_claude.return_value = create_mock_client("claude")
-        mock_claude.return_value.messages.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_claude.return_value.messages.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
 
         # Test token tracking
         response = await model_selector.generate_completion(
-            "test prompt",
-            model="claude"
+            "test prompt", model="claude"
         )
 
         assert response.usage.prompt_tokens == test_tokens["prompt_tokens"]
-        assert response.usage.completion_tokens == test_tokens["completion_tokens"]
+        assert (
+            response.usage.completion_tokens
+            == test_tokens["completion_tokens"]
+        )
         assert response.usage.total_tokens == test_tokens["total_tokens"]
 
 
@@ -83,18 +87,20 @@ async def test_mistral_token_monitoring(model_selector):
 
     with patch("mistralai.Client") as mock_mistral:
         mock_mistral.return_value = create_mock_client("mistral")
-        mock_mistral.return_value.chat.completions.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_mistral.return_value.chat.completions.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
 
         # Test token tracking
         response = await model_selector.generate_completion(
-            "test prompt",
-            model="mistral"
+            "test prompt", model="mistral"
         )
 
         assert response.usage.prompt_tokens == test_tokens["prompt_tokens"]
-        assert response.usage.completion_tokens == test_tokens["completion_tokens"]
+        assert (
+            response.usage.completion_tokens
+            == test_tokens["completion_tokens"]
+        )
         assert response.usage.total_tokens == test_tokens["total_tokens"]
 
 
@@ -106,18 +112,20 @@ async def test_groq_token_monitoring(model_selector):
 
     with patch("groq.Groq") as mock_groq:
         mock_groq.return_value = create_mock_client("groq")
-        mock_groq.return_value.chat.completions.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_groq.return_value.chat.completions.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
 
         # Test token tracking
         response = await model_selector.generate_completion(
-            "test prompt",
-            model="groq"
+            "test prompt", model="groq"
         )
 
         assert response.usage.prompt_tokens == test_tokens["prompt_tokens"]
-        assert response.usage.completion_tokens == test_tokens["completion_tokens"]
+        assert (
+            response.usage.completion_tokens
+            == test_tokens["completion_tokens"]
+        )
         assert response.usage.total_tokens == test_tokens["total_tokens"]
 
 
@@ -136,21 +144,19 @@ async def test_token_monitoring_with_cache(model_selector):
         # Test caching behavior
         with patch("openai.OpenAI") as mock_openai:
             mock_openai.return_value = create_mock_client("openai")
-            mock_openai.return_value.chat.completions.create.return_value = setup_mock_future(
-                test_content, test_tokens
+            mock_openai.return_value.chat.completions.create.return_value = (
+                setup_mock_future(test_content, test_tokens)
             )
 
             # First call - should use API
             response1 = await model_selector.generate_completion(
-                "test prompt",
-                model="openai"
+                "test prompt", model="openai"
             )
 
             # Second call - should use cache
             mock_redis_client.get.return_value = response1
             response2 = await model_selector.generate_completion(
-                "test prompt",
-                model="openai"
+                "test prompt", model="openai"
             )
 
             assert response1.usage.total_tokens == response2.usage.total_tokens
@@ -162,13 +168,12 @@ async def test_token_monitoring_error_handling(model_selector):
     """Test token monitoring error handling."""
     with patch("openai.OpenAI") as mock_openai:
         mock_openai.return_value = create_mock_client("openai")
-        mock_openai.return_value.chat.completions.create.side_effect = Exception(
-            "Token limit exceeded"
+        mock_openai.return_value.chat.completions.create.side_effect = (
+            Exception("Token limit exceeded")
         )
 
         with pytest.raises(Exception) as exc_info:
             await model_selector.generate_completion(
-                "test prompt",
-                model="openai"
+                "test prompt", model="openai"
             )
         assert "Token limit exceeded" in str(exc_info.value)

@@ -1,8 +1,8 @@
 """Test suite for model environments and configurations."""
 
 import pytest
-from unittest.mock import patch, DEFAULT
 import os
+from unittest.mock import patch, DEFAULT
 
 from application.src.services.ai.model_selector import ModelSelector
 from application.src.core.config import Settings
@@ -10,7 +10,7 @@ from application.tests.utils.model_test_utils import (
     setup_mock_future,
     mock_token_usage,
     create_mock_client,
-    setup_model_environment
+    setup_model_environment,
 )
 
 
@@ -32,8 +32,12 @@ async def test_model_environment_initialization(model_environments):
 
     # Verify model configurations
     assert model_environments.models["openai"]["name"] == "gpt-4-turbo-preview"
-    assert model_environments.models["claude"]["name"] == "claude-3-opus-20240229"
-    assert model_environments.models["mistral"]["name"] == "mistral-large-latest"
+    assert (
+        model_environments.models["claude"]["name"] == "claude-3-opus-20240229"
+    )
+    assert (
+        model_environments.models["mistral"]["name"] == "mistral-large-latest"
+    )
     assert model_environments.models["groq"]["name"] == "mixtral-8x7b-32768"
 
 
@@ -54,24 +58,24 @@ async def test_model_token_tracking(model_environments):
     # Test Claude token tracking
     with patch("anthropic.Anthropic") as mock_claude:
         mock_claude.return_value = create_mock_client("claude")
-        mock_claude.return_value.messages.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_claude.return_value.messages.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
         # Test implementation for Claude
 
     # Test Mistral token tracking
     with patch("mistralai.Client") as mock_mistral:
         mock_mistral.return_value = create_mock_client("mistral")
-        mock_mistral.return_value.chat.completions.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_mistral.return_value.chat.completions.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
         # Test implementation for Mistral
 
     # Test Groq token tracking
     with patch("groq.Groq") as mock_groq:
         mock_groq.return_value = create_mock_client("groq")
-        mock_groq.return_value.chat.completions.create.return_value = setup_mock_future(
-            test_content, test_tokens
+        mock_groq.return_value.chat.completions.create.return_value = (
+            setup_mock_future(test_content, test_tokens)
         )
         # Test implementation for Groq
 
@@ -87,24 +91,20 @@ async def test_model_fallback_chain(model_environments):
         mock_openai.return_value = create_mock_client("openai")
         mock_openai.return_value.chat.completions.create.side_effect = [
             Exception("Primary model error"),
-            setup_mock_future(test_content, test_tokens)
+            setup_mock_future(test_content, test_tokens),
         ]
         # Verify fallback to gpt-4-0125-preview
 
     # Test cross-model fallback
     with patch.multiple(
-        "",
-        openai=DEFAULT,
-        anthropic=DEFAULT,
-        mistralai=DEFAULT,
-        groq=DEFAULT
+        "", openai=DEFAULT, anthropic=DEFAULT, mistralai=DEFAULT, groq=DEFAULT
     ) as mocks:
         # Configure mock responses and errors
         for client in mocks.values():
             client.return_value = create_mock_client(client.__name__)
             client.return_value.chat.completions.create.side_effect = [
                 Exception("Model error"),
-                setup_mock_future(test_content, test_tokens)
+                setup_mock_future(test_content, test_tokens),
             ]
         # Test implementation for cross-model fallback
 
@@ -139,6 +139,13 @@ async def test_model_selection_priority(model_environments):
     for scenario in test_scenarios:
         selected_model = model_environments.select_model(
             scenario["task"],
-            context={"complexity": "high" if scenario["task"] == "complex_task" else "low"}
+            context={
+                "complexity": (
+                    "high" if scenario["task"] == "complex_task" else "low"
+                )
+            },
         )
-        assert selected_model["name"] == model_environments.models[scenario["expected_model"]]["name"]
+        assert (
+            selected_model["name"]
+            == model_environments.models[scenario["expected_model"]]["name"]
+        )
