@@ -1,7 +1,7 @@
 """Test suite for model environments and configurations."""
 
 import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, Mock, patch, DEFAULT
 import os
 
 from application.src.services.ai.model_selector import ModelSelector
