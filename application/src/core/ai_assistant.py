@@ -33,7 +33,9 @@ class AIAssistant:
         # Initialize Helicone configuration
         helicone_key = os.getenv("HELICONE_API_KEY")
         if not helicone_key:
-            raise ValueError("HELICONE_API_KEY environment variable is required")
+            raise ValueError(
+                "HELICONE_API_KEY environment variable is required"
+            )
 
         # Configure OpenAI client with Helicone integration
         self.openai_client = openai.OpenAI(
