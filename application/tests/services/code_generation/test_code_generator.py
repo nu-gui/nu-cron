@@ -17,7 +17,10 @@ def code_generator():
     """Create a CodeGenerator instance with mocked dependencies."""
     with patch("redis.Redis.from_url") as mock_redis, patch(
         "openai.OpenAI"
-    ) as mock_openai, patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+    ) as mock_openai, patch.dict(os.environ, {
+        "OPENAI_API_KEY": "test-key",
+        "HELICONE_API_KEY": "test-helicone-key"
+    }):
         mock_redis_client = Mock()
         mock_redis_client.get.return_value = None
         mock_redis.return_value = mock_redis_client

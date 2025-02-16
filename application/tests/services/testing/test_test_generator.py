@@ -19,7 +19,10 @@ def test_generator():
                 "application.src.services.ai.model_selector"
                 ".ModelSelector"
             ) as mock_selector, \
-            patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
+            patch.dict(os.environ, {
+                "OPENAI_API_KEY": "test-key",
+                "HELICONE_API_KEY": "test-helicone-key"
+            }):
         # Mock Redis
         mock_redis_client = Mock()
         mock_redis_client.get.return_value = None

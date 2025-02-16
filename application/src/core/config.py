@@ -11,6 +11,13 @@ class Settings(BaseSettings):
     OPENAI_MAX_RETRIES: int = 3
     OPENAI_TIMEOUT: float = 30.0
     OPENAI_DEFAULT_HEADERS: dict = {"X-Custom-Header": "nu-cron"}
+    
+    # Helicone configuration
+    HELICONE_API_KEY: str = ""  # Set via environment variable
+    HELICONE_CACHE_ENABLED: bool = True
+    HELICONE_CACHE_TTL: int = 3600  # 1 hour
+    HELICONE_RETRY_ENABLED: bool = True
+    HELICONE_RATE_LIMIT_POLICY: str = "throttle"
 
     # Model configuration
     OPENAI_MODELS: dict[str, dict[str, int | str | float]] = {
