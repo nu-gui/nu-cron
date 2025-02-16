@@ -524,8 +524,21 @@ Timestamp: 2025-02-13T22:30:00Z
 Task: OpenAI Client Modernization and Model Selection
 Assigned To: Devin AI
 Status: ⏳ In Progress
-Execution Attempts: 1
-Last Known State: Implementing dynamic model selection and client optimization:
+Execution Attempts: 2
+Last Known State: Fixing CI failures and implementing Helicone integration:
+
+Debugging Insights:
+  1. CI Pipeline Issues:
+    - Fixed missing requirements.txt for Docker build
+    - Addressed code formatting with black
+    - Updated dependencies for CI environment
+    - Fixed line length issues in error messages
+
+  2. Current Status:
+    - OpenAI client initialization updated
+    - Model selection implemented
+    - Helicone integration added
+    - Code formatting in progress
 
 Changes Made:
   1. OpenAI Client Updates:
