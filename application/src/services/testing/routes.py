@@ -12,6 +12,7 @@ from .test_generator import TestGenerator
 router = APIRouter()
 test_generator = None  # Initialize lazily
 
+
 def get_test_generator():
     global test_generator
     if test_generator is None:
@@ -50,7 +51,9 @@ async def validate_tests(
     Validate generated tests for completeness and coverage
     """
     try:
-        result = await get_test_generator().validate_tests(tests, code, language)
+        result = await get_test_generator().validate_tests(
+            tests, code, language
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

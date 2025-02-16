@@ -26,13 +26,15 @@ class AIAssistant:
             raise ValueError("OPENAI_API_KEY environment variable is required")
         anthropic_key = os.getenv("ANTHROPIC_API_KEY")
         if not anthropic_key:
-            raise ValueError("ANTHROPIC_API_KEY environment variable is required")
+            raise ValueError(
+                "ANTHROPIC_API_KEY environment variable is required"
+            )
 
         self.openai_client = openai.OpenAI(
             api_key=openai_key,
             max_retries=3,
             timeout=30.0,
-            default_headers={"X-Custom-Header": "nu-cron"}
+            default_headers={"X-Custom-Header": "nu-cron"},
         )
         self.claude_client = anthropic.Anthropic(api_key=anthropic_key)
         self.embeddings = OpenAIEmbeddings(openai_api_key=openai_key)

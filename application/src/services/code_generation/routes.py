@@ -12,6 +12,7 @@ from .code_generator import CodeGenerator
 router = APIRouter()
 code_generator = None  # Initialize lazily
 
+
 def get_code_generator():
     global code_generator
     if code_generator is None:
@@ -49,7 +50,9 @@ async def review_code(
     Review code using Claude 3 for better analysis
     """
     try:
-        result = await get_code_generator().review_code(code, language, context)
+        result = await get_code_generator().review_code(
+            code, language, context
+        )
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
