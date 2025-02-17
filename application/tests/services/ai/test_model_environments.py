@@ -1,15 +1,16 @@
 """Test suite for model environments and configurations."""
 
-import pytest
 import os
-from unittest.mock import patch, DEFAULT
+from unittest.mock import DEFAULT, patch
 
-from application.src.services.ai.model_selector import ModelSelector
+import pytest
+
 from application.src.core.config import Settings
+from application.src.services.ai.model_selector import ModelSelector
 from application.tests.utils.model_test_utils import (
-    setup_mock_future,
-    mock_token_usage,
     create_mock_client,
+    mock_token_usage,
+    setup_mock_future,
     setup_model_environment,
 )
 
