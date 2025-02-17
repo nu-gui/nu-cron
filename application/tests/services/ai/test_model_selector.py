@@ -15,7 +15,7 @@ def model_selector():
 
 def test_model_selector_initialization(model_selector):
     """Test successful initialization of ModelSelector."""
-    assert model_selector.models == Settings().OPENAI_MODELS
+    assert model_selector.models == Settings().AI_MODELS
     assert len(model_selector.models) > 0
 
 
@@ -30,9 +30,9 @@ def test_select_model_with_token_estimate(model_selector):
     """Test model selection with token requirements."""
     model = model_selector.select_model("test_generation", token_estimate=5000)
     assert (
-        model["name"] == "gpt-4"
+        model["name"] == "gpt-4-turbo-preview"
     )  # Should select model with highest max_tokens
-    assert model["max_tokens"] == 8192
+    assert model["max_tokens"] == 4096
 
 
 def test_select_model_with_context(model_selector):
@@ -47,14 +47,14 @@ def test_select_model_with_context(model_selector):
 def test_get_fallback_model(model_selector):
     """Test fallback model selection."""
     fallback = model_selector.get_fallback_model("gpt-4-turbo-preview")
-    assert fallback["name"] == "gpt-4-0125-preview"
+    assert fallback["name"] == "claude-3-opus-20240229"
     assert fallback["priority"] == 2
 
 
 def test_get_fallback_model_last_resort(model_selector):
     """Test fallback to last resort model."""
     fallback = model_selector.get_fallback_model("gpt-4-0125-preview")
-    assert fallback["name"] == "gpt-4"
+    assert fallback["name"] == "mistral-large-latest"
     assert fallback["priority"] == 3
 
 
@@ -67,7 +67,7 @@ def test_get_fallback_model_none_available(model_selector):
 def test_validate_models_missing_fields():
     """Test validation of model configuration with missing fields."""
     settings = Settings()
-    settings.OPENAI_MODELS = {
+    settings.AI_MODELS = {
         "test-model": {
             "name": "test",
             # Missing required fields
@@ -81,7 +81,7 @@ def test_validate_models_missing_fields():
 def test_validate_models_empty_config():
     """Test validation with empty model configuration."""
     settings = Settings()
-    settings.OPENAI_MODELS = {}
+    settings.AI_MODELS = {}
     with pytest.raises(ValueError) as exc_info:
         ModelSelector(settings)
     assert "No models configured" in str(exc_info.value)

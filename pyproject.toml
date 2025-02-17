@@ -19,7 +19,9 @@ pydantic = ">=2.7.0"  # Updated for FastAPI compatibility
 typing-extensions = ">=4.2.0,<5.0.0"  # Version required by pydantic
 PyYAML = "6.0.1"  # Version with PEP 517 support
 openai = "^1.0.0"  # Using latest version for new client style
-anthropic = "0.2.8"  # Version before typing-extensions requirement
+anthropic = "^0.18.1"  # Updated for Claude 3 support
+mistralai = "^0.0.12"  # Added for Mistral 7B support
+groq = "^0.4.2"  # Added for Groq support
 langchain = "0.0.352"  # Version compatible with pydantic v1
 pinecone-client = "2.2.4"  # Older version for compatibility
 
@@ -39,7 +41,7 @@ isort = "5.13.2"
 flake8 = "7.0.0"
 pytest = "7.4.4"
 pytest-asyncio = "0.23.3"
-httpx = "0.26.0"
+httpx = ">=0.25.2,<0.26.0"  # Version compatible with mistralai
 pytest-cov = "4.1.0"
 
 [tool.black]
