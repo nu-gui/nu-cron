@@ -15,7 +15,7 @@ def model_selector():
 
 def test_model_selector_initialization(model_selector):
     """Test successful initialization of ModelSelector."""
-    assert model_selector.models == Settings().OPENAI_MODELS
+    assert model_selector.models == Settings().AI_MODELS
     assert len(model_selector.models) > 0
 
 
@@ -67,7 +67,7 @@ def test_get_fallback_model_none_available(model_selector):
 def test_validate_models_missing_fields():
     """Test validation of model configuration with missing fields."""
     settings = Settings()
-    settings.OPENAI_MODELS = {
+    settings.AI_MODELS = {
         "test-model": {
             "name": "test",
             # Missing required fields
@@ -81,7 +81,7 @@ def test_validate_models_missing_fields():
 def test_validate_models_empty_config():
     """Test validation with empty model configuration."""
     settings = Settings()
-    settings.OPENAI_MODELS = {}
+    settings.AI_MODELS = {}
     with pytest.raises(ValueError) as exc_info:
         ModelSelector(settings)
     assert "No models configured" in str(exc_info.value)

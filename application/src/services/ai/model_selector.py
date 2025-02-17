@@ -14,7 +14,7 @@ class ModelSelector:
     def __init__(self, settings: Settings):
         """Initialize model selector with configuration."""
         self.settings = settings
-        self.models = settings.OPENAI_MODELS
+        self.models = settings.AI_MODELS
         self._validate_models()
 
     def _validate_models(self) -> None:
