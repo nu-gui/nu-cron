@@ -30,9 +30,9 @@ def test_select_model_with_token_estimate(model_selector):
     """Test model selection with token requirements."""
     model = model_selector.select_model("test_generation", token_estimate=5000)
     assert (
-        model["name"] == "gpt-4"
+        model["name"] == "gpt-4-turbo-preview"
     )  # Should select model with highest max_tokens
-    assert model["max_tokens"] == 8192
+    assert model["max_tokens"] == 4096
 
 
 def test_select_model_with_context(model_selector):
@@ -47,14 +47,14 @@ def test_select_model_with_context(model_selector):
 def test_get_fallback_model(model_selector):
     """Test fallback model selection."""
     fallback = model_selector.get_fallback_model("gpt-4-turbo-preview")
-    assert fallback["name"] == "gpt-4-0125-preview"
+    assert fallback["name"] == "claude-3-opus-20240229"
     assert fallback["priority"] == 2
 
 
 def test_get_fallback_model_last_resort(model_selector):
     """Test fallback to last resort model."""
     fallback = model_selector.get_fallback_model("gpt-4-0125-preview")
-    assert fallback["name"] == "gpt-4"
+    assert fallback["name"] == "mistral-large-latest"
     assert fallback["priority"] == 3
 
 

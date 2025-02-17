@@ -17,11 +17,18 @@ def create_mock_completion(
     Returns:
         Mock object simulating model response
     """
-    mock_response = Mock()
+    mock_response = AsyncMock()
     mock_response.choices = [Mock()]
     mock_response.choices[0].message = {"content": content}
     if tokens:
-        mock_response.usage = tokens
+        # Create a class to hold token values
+        class Usage:
+            def __init__(self, tokens):
+                self.prompt_tokens = tokens["prompt_tokens"]
+                self.completion_tokens = tokens["completion_tokens"]
+                self.total_tokens = tokens["total_tokens"]
+        # Create usage instance with actual values
+        mock_response.usage = Usage(tokens)
     return mock_response
 
 
@@ -37,9 +44,12 @@ def setup_mock_future(
     Returns:
         Future containing mock response
     """
-    future = asyncio.Future()
-    future.set_result(create_mock_completion(content, tokens))
-    return future
+    mock_response = create_mock_completion(content, tokens)
+    if asyncio.get_event_loop().is_running():
+        future = asyncio.Future()
+        future.set_result(mock_response)
+        return mock_response  # Return mock response directly for async tests
+    return mock_response
 
 
 def mock_token_usage(
@@ -61,25 +71,36 @@ def mock_token_usage(
     }
 
 
-def create_mock_client(model: str) -> Mock:
+def create_mock_client(provider: str) -> Mock:
     """Create mock client for different AI models.
 
     Args:
-        model: The model type ('openai', 'claude', 'mistral', 'groq')
+        provider: The provider name ('openai', 'claude', 'mistral', 'groq')
 
     Returns:
         Mock client object
     """
     mock_client = Mock()
+    mock_client.name = provider  # Add name attribute for mock identification
+    mock_client.default_headers = {
+        "Helicone-Auth": "test-key",
+        "Helicone-Cache-Enabled": "true",
+        "Helicone-Cache-TTL": "3600",
+    }
 
-    if model == "openai":
+    if provider == "openai":
         mock_client.chat.completions.create = AsyncMock()
-    elif model == "claude":
+        mock_client.chat.completions.create.return_value = create_mock_completion("Test response")
+    elif provider in ["claude", "anthropic"]:
         mock_client.messages.create = AsyncMock()
-    elif model == "mistral":
+        mock_client.messages.create.return_value = create_mock_completion("Test response")
+    elif provider == "mistral":
         mock_client.chat.completions.create = AsyncMock()
-    elif model == "groq":
+        mock_client.chat.completions.create.return_value = create_mock_completion("Test response")
+        mock_client.client = AsyncMock()  # Add client attribute for MistralClient
+    elif provider == "groq":
         mock_client.chat.completions.create = AsyncMock()
+        mock_client.chat.completions.create.return_value = create_mock_completion("Test response")
 
     return mock_client
 

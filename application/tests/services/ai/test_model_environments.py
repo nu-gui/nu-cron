@@ -65,7 +65,7 @@ async def test_model_token_tracking(model_environments):
         # Test implementation for Claude
 
     # Test Mistral token tracking
-    with patch("mistralai.Client") as mock_mistral:
+    with patch("mistralai.client.MistralClient") as mock_mistral:
         mock_mistral.return_value = create_mock_client("mistral")
         mock_mistral.return_value.chat.completions.create.return_value = (
             setup_mock_future(test_content, test_tokens)
@@ -97,16 +97,30 @@ async def test_model_fallback_chain(model_environments):
         # Verify fallback to gpt-4-0125-preview
 
     # Test cross-model fallback
-    with patch.multiple(
-        "", openai=DEFAULT, anthropic=DEFAULT, mistralai=DEFAULT, groq=DEFAULT
-    ) as mocks:
+    with patch("openai.OpenAI") as mock_openai, \
+         patch("anthropic.Anthropic") as mock_anthropic, \
+         patch("mistralai.client.MistralClient") as mock_mistral, \
+         patch("groq.Groq") as mock_groq:
+        mocks = {
+            "openai": mock_openai,
+            "anthropic": mock_anthropic,
+            "mistral": mock_mistral,
+            "groq": mock_groq
+        }
         # Configure mock responses and errors
-        for client in mocks.values():
-            client.return_value = create_mock_client(client.__name__)
-            client.return_value.chat.completions.create.side_effect = [
-                Exception("Model error"),
-                setup_mock_future(test_content, test_tokens),
-            ]
+        for name, client in mocks.items():
+            mock_client = create_mock_client(name)
+            client.return_value = mock_client
+            if name == "openai":
+                mock_client.chat.completions.create.side_effect = [
+                    Exception("Model error"),
+                    setup_mock_future(test_content, test_tokens),
+                ]
+            elif name == "claude":
+                mock_client.messages.create.side_effect = [
+                    Exception("Model error"),
+                    setup_mock_future(test_content, test_tokens),
+                ]
         # Test implementation for cross-model fallback
 
 

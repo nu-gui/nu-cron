@@ -35,9 +35,7 @@ async def test_openai_fallback_chain(model_selector):
         # Configure mock to fail with primary model and succeed with fallback
         mock_openai.return_value.chat.completions.create.side_effect = [
             Exception("Primary model error"),  # gpt-4-turbo-preview fails
-            setup_mock_future(
-                test_content, test_tokens
-            ),  # gpt-4-0125-preview succeeds
+            setup_mock_future(test_content, test_tokens)  # gpt-4-0125-preview succeeds
         ]
 
         # Test fallback
@@ -63,7 +61,7 @@ async def test_openai_complete_fallback_chain(model_selector):
         mock_openai.return_value.chat.completions.create.side_effect = [
             Exception("Primary model error"),  # gpt-4-turbo-preview fails
             Exception("Fallback model error"),  # gpt-4-0125-preview fails
-            setup_mock_future(test_content, test_tokens),  # gpt-4 succeeds
+            setup_mock_future(test_content, test_tokens)  # gpt-4 succeeds
         ]
 
         # Test complete fallback chain
@@ -83,13 +81,16 @@ async def test_cross_model_fallback(model_selector):
     test_tokens = mock_token_usage(45, 25)
 
     # Mock all model clients
-    with patch.multiple(
-        "",
-        openai=patch("openai.OpenAI"),
-        anthropic=patch("anthropic.Anthropic"),
-        mistral=patch("mistralai.Client"),
-        groq=patch("groq.Groq"),
-    ) as mocks:
+    with patch("openai.OpenAI") as mock_openai, \
+         patch("anthropic.Anthropic") as mock_anthropic, \
+         patch("mistralai.client.MistralClient") as mock_mistral, \
+         patch("groq.Groq") as mock_groq:
+        mocks = {
+            "openai": mock_openai,
+            "anthropic": mock_anthropic,
+            "mistral": mock_mistral,
+            "groq": mock_groq
+        }
         # Configure mock clients
         for name, mock in mocks.items():
             mock.return_value = create_mock_client(name)
@@ -100,22 +101,19 @@ async def test_cross_model_fallback(model_selector):
                     Exception("Fallback model error"),
                     Exception("Last resort error"),
                 ]
-            elif name == "claude":
-                # Claude succeeds
-                mock.return_value.messages.create.return_value = (
-                    setup_mock_future(test_content, test_tokens)
-                )
+            elif name == "anthropic":
+                # Anthropic succeeds
+                mock_response = setup_mock_future(test_content, test_tokens)
+                mock.return_value.messages.create.return_value = mock_response
             else:
                 # Other models not used
-                mock.return_value.chat.completions.create.side_effect = (
-                    Exception("Should not be called")
-                )
+                mock.return_value.chat.completions.create.side_effect = Exception("Should not be called")
 
         # Test cross-model fallback
         response = await model_selector.generate_completion(
             "test prompt",
             model="openai",
-            fallback_providers=["claude", "mistral", "groq"],
+            fallback_providers=["anthropic", "mistral", "groq"],
         )
 
         assert response.choices[0].message["content"] == test_content
@@ -153,12 +151,8 @@ async def test_fallback_with_token_monitoring(model_selector):
 
         # Configure mock to fail with primary model and succeed with fallback
         mock_openai.return_value.chat.completions.create.side_effect = [
-            setup_mock_future(
-                "", primary_tokens
-            ),  # Primary model fails after tokenizing
-            setup_mock_future(
-                "Fallback response", fallback_tokens
-            ),  # Fallback succeeds
+            setup_mock_future("", primary_tokens),  # Primary model fails after tokenizing
+            setup_mock_future("Fallback response", fallback_tokens)  # Fallback succeeds
         ]
 
         # Test fallback with token monitoring
