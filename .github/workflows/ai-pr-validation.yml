@@ -150,9 +150,10 @@ jobs:
             
             Please review the results and make necessary adjustments.`;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            github.rest.pulls.createReview({
+              pull_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.name,
-              body: summary
+              body: summary,
+              event: 'COMMENT'
             });
